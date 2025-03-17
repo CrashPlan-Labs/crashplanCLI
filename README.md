@@ -1,4 +1,5 @@
-# The Code42 CLI
+# CrashPlan fork of the Code42 CLI - WORK IN PROGRESS.
+# Not hosted anywhere yet
 
 ![Build status](https://github.com/code42/code42cli/workflows/build/badge.svg)
 [![codecov.io](https://codecov.io/github/code42/code42cli/coverage.svg?branch=main)](https://codecov.io/github/code42/code42cli?branch=master)
