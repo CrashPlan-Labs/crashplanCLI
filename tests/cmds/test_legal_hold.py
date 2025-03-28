@@ -1,16 +1,16 @@
 import datetime
 
 import pytest
-from py42.exceptions import Py42BadRequestError
-from py42.response import Py42Response
+from pycpg.exceptions import PycpgBadRequestError
+from pycpg.response import PycpgResponse
 from requests import HTTPError
 from requests import Response
 
-from code42cli.cmds.legal_hold import _check_matter_is_accessible
-from code42cli.date_helper import convert_datetime_to_timestamp
-from code42cli.main import cli
+from crashplancli.cmds.legal_hold import _check_matter_is_accessible
+from crashplancli.date_helper import convert_datetime_to_timestamp
+from crashplancli.main import cli
 
-_NAMESPACE = "code42cli.cmds.legal_hold"
+_NAMESPACE = "crashplancli.cmds.legal_hold"
 TEST_MATTER_ID = "99999"
 TEST_LEGAL_HOLD_MEMBERSHIP_UID = "88888"
 TEST_LEGAL_HOLD_MEMBERSHIP_UID_2 = "77777"
@@ -193,7 +193,7 @@ TEST_EVENT_PAGE = {
             "legalHoldUid": "88888",
             "legalHoldMembershipUid": "645576514441664433",
             "custodianUserUid": "12345",
-            "custodianUsername": "kim.jones@code42.com",
+            "custodianUsername": "kim.jones@crashplan.com",
             "custodianFirstName": "kim",
             "custodianLastName": "jones",
             "custodianUserExtRef": None,
@@ -213,47 +213,47 @@ ALL_MATTERS_RESPONSE = f'{{"legalHolds": [{MATTER_RESPONSE}]}}'
 LEGAL_HOLD_COMMAND = "legal-hold"
 
 
-def _create_py42_response(mocker, text):
+def _create_pycpg_response(mocker, text):
     response = mocker.MagicMock(spec=Response)
     response.text = text
     response._content_consumed = mocker.MagicMock()
     response.status_code = 200
-    return Py42Response(response)
+    return PycpgResponse(response)
 
 
 @pytest.fixture
 def matter_response(mocker):
-    return _create_py42_response(mocker, MATTER_RESPONSE)
+    return _create_pycpg_response(mocker, MATTER_RESPONSE)
 
 
 @pytest.fixture
 def preservation_policy_response(mocker):
-    return _create_py42_response(mocker, POLICY_RESPONSE)
+    return _create_pycpg_response(mocker, POLICY_RESPONSE)
 
 
 @pytest.fixture
 def empty_legal_hold_memberships_response(mocker):
-    return [_create_py42_response(mocker, EMPTY_CUSTODIANS_RESPONSE)]
+    return [_create_pycpg_response(mocker, EMPTY_CUSTODIANS_RESPONSE)]
 
 
 @pytest.fixture
 def active_legal_hold_memberships_response(mocker):
-    return [_create_py42_response(mocker, ALL_ACTIVE_CUSTODIANS_RESPONSE)]
+    return [_create_pycpg_response(mocker, ALL_ACTIVE_CUSTODIANS_RESPONSE)]
 
 
 @pytest.fixture
 def inactive_legal_hold_memberships_response(mocker):
-    return [_create_py42_response(mocker, ALL_INACTIVE_CUSTODIANS_RESPONSE)]
+    return [_create_pycpg_response(mocker, ALL_INACTIVE_CUSTODIANS_RESPONSE)]
 
 
 @pytest.fixture
 def active_and_inactive_legal_hold_memberships_response(mocker):
-    return [_create_py42_response(mocker, ALL_ACTIVE_AND_INACTIVE_CUSTODIANS_RESPONSE)]
+    return [_create_pycpg_response(mocker, ALL_ACTIVE_AND_INACTIVE_CUSTODIANS_RESPONSE)]
 
 
 @pytest.fixture
 def empty_events_response(mocker):
-    return _create_py42_response(mocker, EMPTY_EVENTS_RESPONSE)
+    return _create_pycpg_response(mocker, EMPTY_EVENTS_RESPONSE)
 
 
 def events_list_generator():
@@ -269,12 +269,12 @@ def get_user_id_success(cli_state):
 
 @pytest.fixture
 def empty_matters_response(mocker):
-    return [_create_py42_response(mocker, EMPTY_MATTERS_RESPONSE)]
+    return [_create_pycpg_response(mocker, EMPTY_MATTERS_RESPONSE)]
 
 
 @pytest.fixture
 def all_matters_response(mocker):
-    return [_create_py42_response(mocker, ALL_MATTERS_RESPONSE)]
+    return [_create_pycpg_response(mocker, ALL_MATTERS_RESPONSE)]
 
 
 @pytest.fixture
@@ -289,7 +289,7 @@ def check_matter_accessible_success(cli_state, matter_response):
 
 @pytest.fixture
 def check_matter_accessible_failure(cli_state, custom_error):
-    cli_state.sdk.legalhold.get_matter_by_uid.side_effect = Py42BadRequestError(
+    cli_state.sdk.legalhold.get_matter_by_uid.side_effect = PycpgBadRequestError(
         custom_error
     )
 
@@ -305,7 +305,7 @@ def user_already_added_response(mocker):
     mock_response.text = "USER_ALREADY_IN_HOLD"
     http_error = HTTPError()
     http_error.response = mock_response
-    return Py42BadRequestError(http_error)
+    return PycpgBadRequestError(http_error)
 
 
 def test_add_user_raises_user_already_added_error_when_user_already_on_hold(

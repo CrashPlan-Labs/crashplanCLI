@@ -1,7 +1,7 @@
 import time
 
-from code42cli.worker import Worker
-from code42cli.worker import WorkerStats
+from crashplancli.worker import Worker
+from crashplancli.worker import WorkerStats
 
 
 class TestWorkerStats:

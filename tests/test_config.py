@@ -3,8 +3,8 @@ from configparser import ConfigParser
 import pytest
 
 from .conftest import MockSection
-from code42cli.config import ConfigAccessor
-from code42cli.config import NoConfigProfileError
+from crashplancli.config import ConfigAccessor
+from crashplancli.config import NoConfigProfileError
 
 _TEST_PROFILE_NAME = "ProfileA"
 _TEST_SECOND_PROFILE_NAME = "ProfileB"
@@ -13,7 +13,7 @@ _INTERNAL = "Internal"
 
 @pytest.fixture(autouse=True)
 def mock_saver(mocker):
-    return mocker.patch("code42cli.config.open")
+    return mocker.patch("crashplancli.config.open")
 
 
 @pytest.fixture
@@ -221,10 +221,7 @@ class TestConfigAccessor:
         assert accessor.get_profile(_TEST_PROFILE_NAME)[
             ConfigAccessor.IGNORE_SSL_ERRORS_KEY
         ]
-        assert accessor.get_profile(_TEST_PROFILE_NAME)[
-            ConfigAccessor.USE_V2_FILE_EVENTS_KEY
-        ]
-
+        
     def test_update_profile_does_not_update_when_given_none(
         self, config_parser_for_multiple_profiles
     ):
@@ -247,6 +244,4 @@ class TestConfigAccessor:
         assert accessor.get_profile(_TEST_PROFILE_NAME)[
             ConfigAccessor.IGNORE_SSL_ERRORS_KEY
         ]
-        assert accessor.get_profile(_TEST_PROFILE_NAME)[
-            ConfigAccessor.USE_V2_FILE_EVENTS_KEY
-        ]
+

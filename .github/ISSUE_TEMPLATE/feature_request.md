@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for code42cli
+about: Suggest an idea for crashplancli
 title: "[Enhancement] YOUR IDEA!"
 labels: enhancement
 assignees: ''

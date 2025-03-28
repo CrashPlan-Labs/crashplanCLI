@@ -3,7 +3,7 @@ import subprocess
 import time
 from shlex import split as split_command
 
-from code42cli.main import cli
+from crashplancli.main import cli
 
 
 class cleanup:

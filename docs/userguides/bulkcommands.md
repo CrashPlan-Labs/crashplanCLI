@@ -1,6 +1,6 @@
 # Using Bulk Commands
 
-Bulk functionality is available for many Code42 CLI methods, more details on which commands have bulk capabilities can be found in the [Commands Documentation](../commands.md).
+Bulk functionality is available for many crashplan CLI methods, more details on which commands have bulk capabilities can be found in the [Commands Documentation](../commands.md).
 
 All bulk methods take a CSV file as input.
 
@@ -8,7 +8,7 @@ The `generate-template` command can be used to create a CSV file with the necess
 
 For instance, the following command will create a file named `devices_bulk_deactivate.csv` with a single column header row of `guid`.
 ```bash
-code42 devices bulk generate-template deactivate
+crashplan devices bulk generate-template deactivate
 ```
 
 The CSV file can contain more columns than are necessary for the command, however then the header row is **required**.
@@ -19,5 +19,5 @@ To run a bulk method, simply pass the CSV file path to the desired command.  For
 
 
 ```bash
-code42 devices bulk deactivate devices_bulk_deactivate.csv
+crashplan devices bulk deactivate devices_bulk_deactivate.csv
 ```

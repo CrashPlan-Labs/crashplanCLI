@@ -7,22 +7,22 @@ from setuptools import setup
 here = path.abspath(path.dirname(__file__))
 
 about = {}
-with open(path.join(here, "src", "code42cli", "__version__.py"), encoding="utf8") as fh:
+with open(path.join(here, "src", "crashplancli", "__version__.py"), encoding="utf8") as fh:
     exec(fh.read(), about)
 
 with open(path.join(here, "README.md"), "r", "utf-8") as f:
     readme = f.read()
 
 setup(
-    name="code42cli",
+    name="crashplancli",
     version=about["__version__"],
-    url="https://github.com/code42/py42",
+    url="https://github.com/CrashPlan-Labs/pycpg",
     project_urls={
-        "Issue Tracker": "https://github.com/code42/code42cli/issues",
-        "Documentation": "https://clidocs.code42.com/",
-        "Source Code": "https://github.com/code42/code42cli",
+        "Issue Tracker": "https://github.com/CrashPlan-Labs/crashplancli/issues",
+        "Documentation": "https://clidocs.crashplan.com/",
+        "Source Code": "https://github.com/CrashPlan-Labs/crashplancli",
     },
-    description="The official command line tool for interacting with Code42",
+    description="The official command line tool for interacting with crashplan",
     long_description=readme,
     long_description_content_type="text/markdown",
     packages=find_packages("src"),
@@ -40,7 +40,7 @@ setup(
         "ipython>=7.16.3;python_version<'3.8'",
         "ipython>=8.10.0;python_version>='3.8'",
         "pandas>=1.1.3",
-        "py42>=1.27.2",
+        "pycpg>=1.27.2",
         "setuptools>=66.0.0",
     ],
     extras_require={
@@ -71,5 +71,5 @@ setup(
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: Implementation :: CPython",
     ],
-    entry_points={"console_scripts": ["code42=code42cli.main:cli"]},
+    entry_points={"console_scripts": ["crashplan=crashplancli.main:cli"]},
 )

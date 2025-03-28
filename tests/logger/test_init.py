@@ -5,24 +5,24 @@ from logging.handlers import RotatingFileHandler
 import pytest
 from requests import Request
 
-from code42cli.enums import OutputFormat
-from code42cli.enums import SendToFileEventsOutputFormat
-from code42cli.logger import add_handler_to_logger
-from code42cli.logger import CliLogger
-from code42cli.logger import get_logger_for_server
-from code42cli.logger import get_view_error_details_message
-from code42cli.logger import logger_has_handlers
-from code42cli.logger.enums import ServerProtocol
-from code42cli.logger.formatters import FileEventDictToCEFFormatter
-from code42cli.logger.formatters import FileEventDictToJSONFormatter
-from code42cli.logger.formatters import FileEventDictToRawJSONFormatter
-from code42cli.logger.handlers import NoPrioritySysLogHandler
-from code42cli.util import get_user_project_path
+from crashplancli.enums import OutputFormat
+from crashplancli.enums import SendToFileEventsOutputFormat
+from crashplancli.logger import add_handler_to_logger
+from crashplancli.logger import CliLogger
+from crashplancli.logger import get_logger_for_server
+from crashplancli.logger import get_view_error_details_message
+from crashplancli.logger import logger_has_handlers
+from crashplancli.logger.enums import ServerProtocol
+from crashplancli.logger.formatters import FileEventDictToCEFFormatter
+from crashplancli.logger.formatters import FileEventDictToJSONFormatter
+from crashplancli.logger.formatters import FileEventDictToRawJSONFormatter
+from crashplancli.logger.handlers import NoPrioritySysLogHandler
+from crashplancli.util import get_user_project_path
 
 
 @pytest.fixture(autouse=True)
 def init_socket_mock(mocker):
-    return mocker.patch("code42cli.logger.NoPrioritySysLogHandler.connect_socket")
+    return mocker.patch("crashplancli.logger.NoPrioritySysLogHandler.connect_socket")
 
 
 @pytest.fixture(autouse=True)
@@ -38,7 +38,7 @@ def fresh_syslog_handler(init_socket_mock):
 
 
 def test_add_handler_to_logger_does_as_expected():
-    logger = logging.getLogger("TEST_CODE42_CLI")
+    logger = logging.getLogger("TEST_crashplan_CLI")
     formatter = logging.Formatter()
     handler = logging.Handler()
     add_handler_to_logger(logger, handler, formatter)
@@ -47,21 +47,21 @@ def test_add_handler_to_logger_does_as_expected():
 
 
 def test_logger_has_handlers_when_logger_has_handlers_returns_true():
-    logger = logging.getLogger("TEST_CODE42_CLI")
+    logger = logging.getLogger("TEST_crashplan_CLI")
     handler = logging.Handler()
     logger.addHandler(handler)
     assert logger_has_handlers(logger)
 
 
 def test_logger_has_handlers_when_logger_does_not_have_handlers_returns_false():
-    logger = logging.getLogger("TEST_CODE42_CLI")
+    logger = logging.getLogger("TEST_crashplan_CLI")
     logger.handlers = []
     assert not logger_has_handlers(logger)
 
 
 def test_get_view_exceptions_location_message_returns_expected_message():
     actual = get_view_error_details_message()
-    path = os.path.join(get_user_project_path("log"), "code42_errors.log")
+    path = os.path.join(get_user_project_path("log"), "crashplan_errors.log")
     expected = f"View details in {path}"
     assert actual == expected
 
@@ -113,7 +113,7 @@ def test_get_logger_for_server_constructs_handler_with_expected_args(
     mocker, monkeypatch
 ):
     no_priority_syslog_handler = mocker.patch(
-        "code42cli.logger.handlers.NoPrioritySysLogHandler.__init__"
+        "crashplancli.logger.handlers.NoPrioritySysLogHandler.__init__"
     )
     no_priority_syslog_handler.return_value = None
     get_logger_for_server(
@@ -128,7 +128,7 @@ def test_get_logger_for_server_when_hostname_includes_port_constructs_handler_wi
     mocker,
 ):
     no_priority_syslog_handler = mocker.patch(
-        "code42cli.logger.handlers.NoPrioritySysLogHandler.__init__"
+        "crashplancli.logger.handlers.NoPrioritySysLogHandler.__init__"
     )
     no_priority_syslog_handler.return_value = None
     get_logger_for_server(
@@ -167,6 +167,6 @@ class TestCliLogger:
         with caplog.at_level(logging.ERROR):
             request = mocker.MagicMock(sepc=Request)
             request.body = {"foo": "bar"}
-            CliLogger().log_verbose_error("code42 dothing --flag YES", request)
-            assert "'code42 dothing --flag YES'" in caplog.text
+            CliLogger().log_verbose_error("crashplan dothing --flag YES", request)
+            assert "'crashplan dothing --flag YES'" in caplog.text
             assert "Request parameters: {'foo': 'bar'}" in caplog.text

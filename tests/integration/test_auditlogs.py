@@ -6,7 +6,7 @@ import pytest
 from tests.integration.conftest import append_profile
 from tests.integration.util import assert_test_is_successful
 
-from code42cli.main import cli
+from crashplancli.main import cli
 
 
 begin_date = datetime.utcnow() - timedelta(days=2)

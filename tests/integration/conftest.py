@@ -4,9 +4,9 @@ from shlex import split as split_command
 import pytest
 from tests.integration.util import DataServer
 
-from code42cli.errors import Code42CLIError
-from code42cli.main import cli
-from code42cli.profile import get_profile
+from crashplancli.errors import crashplancliError
+from crashplancli.main import cli
+from crashplancli.profile import get_profile
 
 
 TEST_PROFILE_NAME = "TEMP-INTEGRATION-TEST"
@@ -18,9 +18,9 @@ _ENCODING_TYPE = "utf-8"
 @pytest.fixture(scope="session")
 def integration_test_profile(runner):
     """Creates a temporary profile to use for executing integration tests."""
-    host = os.environ.get("C42_HOST") or "http://127.0.0.1:4200"
-    username = os.environ.get("C42_USER") or "test_username@example.com"
-    password = os.environ.get("C42_PW") or "test_password"
+    host = os.environ.get("CPG_HOST") or "http://127.0.0.1:4200"
+    username = os.environ.get("CPG_USER") or "test_username@example.com"
+    password = os.environ.get("CPG_PW") or "test_password"
     delete_test_profile = split_command(f"profile delete {TEST_PROFILE_NAME} -y")
     create_test_profile = split_command(
         f"profile create -n {TEST_PROFILE_NAME} -u {username} -s {host} --password {password} -y"
@@ -37,7 +37,7 @@ def _get_current_profile_name():
     try:
         profile = get_profile()
         return profile.name
-    except Code42CLIError:
+    except crashplancliError:
         return None
 
 

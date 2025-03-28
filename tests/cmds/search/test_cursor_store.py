@@ -2,19 +2,15 @@ from os import path
 
 import pytest
 
-from code42cli.cmds.search.cursor_store import AlertCursorStore
-from code42cli.cmds.search.cursor_store import AuditLogCursorStore
-from code42cli.cmds.search.cursor_store import Cursor
-from code42cli.cmds.search.cursor_store import FileEventCursorStore
-from code42cli.errors import Code42CLIError
+from crashplancli.cmds.search.cursor_store import AuditLogCursorStore
+from crashplancli.cmds.search.cursor_store import Cursor
+from crashplancli.errors import crashplancliError
 
 PROFILE_NAME = "testprofile"
 CURSOR_NAME = "testcursor"
 
-_NAMESPACE = "code42cli.cmds.search.cursor_store"
+_NAMESPACE = "crashplancli.cmds.search.cursor_store"
 
-ALERT_CHECKPOINT_FOLDER_NAME = "alert_checkpoints"
-FILE_EVENT_CHECKPOINT_FOLDER_NAME = "file_event_checkpoints"
 AUDIT_LOG_CHECKPOINT_FOLDER_NAME = "audit_log_checkpoints"
 
 
@@ -67,158 +63,6 @@ class TestCursor:
         mock_open.assert_called_once_with("bogus/path")
 
 
-class TestAlertCursorStore:
-    def test_get_returns_expected_timestamp(self, mock_open):
-        store = AlertCursorStore(PROFILE_NAME)
-        checkpoint = store.get(CURSOR_NAME)
-        assert checkpoint == 123456789
-
-    def test_get_when_profile_does_not_exist_returns_none(self, mocker):
-        store = AlertCursorStore(PROFILE_NAME)
-        checkpoint = store.get(CURSOR_NAME)
-        mock_open = mocker.patch(f"{_NAMESPACE}.open")
-        mock_open.side_effect = FileNotFoundError
-        assert checkpoint is None
-
-    def test_get_reads_expected_file(self, mock_open):
-        store = AlertCursorStore(PROFILE_NAME)
-        store.get(CURSOR_NAME)
-        user_path = path.join(path.expanduser("~"), ".code42cli")
-        expected_path = path.join(
-            user_path, ALERT_CHECKPOINT_FOLDER_NAME, PROFILE_NAME, CURSOR_NAME
-        )
-        mock_open.assert_called_once_with(expected_path)
-
-    def test_replace_writes_to_expected_file(self, mock_open):
-        store = AlertCursorStore(PROFILE_NAME)
-        store.replace("checkpointname", 123)
-        user_path = path.join(path.expanduser("~"), ".code42cli")
-        expected_path = path.join(
-            user_path, ALERT_CHECKPOINT_FOLDER_NAME, PROFILE_NAME, "checkpointname"
-        )
-        mock_open.assert_called_once_with(expected_path, "w")
-
-    def test_replace_writes_expected_content(self, mock_open):
-        store = AlertCursorStore(PROFILE_NAME)
-        store.replace("checkpointname", 123)
-        user_path = path.join(path.expanduser("~"), ".code42cli")
-        path.join(
-            user_path, ALERT_CHECKPOINT_FOLDER_NAME, PROFILE_NAME, "checkpointname"
-        )
-        mock_open.return_value.write.assert_called_once_with("123")
-
-    def test_delete_calls_remove_on_expected_file(self, mock_open, mock_remove):
-        store = AlertCursorStore(PROFILE_NAME)
-        store.delete("deleteme")
-        user_path = path.join(path.expanduser("~"), ".code42cli")
-        expected_path = path.join(
-            user_path, ALERT_CHECKPOINT_FOLDER_NAME, PROFILE_NAME, "deleteme"
-        )
-        mock_remove.assert_called_once_with(expected_path)
-
-    def test_delete_when_checkpoint_does_not_exist_raises_cli_error(
-        self, mock_open, mock_remove
-    ):
-        store = AlertCursorStore(PROFILE_NAME)
-        mock_remove.side_effect = FileNotFoundError
-        with pytest.raises(Code42CLIError):
-            store.delete("deleteme")
-
-    def test_clean_calls_remove_on_each_checkpoint(
-        self, mock_open, mock_remove, mock_listdir, mock_isfile
-    ):
-        mock_listdir.return_value = ["fileone", "filetwo", "filethree"]
-        store = AlertCursorStore(PROFILE_NAME)
-        store.clean()
-        assert mock_remove.call_count == 3
-
-    def test_get_all_cursors_returns_all_checkpoints(
-        self, mock_open, mock_listdir, mock_isfile
-    ):
-        mock_listdir.return_value = ["fileone", "filetwo", "filethree"]
-        store = AlertCursorStore(PROFILE_NAME)
-        cursors = store.get_all_cursors()
-        assert len(cursors) == 3
-        assert cursors[0].name == "fileone"
-        assert cursors[1].name == "filetwo"
-        assert cursors[2].name == "filethree"
-
-
-class TestFileEventCursorStore:
-    def test_get_returns_expected_timestamp(self, mock_open):
-        store = FileEventCursorStore(PROFILE_NAME)
-        checkpoint = store.get(CURSOR_NAME)
-        assert checkpoint == "123456789"
-
-    def test_get_reads_expected_file(self, mock_open):
-        store = FileEventCursorStore(PROFILE_NAME)
-        store.get(CURSOR_NAME)
-        user_path = path.join(path.expanduser("~"), ".code42cli")
-        expected_path = path.join(
-            user_path, FILE_EVENT_CHECKPOINT_FOLDER_NAME, PROFILE_NAME, CURSOR_NAME
-        )
-        mock_open.assert_called_once_with(expected_path)
-
-    def test_get_when_profile_does_not_exist_returns_none(self, mocker):
-        store = FileEventCursorStore(PROFILE_NAME)
-        checkpoint = store.get(CURSOR_NAME)
-        mock_open = mocker.patch(f"{_NAMESPACE}.open")
-        mock_open.side_effect = FileNotFoundError
-        assert checkpoint is None
-
-    def test_replace_writes_to_expected_file(self, mock_open):
-        store = FileEventCursorStore(PROFILE_NAME)
-        store.replace("checkpointname", 123)
-        user_path = path.join(path.expanduser("~"), ".code42cli")
-        expected_path = path.join(
-            user_path, FILE_EVENT_CHECKPOINT_FOLDER_NAME, PROFILE_NAME, "checkpointname"
-        )
-        mock_open.assert_called_once_with(expected_path, "w")
-
-    def test_replace_writes_expected_content(self, mock_open):
-        store = FileEventCursorStore(PROFILE_NAME)
-        store.replace("checkpointname", 123)
-        user_path = path.join(path.expanduser("~"), ".code42cli")
-        path.join(
-            user_path, FILE_EVENT_CHECKPOINT_FOLDER_NAME, PROFILE_NAME, "checkpointname"
-        )
-        mock_open.return_value.write.assert_called_once_with("123")
-
-    def test_delete_calls_remove_on_expected_file(self, mock_open, mock_remove):
-        store = FileEventCursorStore(PROFILE_NAME)
-        store.delete("deleteme")
-        user_path = path.join(path.expanduser("~"), ".code42cli")
-        expected_path = path.join(
-            user_path, FILE_EVENT_CHECKPOINT_FOLDER_NAME, PROFILE_NAME, "deleteme"
-        )
-        mock_remove.assert_called_once_with(expected_path)
-
-    def test_delete_when_checkpoint_does_not_exist_raises_cli_error(
-        self, mock_open, mock_remove
-    ):
-        store = FileEventCursorStore(PROFILE_NAME)
-        mock_remove.side_effect = FileNotFoundError
-        with pytest.raises(Code42CLIError):
-            store.delete("deleteme")
-
-    def test_clean_calls_remove_on_each_checkpoint(
-        self, mock_open, mock_remove, mock_listdir, mock_isfile
-    ):
-        mock_listdir.return_value = ["fileone", "filetwo", "filethree"]
-        store = FileEventCursorStore(PROFILE_NAME)
-        store.clean()
-        assert mock_remove.call_count == 3
-
-    def test_get_all_cursors_returns_all_checkpoints(self, mock_listdir, mock_isfile):
-        mock_listdir.return_value = ["fileone", "filetwo", "filethree"]
-        store = FileEventCursorStore(PROFILE_NAME)
-        cursors = store.get_all_cursors()
-        assert len(cursors) == 3
-        assert cursors[0].name == "fileone"
-        assert cursors[1].name == "filetwo"
-        assert cursors[2].name == "filethree"
-
-
 class TestAuditLogCursorStore:
     def test_get_returns_expected_timestamp(self, mock_open):
         store = AuditLogCursorStore(PROFILE_NAME)
@@ -228,7 +72,7 @@ class TestAuditLogCursorStore:
     def test_get_reads_expected_file(self, mock_open):
         store = AuditLogCursorStore(PROFILE_NAME)
         store.get(CURSOR_NAME)
-        user_path = path.join(path.expanduser("~"), ".code42cli")
+        user_path = path.join(path.expanduser("~"), ".crashplancli")
         expected_path = path.join(
             user_path, AUDIT_LOG_CHECKPOINT_FOLDER_NAME, PROFILE_NAME, CURSOR_NAME
         )
@@ -244,7 +88,7 @@ class TestAuditLogCursorStore:
     def test_replace_writes_to_expected_file(self, mock_open):
         store = AuditLogCursorStore(PROFILE_NAME)
         store.replace("checkpointname", 123)
-        user_path = path.join(path.expanduser("~"), ".code42cli")
+        user_path = path.join(path.expanduser("~"), ".crashplancli")
         expected_path = path.join(
             user_path, AUDIT_LOG_CHECKPOINT_FOLDER_NAME, PROFILE_NAME, "checkpointname"
         )
@@ -253,7 +97,7 @@ class TestAuditLogCursorStore:
     def test_replace_writes_expected_content(self, mock_open):
         store = AuditLogCursorStore(PROFILE_NAME)
         store.replace("checkpointname", 123)
-        user_path = path.join(path.expanduser("~"), ".code42cli")
+        user_path = path.join(path.expanduser("~"), ".crashplancli")
         path.join(
             user_path, AUDIT_LOG_CHECKPOINT_FOLDER_NAME, PROFILE_NAME, "checkpointname"
         )
@@ -262,7 +106,7 @@ class TestAuditLogCursorStore:
     def test_delete_calls_remove_on_expected_file(self, mock_open, mock_remove):
         store = AuditLogCursorStore(PROFILE_NAME)
         store.delete("deleteme")
-        user_path = path.join(path.expanduser("~"), ".code42cli")
+        user_path = path.join(path.expanduser("~"), ".crashplancli")
         expected_path = path.join(
             user_path, AUDIT_LOG_CHECKPOINT_FOLDER_NAME, PROFILE_NAME, "deleteme"
         )
@@ -273,7 +117,7 @@ class TestAuditLogCursorStore:
     ):
         store = AuditLogCursorStore(PROFILE_NAME)
         mock_remove.side_effect = FileNotFoundError
-        with pytest.raises(Code42CLIError):
+        with pytest.raises(crashplancliError):
             store.delete("deleteme")
 
     def test_clean_calls_remove_on_each_checkpoint(
@@ -301,7 +145,7 @@ class TestAuditLogCursorStore:
     def test_get_events_reads_expected_file(self, mock_open):
         store = AuditLogCursorStore(PROFILE_NAME)
         store.get_events(CURSOR_NAME)
-        user_path = path.join(path.expanduser("~"), ".code42cli")
+        user_path = path.join(path.expanduser("~"), ".crashplancli")
         expected_filename = CURSOR_NAME + "_events"
         expected_path = path.join(
             user_path, AUDIT_LOG_CHECKPOINT_FOLDER_NAME, PROFILE_NAME, expected_filename
@@ -324,7 +168,7 @@ class TestAuditLogCursorStore:
     def test_replace_events_writes_to_expected_file(self, mock_open):
         store = AuditLogCursorStore(PROFILE_NAME)
         store.replace_events("checkpointname", ["hash1", "hash2"])
-        user_path = path.join(path.expanduser("~"), ".code42cli")
+        user_path = path.join(path.expanduser("~"), ".crashplancli")
         expected_path = path.join(
             user_path,
             AUDIT_LOG_CHECKPOINT_FOLDER_NAME,
@@ -336,7 +180,7 @@ class TestAuditLogCursorStore:
     def test_replace_events_writes_expected_content(self, mock_open_events):
         store = AuditLogCursorStore(PROFILE_NAME)
         store.replace_events("checkpointname", ["hash1", "hash2"])
-        user_path = path.join(path.expanduser("~"), ".code42cli")
+        user_path = path.join(path.expanduser("~"), ".crashplancli")
         path.join(
             user_path,
             AUDIT_LOG_CHECKPOINT_FOLDER_NAME,

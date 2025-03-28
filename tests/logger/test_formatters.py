@@ -1,9 +1,9 @@
 import json
 
-from code42cli.logger.formatters import FileEventDictToCEFFormatter
-from code42cli.logger.formatters import FileEventDictToJSONFormatter
-from code42cli.logger.formatters import FileEventDictToRawJSONFormatter
-from code42cli.maps import FILE_EVENT_TO_SIGNATURE_ID_MAP
+from crashplancli.logger.formatters import FileEventDictToCEFFormatter
+from crashplancli.logger.formatters import FileEventDictToJSONFormatter
+from crashplancli.logger.formatters import FileEventDictToRawJSONFormatter
+from crashplancli.maps import FILE_EVENT_TO_SIGNATURE_ID_MAP
 
 
 class TestFileEventDictToCEFFormatter:
@@ -15,7 +15,7 @@ class TestFileEventDictToCEFFormatter:
     def test_format_uses_correct_vendor_name(self, mock_file_event_log_record):
         cef_out = FileEventDictToCEFFormatter().format(mock_file_event_log_record)
         cef_parts = get_cef_parts(cef_out)
-        assert cef_parts[1] == "Code42"
+        assert cef_parts[1] == "crashplan"
 
     def test_format_uses_correct_default_product_name(self, mock_file_event_log_record):
         cef_out = FileEventDictToCEFFormatter().format(mock_file_event_log_record)
@@ -115,7 +115,7 @@ class TestFileEventDictToCEFFormatter:
         self, mock_file_event_removable_media_event_log_record
     ):
         expected_field_name = "cn1Label"
-        expected_value = "Code42AEDRemovableMediaCapacity"
+        expected_value = "crashplanAEDRemovableMediaCapacity"
         cef_out = FileEventDictToCEFFormatter().format(
             mock_file_event_removable_media_event_log_record
         )
@@ -139,7 +139,7 @@ class TestFileEventDictToCEFFormatter:
         self, mock_file_event_removable_media_event_log_record
     ):
         expected_field_name = "cs1Label"
-        expected_value = "Code42AEDRemovableMediaBusType"
+        expected_value = "crashplanAEDRemovableMediaBusType"
         cef_out = FileEventDictToCEFFormatter().format(
             mock_file_event_removable_media_event_log_record
         )
@@ -163,7 +163,7 @@ class TestFileEventDictToCEFFormatter:
         self, mock_file_event_removable_media_event_log_record
     ):
         expected_field_name = "cs2Label"
-        expected_value = "Code42AEDRemovableMediaVendor"
+        expected_value = "crashplanAEDRemovableMediaVendor"
         cef_out = FileEventDictToCEFFormatter().format(
             mock_file_event_removable_media_event_log_record
         )
@@ -187,7 +187,7 @@ class TestFileEventDictToCEFFormatter:
         self, mock_file_event_removable_media_event_log_record
     ):
         expected_field_name = "cs3Label"
-        expected_value = "Code42AEDRemovableMediaName"
+        expected_value = "crashplanAEDRemovableMediaName"
         cef_out = FileEventDictToCEFFormatter().format(
             mock_file_event_removable_media_event_log_record
         )
@@ -211,7 +211,7 @@ class TestFileEventDictToCEFFormatter:
         self, mock_file_event_removable_media_event_log_record
     ):
         expected_field_name = "cs4Label"
-        expected_value = "Code42AEDRemovableMediaSerialNumber"
+        expected_value = "crashplanAEDRemovableMediaSerialNumber"
         cef_out = FileEventDictToCEFFormatter().format(
             mock_file_event_removable_media_event_log_record
         )
@@ -461,7 +461,7 @@ class TestFileEventDictToCEFFormatter:
         event_type = "CREATED"
         mock_file_event_log_record.msg["eventType"] = event_type
         cef_out = FileEventDictToCEFFormatter().format(mock_file_event_log_record)
-        assert event_name_assigned_correct_signature_id(event_type, "C42200", cef_out)
+        assert event_name_assigned_correct_signature_id(event_type, "CPG200", cef_out)
 
     def test_format_includes_correct_event_name_and_signature_id_for_modified(
         self, mock_file_event_log_record
@@ -469,7 +469,7 @@ class TestFileEventDictToCEFFormatter:
         event_type = "MODIFIED"
         mock_file_event_log_record.msg["eventType"] = event_type
         cef_out = FileEventDictToCEFFormatter().format(mock_file_event_log_record)
-        assert event_name_assigned_correct_signature_id(event_type, "C42201", cef_out)
+        assert event_name_assigned_correct_signature_id(event_type, "CPG201", cef_out)
 
     def test_format_includes_correct_event_name_and_signature_id_for_deleted(
         self, mock_file_event_log_record
@@ -477,7 +477,7 @@ class TestFileEventDictToCEFFormatter:
         event_type = "DELETED"
         mock_file_event_log_record.msg["eventType"] = event_type
         cef_out = FileEventDictToCEFFormatter().format(mock_file_event_log_record)
-        assert event_name_assigned_correct_signature_id(event_type, "C42202", cef_out)
+        assert event_name_assigned_correct_signature_id(event_type, "CPG202", cef_out)
 
     def test_format_includes_correct_event_name_and_signature_id_for_read_by_app(
         self, mock_file_event_log_record
@@ -485,7 +485,7 @@ class TestFileEventDictToCEFFormatter:
         event_type = "READ_BY_APP"
         mock_file_event_log_record.msg["eventType"] = event_type
         cef_out = FileEventDictToCEFFormatter().format(mock_file_event_log_record)
-        assert event_name_assigned_correct_signature_id(event_type, "C42203", cef_out)
+        assert event_name_assigned_correct_signature_id(event_type, "CPG203", cef_out)
 
     def test_format_includes_correct_event_name_and_signature_id_for_emailed(
         self, mock_file_event_email_event_log_record
@@ -495,7 +495,7 @@ class TestFileEventDictToCEFFormatter:
         cef_out = FileEventDictToCEFFormatter().format(
             mock_file_event_email_event_log_record
         )
-        assert event_name_assigned_correct_signature_id(event_type, "C42204", cef_out)
+        assert event_name_assigned_correct_signature_id(event_type, "CPG204", cef_out)
 
 
 class TestFileEventDictToJSONFormatter:

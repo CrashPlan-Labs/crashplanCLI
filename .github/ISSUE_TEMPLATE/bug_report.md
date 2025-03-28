@@ -22,6 +22,6 @@ assignees: ''
 
 ### Basic Information
 
-- code42cli version: <!-- get using `code42 -h`-->
-- python version: <!-- get using `code42 -h`-->
+- crashplancli version: <!-- get using `crashplan -h`-->
+- python version: <!-- get using `crashplan -h`-->
 - operating system:

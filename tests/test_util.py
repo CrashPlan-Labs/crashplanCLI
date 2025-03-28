@@ -1,10 +1,10 @@
 import pytest
 
-from code42cli.util import _PADDING_SIZE
-from code42cli.util import does_user_agree
-from code42cli.util import find_format_width
-from code42cli.util import format_string_list_to_columns
-from code42cli.util import get_url_parts
+from crashplancli.util import _PADDING_SIZE
+from crashplancli.util import does_user_agree
+from crashplancli.util import find_format_width
+from crashplancli.util import format_string_list_to_columns
+from crashplancli.util import get_url_parts
 
 TEST_HEADER = {"key1": "Column 1", "key2": "Column 10", "key3": "Column 100"}
 
@@ -14,7 +14,7 @@ def context_with_assume_yes(mocker, cli_state):
     ctx = mocker.MagicMock()
     ctx.obj = cli_state
     cli_state.assume_yes = True
-    return mocker.patch("code42cli.util.get_current_context", return_value=ctx)
+    return mocker.patch("crashplancli.util.get_current_context", return_value=ctx)
 
 
 @pytest.fixture
@@ -22,15 +22,15 @@ def context_without_assume_yes(mocker, cli_state):
     ctx = mocker.MagicMock()
     ctx.obj = cli_state
     cli_state.assume_yes = False
-    return mocker.patch("code42cli.util.get_current_context", return_value=ctx)
+    return mocker.patch("crashplancli.util.get_current_context", return_value=ctx)
 
 
 @pytest.fixture
 def echo_output(mocker):
-    return mocker.patch("code42cli.util.echo")
+    return mocker.patch("crashplancli.util.echo")
 
 
-_NAMESPACE = "code42cli.util"
+_NAMESPACE = "crashplancli.util"
 
 
 def get_expected_row_width(max_col_len, max_width):
@@ -109,7 +109,7 @@ def test_format_string_list_to_columns_when_given_no_string_list_does_not_echo(
 def test_format_string_list_to_columns_when_not_given_max_uses_shell_size(
     mocker, echo_output
 ):
-    terminal_size = mocker.patch("code42cli.util.shutil.get_terminal_size")
+    terminal_size = mocker.patch("crashplancli.util.shutil.get_terminal_size")
     max_width = 30
     terminal_size.return_value = (max_width, None)  # Cols, Rows
 

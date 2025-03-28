@@ -1,3 +1,3 @@
-.. click:: code42cli.cmds.devices:devices
+.. click:: crashplancli.cmds.devices:devices
   :prog: devices
   :nested: full

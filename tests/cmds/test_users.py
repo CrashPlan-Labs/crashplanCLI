@@ -2,22 +2,19 @@ import datetime
 import json
 
 import pytest
-from py42.exceptions import Py42ActiveLegalHoldError
-from py42.exceptions import Py42CloudAliasCharacterLimitExceededError
-from py42.exceptions import Py42CloudAliasLimitExceededError
-from py42.exceptions import Py42InvalidEmailError
-from py42.exceptions import Py42InvalidPasswordError
-from py42.exceptions import Py42InvalidUsernameError
-from py42.exceptions import Py42NotFoundError
-from py42.exceptions import Py42OrgNotFoundError
-from py42.exceptions import Py42UserRiskProfileNotFound
+from pycpg.exceptions import PycpgActiveLegalHoldError
+from pycpg.exceptions import PycpgInvalidEmailError
+from pycpg.exceptions import PycpgInvalidPasswordError
+from pycpg.exceptions import PycpgInvalidUsernameError
+from pycpg.exceptions import PycpgNotFoundError
+from pycpg.exceptions import PycpgOrgNotFoundError
 from tests.conftest import create_mock_http_error
 from tests.conftest import create_mock_response
 
-from code42cli.main import cli
-from code42cli.worker import WorkerStats
+from crashplancli.main import cli
+from crashplancli.worker import WorkerStats
 
-_NAMESPACE = "code42cli.cmds.users"
+_NAMESPACE = "crashplancli.cmds.users"
 TEST_ROLE_RETURN_DATA = {
     "data": [{"roleName": "Customer Cloud Admin", "roleId": "1234543"}]
 }
@@ -50,7 +47,6 @@ TEST_USER_RESPONSE = {
     "userName": "Sample.User1@samplecase.com",
     "displayName": "Sample User1",
     "notes": "This is an example of notes about Sample User1.",
-    "cloudAliases": ["Sample.User1@samplecase.com", "Sample.User1@gmail.com"],
     "managerUid": 12345,
     "managerUsername": "manager.user1@samplecase.com",
     "managerDisplayName": "Manager Name",
@@ -61,7 +57,6 @@ TEST_USER_RESPONSE = {
     "city": "Anytown",
     "state": "MN",
     "country": "US",
-    "riskFactors": ["FLIGHT_RISK", "HIGH_IMPACT_EMPLOYEE"],
 }
 TEST_PROFILE_RESPONSE = {
     "userId": "12345-42",
@@ -84,7 +79,6 @@ TEST_PROFILE_RESPONSE = {
     "supportUser": False,
     "startDate": {"year": 2020, "month": 8, "day": 10},
     "endDate": {"year": 2021, "month": 5, "day": 1},
-    "cloudAliases": ["baz@bar.com", "foo@bar.com"],
 }
 
 TEST_MATTER_RESPONSE = {
@@ -183,14 +177,6 @@ def get_user_response(mocker):
 
 
 @pytest.fixture
-def get_user_failure(mocker):
-    return Py42UserRiskProfileNotFound(
-        create_mock_http_error(mocker, data=None, status=400),
-        "Failure in HTTP call 400 Client Error: Bad Request for url: https://ecm-east.us.code42.com/svc/api/v2/user/getbyusername.",
-    )
-
-
-@pytest.fixture
 def change_org_response(mocker):
     return create_mock_response(mocker)
 
@@ -233,12 +219,6 @@ def get_all_users_success(mocker, cli_state):
 def get_user_id_success(cli_state, get_users_response):
     """Get by username returns a list of users"""
     cli_state.sdk.users.get_by_username.return_value = get_users_response
-
-
-@pytest.fixture
-def get_user_uid_success(cli_state, get_user_response):
-    """userriskprofile.get_by_username returns a single user"""
-    cli_state.sdk.userriskprofile.get_by_username.return_value = get_user_response
 
 
 @pytest.fixture
@@ -306,7 +286,7 @@ def deactivate_user_success(mocker, cli_state):
 
 @pytest.fixture
 def deactivate_user_legal_hold_failure(mocker, cli_state):
-    cli_state.sdk.users.deactivate.side_effect = Py42ActiveLegalHoldError(
+    cli_state.sdk.users.deactivate.side_effect = PycpgActiveLegalHoldError(
         create_mock_http_error(mocker, status=400), "user", TEST_USER_ID
     )
 
@@ -319,20 +299,6 @@ def reactivate_user_success(mocker, cli_state):
 @pytest.fixture
 def change_org_success(cli_state, change_org_response):
     cli_state.sdk.users.change_org_assignment.return_value = change_org_response
-
-
-@pytest.fixture
-def add_alias_limit_failure(mocker, cli_state):
-    cli_state.sdk.userriskprofile.add_cloud_aliases.side_effect = (
-        Py42CloudAliasLimitExceededError(create_mock_http_error(mocker))
-    )
-
-
-@pytest.fixture
-def remove_alias_success(mocker, cli_state):
-    cli_state.sdk.userriskprofile.delete_cloud_aliases.return_value = (
-        create_mock_response(mocker)
-    )
 
 
 @pytest.fixture
@@ -447,7 +413,7 @@ def test_list_users_when_given_invalid_org_uid_raises_error(
     runner, cli_state, get_available_roles_success, custom_error
 ):
     invalid_org_uid = "invalid_org_uid"
-    cli_state.sdk.users.get_all.side_effect = Py42OrgNotFoundError(
+    cli_state.sdk.users.get_all.side_effect = PycpgOrgNotFoundError(
         custom_error, invalid_org_uid
     )
     result = runner.invoke(
@@ -639,61 +605,6 @@ def test_show_include_legal_hold_membership_merges_in_and_concats_legal_hold_inf
     assert "123456789,987654321" in result.output
 
 
-def test_list_risk_profiles_calls_get_all_user_risk_profiles_with_default_parameters(
-    runner, cli_state
-):
-    runner.invoke(
-        cli,
-        ["users", "list-risk-profiles"],
-        obj=cli_state,
-    )
-    cli_state.sdk.userriskprofile.get_all.assert_called_once_with(
-        active=None, manager_id=None, department=None, employment_type=None, region=None
-    )
-
-
-def test_list_risk_profiles_calls_get_all_user_risk_profiles_with_correct_parameters(
-    runner, cli_state
-):
-    r = runner.invoke(
-        cli,
-        [
-            "users",
-            "list-risk-profiles",
-            "--active",
-            "--manager-id",
-            "123-42",
-            "--department",
-            "Engineering",
-            "--employment-type",
-            "Remote",
-            "--region",
-            "Minnesota",
-        ],
-        obj=cli_state,
-    )
-    print(r.output)
-    cli_state.sdk.userriskprofile.get_all.assert_called_once_with(
-        active=True,
-        manager_id="123-42",
-        department="Engineering",
-        employment_type="Remote",
-        region="Minnesota",
-    )
-
-
-def test_show_risk_profile_calls_user_risk_profile_get_by_username_with(
-    runner, cli_state, get_users_response
-):
-    runner.invoke(
-        cli,
-        ["users", "show-risk-profile", "foo@bar.com"],
-        obj=cli_state,
-    )
-
-    cli_state.sdk.userriskprofile.get_by_username.assert_called_once_with("foo@bar.com")
-
-
 def test_add_user_role_adds(
     runner, cli_state, get_user_id_success, get_available_roles_success
 ):
@@ -849,12 +760,12 @@ def test_update_user_calls_update_user_with_correct_parameters_when_all_are_pass
     )
 
 
-def test_update_when_py42_raises_invalid_email_outputs_error_message(
+def test_update_when_pycpg_raises_invalid_email_outputs_error_message(
     mocker, runner, cli_state, update_user_success
 ):
     test_email = "test_email"
     mock_http_error = create_mock_http_error(mocker, status=500)
-    cli_state.sdk.users.update_user.side_effect = Py42InvalidEmailError(
+    cli_state.sdk.users.update_user.side_effect = PycpgInvalidEmailError(
         test_email, mock_http_error
     )
     command = ["users", "update", "--user-id", "12345", "--email", test_email]
@@ -862,11 +773,11 @@ def test_update_when_py42_raises_invalid_email_outputs_error_message(
     assert "Error: 'test_email' is not a valid email." in result.output
 
 
-def test_update_when_py42_raises_invalid_username_outputs_error_message(
+def test_update_when_pycpg_raises_invalid_username_outputs_error_message(
     mocker, runner, cli_state, update_user_success
 ):
     mock_http_error = create_mock_http_error(mocker, status=500)
-    cli_state.sdk.users.update_user.side_effect = Py42InvalidUsernameError(
+    cli_state.sdk.users.update_user.side_effect = PycpgInvalidUsernameError(
         mock_http_error
     )
     command = ["users", "update", "--user-id", "12345", "--username", "test_username"]
@@ -874,11 +785,11 @@ def test_update_when_py42_raises_invalid_username_outputs_error_message(
     assert "Error: Invalid username." in result.output
 
 
-def test_update_when_py42_raises_invalid_password_outputs_error_message(
+def test_update_when_pycpg_raises_invalid_password_outputs_error_message(
     mocker, runner, cli_state, update_user_success
 ):
     mock_http_error = create_mock_http_error(mocker, status=500)
-    cli_state.sdk.users.update_user.side_effect = Py42InvalidPasswordError(
+    cli_state.sdk.users.update_user.side_effect = PycpgInvalidPasswordError(
         mock_http_error
     )
     command = ["users", "update", "--user-id", "12345", "--password", "test_password"]
@@ -1513,424 +1424,8 @@ def test_orgs_show_prints_all_data_fields_when_not_table_format(
 
 
 def test_orgs_show_when_invalid_org_uid_raises_error(runner, cli_state, custom_error):
-    cli_state.sdk.orgs.get_by_uid.side_effect = Py42NotFoundError(custom_error)
+    cli_state.sdk.orgs.get_by_uid.side_effect = PycpgNotFoundError(custom_error)
     result = runner.invoke(cli, ["users", "orgs", "show", TEST_ORG_UID], obj=cli_state)
     assert result.exit_code == 1
     assert f"Invalid org UID {TEST_ORG_UID}." in result.output
 
-
-def test_list_aliases_calls_get_user_with_expected_parameters(runner, cli_state):
-    username = "alias@example"
-    command = ["users", "list-aliases", username]
-    runner.invoke(cli, command, obj=cli_state)
-    cli_state.sdk.userriskprofile.get_by_username.assert_called_once_with(
-        "alias@example"
-    )
-
-
-def test_list_aliases_prints_no_aliases_found_when_empty_list(
-    runner, cli_state, mocker
-):
-    cli_state.sdk.userriskprofile.get_by_username.return_value = create_mock_response(
-        mocker, data={"cloudAliases": []}
-    )
-    username = "alias@example"
-    command = ["users", "list-aliases", username]
-    result = runner.invoke(cli, command, obj=cli_state)
-    assert result.exit_code == 0
-    assert f"No cloud aliases for user '{username}' found" in result.output
-
-
-def test_list_aliases_prints_expected_data(runner, cli_state, get_user_uid_success):
-    result = runner.invoke(
-        cli, ["users", "list-aliases", "alias@example.com"], obj=cli_state
-    )
-    assert result.exit_code == 0
-    assert "['Sample.User1@samplecase.com', 'Sample.User1@gmail.com']" in result.output
-
-
-def test_list_aliases_raises_error_when_user_does_not_exist(
-    runner, cli_state, get_user_uid_failure
-):
-    username = "fake@notreal.com"
-    command = ["users", "list-aliases", username]
-    result = runner.invoke(cli, command, obj=cli_state)
-    assert result.exit_code == 1
-    assert (
-        f"User '{username}' does not exist or you do not have permission to view them."
-        in result.output
-    )
-
-
-def test_add_cloud_alias_calls_add_cloud_alias_with_correct_parameters(
-    runner, cli_state, get_user_uid_success
-):
-    command = ["users", "add-alias", "test@example.com", "alias@example.com"]
-    runner.invoke(cli, command, obj=cli_state)
-    cli_state.sdk.userriskprofile.add_cloud_aliases.assert_called_once_with(
-        TEST_USER_UID, "alias@example.com"
-    )
-
-
-def test_add_alias_raises_error_when_user_does_not_exist(
-    runner, cli_state, get_user_uid_failure
-):
-    username = "fake@notreal.com"
-    command = ["users", "add-alias", username, "alias@example.com"]
-    result = runner.invoke(cli, command, obj=cli_state)
-    assert result.exit_code == 1
-    assert (
-        f"User '{username}' does not exist or you do not have permission to view them."
-        in result.output
-    )
-
-
-def test_add_alias_raises_error_when_alias_is_too_long(runner, cli_state):
-    command = [
-        "users",
-        "add-alias",
-        "fake@notreal.com",
-        "alias-is-too-long-its-very-long-for-real-more-than-50-characters@example.com",
-    ]
-    cli_state.sdk.userriskprofile.add_cloud_aliases.side_effect = (
-        Py42CloudAliasCharacterLimitExceededError
-    )
-    result = runner.invoke(cli, command, obj=cli_state)
-    assert result.exit_code == 1
-    assert "Cloud alias character limit exceeded" in result.output
-
-
-def test_add_alias_raises_error_when_user_has_two_aliases(
-    runner, cli_state, add_alias_limit_failure
-):
-    command = [
-        "users",
-        "add-alias",
-        "fake@notreal.com",
-        "second_alias",
-    ]
-    result = runner.invoke(cli, command, obj=cli_state)
-    assert result.exit_code == 1
-    assert (
-        "Error: Cloud alias limit exceeded. A max of 2 cloud aliases are allowed."
-        in result.output
-    )
-
-
-def test_remove_cloud_alias_calls_remove_cloud_alias_with_correct_parameters(
-    runner, cli_state, get_user_uid_success, remove_alias_success
-):
-    command = ["users", "remove-alias", "test@example.com", "alias@example.com"]
-    runner.invoke(cli, command, obj=cli_state)
-    cli_state.sdk.userriskprofile.delete_cloud_aliases.assert_called_once_with(
-        TEST_USER_UID, "alias@example.com"
-    )
-
-
-def test_remove_alias_raises_error_when_user_does_not_exist(
-    runner, cli_state, get_user_uid_failure
-):
-    username = "fake@notreal.com"
-    command = ["users", "remove-alias", username, "alias@example.com"]
-    result = runner.invoke(cli, command, obj=cli_state)
-    assert result.exit_code == 1
-    assert (
-        f"User '{username}' does not exist or you do not have permission to view them."
-        in result.output
-    )
-
-
-def test_bulk_add_alias_uses_expected_arguments(runner, mocker, cli_state):
-    bulk_processor = mocker.patch(f"{_NAMESPACE}.run_bulk_process")
-    with runner.isolated_filesystem():
-        with open("test_add_alias.csv", "w") as csv:
-            csv.writelines(["username,alias\n", f"{TEST_USERNAME},{TEST_ALIAS}\n"])
-        runner.invoke(
-            cli,
-            ["users", "bulk", "add-alias", "test_add_alias.csv"],
-            obj=cli_state,
-        )
-    assert bulk_processor.call_args[0][1] == [
-        {"username": TEST_USERNAME, "alias": TEST_ALIAS, "alias added": "False"}
-    ]
-    bulk_processor.assert_called_once()
-
-
-def test_bulk_add_alias_ignores_blank_lines(runner, mocker, cli_state):
-    bulk_processor = mocker.patch(f"{_NAMESPACE}.run_bulk_process")
-    with runner.isolated_filesystem():
-        with open("test_add_alias.csv", "w") as csv:
-            csv.writelines(
-                ["username,alias\n\n\n", f"{TEST_USERNAME},{TEST_ALIAS}\n\n\n"]
-            )
-        runner.invoke(
-            cli,
-            ["users", "bulk", "add-alias", "test_add_alias.csv"],
-            obj=cli_state,
-        )
-    assert bulk_processor.call_args[0][1] == [
-        {"username": TEST_USERNAME, "alias": TEST_ALIAS, "alias added": "False"}
-    ]
-    bulk_processor.assert_called_once()
-
-
-def test_bulk_add_alias_uses_handler_that_when_encounters_error_increments_total_errors(
-    runner, mocker, cli_state, worker_stats, get_user_response
-):
-    lines = ["username,alias\n", f"{TEST_USERNAME},{TEST_ALIAS}\n"]
-
-    def _get(username, *args, **kwargs):
-        if username == "test@example.com":
-            raise Exception("TEST")
-        return get_user_response
-
-    cli_state.sdk.userriskprofile.get_by_username.side_effect = _get
-    bulk_processor = mocker.patch(f"{_NAMESPACE}.run_bulk_process")
-    with runner.isolated_filesystem():
-        with open("test_add_alias.csv", "w") as csv:
-            csv.writelines(lines)
-        runner.invoke(
-            cli,
-            ["users", "bulk", "add-alias", "test_add_alias.csv"],
-            obj=cli_state,
-        )
-    handler = bulk_processor.call_args[0][0]
-    handler(username="test@example.com", alias=TEST_ALIAS)
-    handler(username="not.test@example.com", alias=TEST_ALIAS)
-    assert worker_stats.increment_total_errors.call_count == 1
-
-
-def test_bulk_remove_alias_uses_expected_arguments(runner, mocker, cli_state):
-    bulk_processor = mocker.patch(f"{_NAMESPACE}.run_bulk_process")
-    with runner.isolated_filesystem():
-        with open("test_remove_alias.csv", "w") as csv:
-            csv.writelines(["username,alias\n", f"{TEST_USERNAME},{TEST_ALIAS}\n"])
-        runner.invoke(
-            cli,
-            ["users", "bulk", "remove-alias", "test_remove_alias.csv"],
-            obj=cli_state,
-        )
-    assert bulk_processor.call_args[0][1] == [
-        {"username": TEST_USERNAME, "alias": TEST_ALIAS, "alias removed": "False"}
-    ]
-    bulk_processor.assert_called_once()
-
-
-def test_bulk_remove_alias_ignores_blank_lines(runner, mocker, cli_state):
-    bulk_processor = mocker.patch(f"{_NAMESPACE}.run_bulk_process")
-    with runner.isolated_filesystem():
-        with open("test_remove_alias.csv", "w") as csv:
-            csv.writelines(
-                ["username,alias\n\n\n", f"{TEST_USERNAME},{TEST_ALIAS}\n\n\n"]
-            )
-        runner.invoke(
-            cli,
-            ["users", "bulk", "remove-alias", "test_remove_alias.csv"],
-            obj=cli_state,
-        )
-    assert bulk_processor.call_args[0][1] == [
-        {"username": TEST_USERNAME, "alias": TEST_ALIAS, "alias removed": "False"}
-    ]
-    bulk_processor.assert_called_once()
-
-
-def test_bulk_remove_alias_uses_handler_that_when_encounters_error_increments_total_errors(
-    runner, mocker, cli_state, worker_stats, get_user_response
-):
-    lines = ["username,alias\n", f"{TEST_USERNAME},{TEST_ALIAS}\n"]
-
-    def _get(username, *args, **kwargs):
-        if username == "test@example.com":
-            raise Exception("TEST")
-        return get_user_response
-
-    cli_state.sdk.userriskprofile.get_by_username.side_effect = _get
-    bulk_processor = mocker.patch(f"{_NAMESPACE}.run_bulk_process")
-    with runner.isolated_filesystem():
-        with open("test_remove_alias.csv", "w") as csv:
-            csv.writelines(lines)
-        runner.invoke(
-            cli,
-            ["users", "bulk", "remove-alias", "test_remove_alias.csv"],
-            obj=cli_state,
-        )
-    handler = bulk_processor.call_args[0][0]
-    handler(username="test@example.com", alias=TEST_ALIAS)
-    handler(username="not.test@example.com", alias=TEST_ALIAS)
-    assert worker_stats.increment_total_errors.call_count == 1
-
-
-def test_update_start_date_without_date_arg_or_clear_option_raises_cli_error(
-    runner, cli_state
-):
-    res = runner.invoke(
-        cli, ["users", "update-start-date", "test@example.com"], obj=cli_state
-    )
-    assert res.exit_code == 1
-    assert "Must supply DATE argument if --clear is not used." in res.output
-
-
-def test_update_start_date_with_date_makes_expected_call(mocker, runner, cli_state):
-    cli_state.sdk.userriskprofile.get_by_username.return_value = create_mock_response(
-        mocker, data={"userId": 1234}
-    )
-    res = runner.invoke(
-        cli,
-        ["users", "update-start-date", "test@example.com", "2020-10-10"],
-        obj=cli_state,
-    )
-    assert res.exit_code == 0
-    cli_state.sdk.userriskprofile.update.assert_called_once_with(
-        1234, start_date=datetime.datetime(2020, 10, 10)
-    )
-
-
-def test_update_start_date_with_clear_option_clears_date(mocker, runner, cli_state):
-    cli_state.sdk.userriskprofile.get_by_username.return_value = create_mock_response(
-        mocker, data={"userId": 1234}
-    )
-    res = runner.invoke(
-        cli,
-        ["users", "update-start-date", "test@example.com", "--clear"],
-        obj=cli_state,
-    )
-    assert res.exit_code == 0
-    cli_state.sdk.userriskprofile.update.assert_called_once_with(1234, start_date="")
-
-
-def test_update_departure_date_without_date_arg_or_clear_option_raises_cli_error(
-    runner, cli_state
-):
-    res = runner.invoke(
-        cli, ["users", "update-departure-date", "test@example.com"], obj=cli_state
-    )
-    assert res.exit_code == 1
-    assert "Must supply DATE argument if --clear is not used." in res.output
-
-
-def test_update_departure_date_with_clear_option_clears_date(mocker, runner, cli_state):
-    cli_state.sdk.userriskprofile.get_by_username.return_value = create_mock_response(
-        mocker, data={"userId": 1234}
-    )
-    res = runner.invoke(
-        cli,
-        ["users", "update-departure-date", "test@example.com", "--clear"],
-        obj=cli_state,
-    )
-    assert res.exit_code == 0
-    cli_state.sdk.userriskprofile.update.assert_called_once_with(1234, end_date="")
-
-
-def test_update_departure_date_with_date_makes_expected_call(mocker, runner, cli_state):
-    cli_state.sdk.userriskprofile.get_by_username.return_value = create_mock_response(
-        mocker, data={"userId": 1234}
-    )
-    res = runner.invoke(
-        cli,
-        ["users", "update-departure-date", "test@example.com", "2020-10-10"],
-        obj=cli_state,
-    )
-    assert res.exit_code == 0
-    cli_state.sdk.userriskprofile.update.assert_called_once_with(
-        1234, end_date=datetime.datetime(2020, 10, 10)
-    )
-
-
-def test_update_notes_without_note_arg_or_clear_option_raises_cli_error(
-    runner, cli_state
-):
-    res = runner.invoke(
-        cli, ["users", "update-risk-profile-notes", "test@example.com"], obj=cli_state
-    )
-    assert res.exit_code == 1
-    assert "Must supply NOTE argument if --clear is not used." in res.output
-
-
-def test_update_notes_with_clear_option_clears_date(mocker, runner, cli_state):
-    cli_state.sdk.userriskprofile.get_by_username.return_value = create_mock_response(
-        mocker, data={"userId": 1234}
-    )
-    res = runner.invoke(
-        cli,
-        ["users", "update-risk-profile-notes", "test@example.com", "--clear"],
-        obj=cli_state,
-    )
-    assert res.exit_code == 0
-    cli_state.sdk.userriskprofile.update.assert_called_once_with(1234, notes="")
-
-
-def test_update_notes_with_note_makes_expected_call(mocker, runner, cli_state):
-    cli_state.sdk.userriskprofile.get_by_username.return_value = create_mock_response(
-        mocker, data={"userId": 1234}
-    )
-    res = runner.invoke(
-        cli,
-        ["users", "update-risk-profile-notes", "test@example.com", "new note"],
-        obj=cli_state,
-    )
-    assert res.exit_code == 0
-    cli_state.sdk.userriskprofile.update.assert_called_once_with(1234, notes="new note")
-
-
-def test_update_notes_with_append_option_appends_note_value(mocker, runner, cli_state):
-    cli_state.sdk.userriskprofile.get_by_username.return_value = create_mock_response(
-        mocker, data={"userId": 1234, "notes": "existing note"}
-    )
-    res = runner.invoke(
-        cli,
-        [
-            "users",
-            "update-risk-profile-notes",
-            "test@example.com",
-            "--append",
-            "new note",
-        ],
-        obj=cli_state,
-    )
-    assert res.exit_code == 0
-    cli_state.sdk.userriskprofile.update.assert_called_once_with(
-        1234, notes="existing note\n\nnew note"
-    )
-
-
-def test_bulk_update_risk_profile_makes_expected_calls(mocker, runner, cli_state):
-    cli_state.sdk.userriskprofile.get_by_username.return_value = create_mock_response(
-        mocker, data={"userId": 1234}
-    )
-    with runner.isolated_filesystem():
-        with open("csv", "w") as file:
-            file.write(
-                "username,start_date,end_date,notes\ntest@example.com,2020-10-10,2022-10-10,new note\n"
-            )
-        res = runner.invoke(
-            cli, ["users", "bulk", "update-risk-profile", "csv"], obj=cli_state
-        )
-        assert res.exit_code == 0
-        cli_state.sdk.userriskprofile.update.assert_called_once_with(
-            1234, start_date="2020-10-10", end_date="2022-10-10", notes="new note"
-        )
-
-
-def test_bulk_update_risk_profile_with_append_note_option_appends_note(
-    mocker, runner, cli_state
-):
-    cli_state.sdk.userriskprofile.get_by_username.return_value = create_mock_response(
-        mocker, data={"userId": 1234, "notes": "existing note"}
-    )
-    with runner.isolated_filesystem():
-        with open("csv", "w") as file:
-            file.write(
-                "username,start_date,end_date,notes\ntest@example.com,2020-10-10,2022-10-10,new note\n"
-            )
-        res = runner.invoke(
-            cli,
-            ["users", "bulk", "update-risk-profile", "--append-notes", "csv"],
-            obj=cli_state,
-        )
-        assert res.exit_code == 0
-        cli_state.sdk.userriskprofile.update.assert_called_once_with(
-            1234,
-            start_date="2020-10-10",
-            end_date="2022-10-10",
-            notes="existing note\n\nnew note",
-        )

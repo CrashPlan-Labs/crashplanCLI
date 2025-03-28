@@ -7,21 +7,21 @@ from pandas import DataFrame
 from pandas import Series
 from pandas._testing import assert_frame_equal
 from pandas._testing import assert_series_equal
-from py42.exceptions import Py42BadRequestError
-from py42.exceptions import Py42ForbiddenError
-from py42.exceptions import Py42NotFoundError
-from py42.exceptions import Py42OrgNotFoundError
+from pycpg.exceptions import PycpgBadRequestError
+from pycpg.exceptions import PycpgForbiddenError
+from pycpg.exceptions import PycpgNotFoundError
+from pycpg.exceptions import PycpgOrgNotFoundError
 from tests.conftest import create_mock_response
 
-from code42cli.cmds.devices import _add_backup_set_settings_to_dataframe
-from code42cli.cmds.devices import _add_legal_hold_membership_to_device_dataframe
-from code42cli.cmds.devices import _add_usernames_to_device_dataframe
-from code42cli.cmds.devices import _break_backup_usage_into_total_storage
-from code42cli.cmds.devices import _get_device_dataframe
-from code42cli.main import cli
-from code42cli.worker import WorkerStats
+from crashplancli.cmds.devices import _add_backup_set_settings_to_dataframe
+from crashplancli.cmds.devices import _add_legal_hold_membership_to_device_dataframe
+from crashplancli.cmds.devices import _add_usernames_to_device_dataframe
+from crashplancli.cmds.devices import _break_backup_usage_into_total_storage
+from crashplancli.cmds.devices import _get_device_dataframe
+from crashplancli.main import cli
+from crashplancli.worker import WorkerStats
 
-_NAMESPACE = "code42cli.cmds.devices"
+_NAMESPACE = "crashplancli.cmds.devices"
 TEST_NEW_DEVICE_NAME = "test-new-device-name-123"
 TEST_DATE_OLDER = "2020-01-01T12:00:00.774Z"
 TEST_DATE_NEWER = "2021-01-01T12:00:00.774Z"
@@ -73,7 +73,7 @@ TEST_BACKUPUSAGE_RESPONSE = """{"metadata":{"timestamp":"2020-10-13T12:51:28.410
 1512021600671,"productVersion":"6.7.1","buildVersion":4615,"creationDate":"2018-04-10T19:23:23.564Z",
 "modificationDate":"2018-06-29T17:41:12.616Z","loginDate":"2018-04-13T20:17:32.213Z","service":
 "CrashPlan","backupUsage":[{"targetComputerParentId":null,"targetComputerParentGuid":null,
-"targetComputerGuid":"632540230984925185","targetComputerName":"Code42 Cloud USA West",
+"targetComputerGuid":"632540230984925185","targetComputerName":"crashplan Cloud USA West",
 "targetComputerOsName":null,"targetComputerType":"SERVER","selectedFiles":0,"selectedBytes":0,
 "todoFiles":0,"todoBytes":0,"archiveBytes":119501,"billableBytes":119501,"sendRateAverage":0,
 "completionRateAverage":0,"lastBackup":null,"lastCompletedBackup":null,"lastConnected":
@@ -254,8 +254,8 @@ MATTER_RESPONSE = {
             "lastModified": "2020-08-05T10:49:58.358-05:00",
             "creator": {
                 "userUid": "12345",
-                "username": "user@code42.com",
-                "email": "user@code42.com",
+                "username": "user@crashplan.com",
+                "email": "user@crashplan.com",
                 "userExtRef": None,
             },
             "holdPolicyUid": "966191295667423997",
@@ -271,8 +271,8 @@ MATTER_RESPONSE = {
             "lastModified": "2020-05-28T13:49:16.098-05:00",
             "creator": {
                 "userUid": "76543",
-                "username": "user2@code42.com",
-                "email": "user2@code42.com",
+                "username": "user2@crashplan.com",
+                "email": "user2@crashplan.com",
                 "userExtRef": None,
             },
             "holdPolicyUid": "946178665645035826",
@@ -291,8 +291,8 @@ API_CLIENT_MATTER_RESPONSE = [
         "lastModified": "2020-08-05T10:49:58.358-05:00",
         "creator": {
             "userUid": "12345",
-            "username": "user@code42.com",
-            "email": "user@code42.com",
+            "username": "user@crashplan.com",
+            "email": "user@crashplan.com",
             "userExtRef": None,
         },
         "holdPolicyUid": "966191295667423997",
@@ -308,8 +308,8 @@ API_CLIENT_MATTER_RESPONSE = [
         "lastModified": "2020-05-28T13:49:16.098-05:00",
         "creator": {
             "userUid": "76543",
-            "username": "user2@code42.com",
-            "email": "user2@code42.com",
+            "username": "user2@crashplan.com",
+            "email": "user2@crashplan.com",
             "userExtRef": None,
         },
         "holdPolicyUid": "946178665645035826",
@@ -473,27 +473,27 @@ def reactivate_device_success(cli_state, empty_successful_response):
 
 @pytest.fixture
 def deactivate_device_not_found_failure(cli_state, custom_error):
-    cli_state.sdk.devices.deactivate.side_effect = Py42NotFoundError(custom_error)
+    cli_state.sdk.devices.deactivate.side_effect = PycpgNotFoundError(custom_error)
 
 
 @pytest.fixture
 def reactivate_device_not_found_failure(cli_state, custom_error):
-    cli_state.sdk.devices.reactivate.side_effect = Py42NotFoundError(custom_error)
+    cli_state.sdk.devices.reactivate.side_effect = PycpgNotFoundError(custom_error)
 
 
 @pytest.fixture
 def deactivate_device_in_legal_hold_failure(cli_state, custom_error):
-    cli_state.sdk.devices.deactivate.side_effect = Py42BadRequestError(custom_error)
+    cli_state.sdk.devices.deactivate.side_effect = PycpgBadRequestError(custom_error)
 
 
 @pytest.fixture
 def deactivate_device_not_allowed_failure(cli_state, custom_error):
-    cli_state.sdk.devices.deactivate.side_effect = Py42ForbiddenError(custom_error)
+    cli_state.sdk.devices.deactivate.side_effect = PycpgForbiddenError(custom_error)
 
 
 @pytest.fixture
 def reactivate_device_not_allowed_failure(cli_state, custom_error):
-    cli_state.sdk.devices.reactivate.side_effect = Py42ForbiddenError(custom_error)
+    cli_state.sdk.devices.reactivate.side_effect = PycpgForbiddenError(custom_error)
 
 
 @pytest.fixture
@@ -585,10 +585,10 @@ def test_rename_when_missing_name_prints_error(runner, cli_state):
     assert "Missing option '-n' / '--new-device-name'" in result.output
 
 
-def test_rename_when_guid_not_found_py42_raises_exception_prints_error(
+def test_rename_when_guid_not_found_pycpg_raises_exception_prints_error(
     runner, cli_state, custom_error
 ):
-    cli_state.sdk.devices.get_settings.side_effect = Py42NotFoundError(custom_error)
+    cli_state.sdk.devices.get_settings.side_effect = PycpgNotFoundError(custom_error)
 
     result = runner.invoke(
         cli,
@@ -755,7 +755,7 @@ def test_show_prints_device_info(runner, cli_state, backupusage_success):
 
 def test_show_prints_backup_set_info(runner, cli_state, backupusage_success):
     result = runner.invoke(cli, ["devices", "show", TEST_DEVICE_GUID], obj=cli_state)
-    assert "Code42 Cloud USA West" in result.output
+    assert "crashplan Cloud USA West" in result.output
     assert "843293524842941560" in result.output
 
 
@@ -907,7 +907,7 @@ def test_list_include_legal_hold_membership_merges_in_and_concats_legal_hold_inf
 def test_list_invalid_org_uid_raises_error(runner, cli_state, custom_error):
     custom_error.response.text = "Unable to find org"
     invalid_org_uid = "invalid_org_uid"
-    cli_state.sdk.devices.get_all.side_effect = Py42OrgNotFoundError(
+    cli_state.sdk.devices.get_all.side_effect = PycpgOrgNotFoundError(
         custom_error, invalid_org_uid
     )
     result = runner.invoke(
@@ -943,7 +943,7 @@ def test_list_excludes_recently_connected_devices_before_filtering_by_date(
 def test_list_backup_sets_invalid_org_uid_raises_error(runner, cli_state, custom_error):
     custom_error.response.text = "Unable to find org"
     invalid_org_uid = "invalid_org_uid"
-    cli_state.sdk.devices.get_all.side_effect = Py42OrgNotFoundError(
+    cli_state.sdk.devices.get_all.side_effect = PycpgOrgNotFoundError(
         custom_error, invalid_org_uid
     )
     result = runner.invoke(

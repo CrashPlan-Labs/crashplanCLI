@@ -11,9 +11,9 @@ from .conftest import begin_date_str_with_time
 from .conftest import end_date_str
 from .conftest import end_date_str_with_time
 from .conftest import get_test_date
-from code42cli.click_ext.types import MagicDate
-from code42cli.date_helper import round_datetime_to_day_end
-from code42cli.date_helper import round_datetime_to_day_start
+from crashplancli.click_ext.types import MagicDate
+from crashplancli.date_helper import round_datetime_to_day_end
+from crashplancli.date_helper import round_datetime_to_day_start
 
 one_ms = timedelta(milliseconds=1)
 
