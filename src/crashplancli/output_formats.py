@@ -8,7 +8,6 @@ import click
 from pandas import concat
 from pandas import notnull
 
-from crashplancli.enums import FileEventsOutputFormat
 from crashplancli.enums import OutputFormat
 from crashplancli.errors import crashplancliError
 from crashplancli.util import find_format_width
@@ -255,35 +254,6 @@ class DataFrameOutputFormatter:
             self._echo_via_pager_if_over_threshold(lines)
 
 
-class FileEventsOutputFormatter(DataFrameOutputFormatter):
-    """Class that adds CEF format output option to base DataFrameOutputFormatter."""
-
-    def __init__(self, output_format, checkpoint_func=None):
-        self.output_format = (
-            output_format.upper() if output_format else OutputFormat.RAW
-        )
-        if self.output_format not in FileEventsOutputFormat.choices():
-            raise crashplancliError(
-                f"FileEventsOutputFormatter received an invalid format: {self.output_format}"
-            )
-        self.checkpoint_func = checkpoint_func or (lambda x: None)
-
-    def _iter_cef(self, dfs, **kwargs):
-        dfs = self._ensure_iterable(dfs)
-        for df in dfs:
-            df = df.mask(df.isna(), other=None)
-            for _i, row in df.iterrows():
-                event = dict(row)
-                yield f"{_convert_event_to_cef(event)}\n"
-                self.checkpoint_func(event)
-
-    def get_formatted_output(self, dfs, columns=None, **kwargs):
-        if self.output_format == FileEventsOutputFormat.CEF:
-            yield from self._iter_cef(dfs, **kwargs)
-        else:
-            yield from super().get_formatted_output(dfs, columns=columns, **kwargs)
-
-
 def to_csv(output):
     """Output is a list of records"""
 
@@ -314,23 +284,6 @@ def to_json(output):
 def to_formatted_json(output):
     """Output is a single record"""
     return f"{json.dumps(output, indent=4)}\n"
-
-
-def to_cef(output):
-    """Output is a single record"""
-    return f"{_convert_event_to_cef(output)}\n"
-
-
-def _convert_event_to_cef(event):
-    ext, evt, sig_id = map_event_to_cef(event)
-    cef_log = CEF_TEMPLATE.format(
-        productName=CEF_DEFAULT_PRODUCT_NAME,
-        signatureID=sig_id,
-        eventName=evt,
-        severity=CEF_DEFAULT_SEVERITY_LEVEL,
-        extension=ext,
-    )
-    return cef_log
 
 
 def make_left_aligned_formatter(df):

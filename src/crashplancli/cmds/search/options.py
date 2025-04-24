@@ -1,10 +1,6 @@
-import json
-from datetime import datetime
-
 import click
 
 from crashplancli.click_ext.options import incompatible_with
-from crashplancli.click_ext.types import FileOrString
 from crashplancli.logger.enums import ServerProtocol
 
 
@@ -45,12 +41,3 @@ def server_options(f):
     f = certs_option(f)
     f = ignore_cert_validation(f)
     return f
-
-
-send_to_format_options = click.option(
-    "-f",
-    "--format",
-    type=click.Choice(SendToFileEventsOutputFormat(), case_sensitive=False),
-    help="The output format of the result. Defaults to RAW-JSON format.",
-    default=SendToFileEventsOutputFormat.RAW,
-)

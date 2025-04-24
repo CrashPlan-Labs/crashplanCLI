@@ -129,7 +129,6 @@ def show(profile_name):
 @totp_option
 @yes_option(hidden=True)
 @disable_ssl_option
-@use_v2_file_events_option
 @debug_option
 def create(
     name,
@@ -164,7 +163,6 @@ def create(
 @secret_option(required=True)
 @yes_option(hidden=True)
 @disable_ssl_option
-@use_v2_file_events_option
 @debug_option
 def create_api_client(
     name,
@@ -198,7 +196,6 @@ def create_api_client(
 @password_option
 @totp_option
 @disable_ssl_option
-@use_v2_file_events_option
 @yes_option(hidden=True)
 @debug_option
 def update(
