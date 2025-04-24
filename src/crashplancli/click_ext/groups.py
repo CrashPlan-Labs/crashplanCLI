@@ -5,7 +5,6 @@ from collections import OrderedDict
 
 import click
 from pycpg.exceptions import PycpgActiveLegalHoldError
-from pycpg.exceptions import PycpgCaseNameExistsError
 from pycpg.exceptions import PycpgDescriptionLimitExceededError
 from pycpg.exceptions import PycpgForbiddenError
 from pycpg.exceptions import PycpgHTTPError
@@ -16,10 +15,8 @@ from pycpg.exceptions import PycpgInvalidUsernameError
 from pycpg.exceptions import PycpgLegalHoldNotFoundOrPermissionDeniedError
 from pycpg.exceptions import PycpgNotFoundError
 from pycpg.exceptions import PycpgOrgNotFoundError
-from pycpg.exceptions import PycpgUpdateClosedCaseError
 from pycpg.exceptions import PycpgUserAlreadyAddedError
 from pycpg.exceptions import PycpgUsernameMustBeEmailError
-from pycpg.exceptions import PycpgUserNotOnListError
 
 from crashplancli.errors import crashplancliError
 from crashplancli.errors import LoggedCLIError
@@ -66,14 +63,9 @@ class ExceptionHandlingGroup(click.Group):
         except (
             UserDoesNotExistError,
             PycpgUserAlreadyAddedError,
-            PycpgUserNotOnListError,
-            PycpgInvalidRuleOperationError,
             PycpgLegalHoldNotFoundOrPermissionDeniedError,
             SyslogServerNetworkConnectionError,
-            PycpgCaseNameExistsError,
             PycpgDescriptionLimitExceededError,
-            PycpgCaseAlreadyHasEventError,
-            PycpgUpdateClosedCaseError,
             PycpgUsernameMustBeEmailError,
             PycpgInvalidEmailError,
             PycpgInvalidPageTokenError,
@@ -81,13 +73,6 @@ class ExceptionHandlingGroup(click.Group):
             PycpgInvalidUsernameError,
             PycpgActiveLegalHoldError,
             PycpgOrgNotFoundError,
-            PycpgTrustedActivityConflictError,
-            PycpgTrustedActivityInvalidCharacterError,
-            PycpgTrustedActivityIdNotFound,
-            PycpgCloudAliasLimitExceededError,
-            PycpgCloudAliasCharacterLimitExceededError,
-            PycpgUserRiskProfileNotFound,
-            PycpgWatchlistNotFound,
             PycpgNotFoundError,
         ) as err:
             msg = err.args[0]
