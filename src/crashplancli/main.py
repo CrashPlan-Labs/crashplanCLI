@@ -3,6 +3,7 @@ import signal
 import site
 import sys
 import warnings
+from importlib.metadata import version as get_version
 
 import click
 from click_plugins import with_plugins
@@ -11,7 +12,6 @@ from pycpg.settings import set_user_agent_prefix
 
 from crashplancli import BANNER
 from crashplancli import PRODUCT_NAME
-from crashplancli.__version__ import __version__
 from crashplancli.click_ext.groups import ExceptionHandlingGroup
 from crashplancli.cmds.auditlogs import audit_logs
 from crashplancli.cmds.devices import devices
@@ -32,9 +32,11 @@ def exit_on_interrupt(signal, frame):
 
 signal.signal(signal.SIGINT, exit_on_interrupt)
 
+crashplancli = get_version("crashplancli")
+
 # Sets part of the user agent string that pycpg attaches to requests for the purposes of
 # identifying CLI users.
-set_user_agent_prefix(f"{PRODUCT_NAME}/{__version__}  (crashplan; crashplan.com )")
+set_user_agent_prefix(f"{PRODUCT_NAME}/{crashplancli}  (crashplan; crashplan.com )")
 
 CONTEXT_SETTINGS = {
     "help_option_names": ["-h", "--help"],

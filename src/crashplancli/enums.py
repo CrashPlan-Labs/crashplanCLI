@@ -15,4 +15,3 @@ class OutputFormat(JsonOutputFormat):
 
     def __iter__(self):
         return iter([self.TABLE, self.CSV, self.JSON, self.RAW])
-

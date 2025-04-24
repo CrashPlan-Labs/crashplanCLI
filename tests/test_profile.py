@@ -256,6 +256,6 @@ def test_delete_profile_clears_checkpoints(config_accessor, mocker):
     mock_get_cursor_store = mocker.patch(
         "crashplancli.profile.get_all_cursor_stores_for_profile"
     )
-    mock_get_cursor_store.return_value = [ auditlog_store]
+    mock_get_cursor_store.return_value = [auditlog_store]
     cliprofile.delete_profile("deleteme")
     assert auditlog_store.clean.call_count == 1

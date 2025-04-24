@@ -99,7 +99,9 @@ def _deactivate_device(sdk, device_guid, change_device_name, purge_date):
     try:
         device = _change_device_activation(sdk, device_guid, "deactivate")
     except exceptions.PycpgBadRequestError:
-        raise crashplancliError(f"The device with GUID '{device_guid}' is in legal hold.")
+        raise crashplancliError(
+            f"The device with GUID '{device_guid}' is in legal hold."
+        )
     if purge_date:
         _update_cold_storage_purge_date(sdk, device_guid, purge_date)
     if change_device_name and not device.data["name"].startswith("deactivated_"):

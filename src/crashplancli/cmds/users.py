@@ -238,13 +238,6 @@ def change_organization(state, username, org_id):
 
 @users.command()
 @click.argument("username")
-@click.argument("alias")
-@sdk_options()
-def remove_alias(state, username, alias):
-    """Remove a cloud alias for a given user."""
-    _remove_cloud_alias(state.sdk, username, alias)
-
-
 @users.group(cls=OrderedGroup)
 @sdk_options(hidden=True)
 def orgs(state):
@@ -693,4 +686,3 @@ def _get_user(sdk, username):
         return sdk.userriskprofile.get_by_username(username)
     except PycpgUserRiskProfileNotFound:
         raise UserDoesNotExistError(username)
-

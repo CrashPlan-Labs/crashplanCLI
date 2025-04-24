@@ -1,4 +1,3 @@
-import datetime
 import json
 
 import pytest
@@ -1428,4 +1427,3 @@ def test_orgs_show_when_invalid_org_uid_raises_error(runner, cli_state, custom_e
     result = runner.invoke(cli, ["users", "orgs", "show", TEST_ORG_UID], obj=cli_state)
     assert result.exit_code == 1
     assert f"Invalid org UID {TEST_ORG_UID}." in result.output
-

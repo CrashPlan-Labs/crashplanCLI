@@ -248,7 +248,9 @@ class TestNoPrioritySysLogHandler:
         assert not handler.socket.unwrap.call_count
 
     def test_close_globally_closes(self, mocker):
-        global_close = mocker.patch("crashplancli.logger.handlers.logging.Handler.close")
+        global_close = mocker.patch(
+            "crashplancli.logger.handlers.logging.Handler.close"
+        )
         handler = NoPrioritySysLogHandler(
             _TEST_HOST, _TEST_PORT, ServerProtocol.UDP, None
         )

@@ -11,19 +11,18 @@
 #
 import os
 import sys
-
-import crashplancli.__version__ as meta
+from importlib.metadata import version as get_version
 
 # -- Project information -----------------------------------------------------
 
 project = "crashplancli"
-copyright = "2025, crashplan Software"
-author = "crashplan Software"
+copyright = "2025, CrashPlan Group"
+author = "CrashPlan Group"
 
 # The short X.Y version
-version = f"crashplancli v{meta.__version__}"
+version = get_version("crashplancli")
 # The full version, including alpha/beta/rc tags
-release = f"crashplancli v{meta.__version__}"
+release = get_version("crashplancli")
 
 
 # -- General configuration ---------------------------------------------------

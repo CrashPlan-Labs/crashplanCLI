@@ -221,7 +221,7 @@ class TestConfigAccessor:
         assert accessor.get_profile(_TEST_PROFILE_NAME)[
             ConfigAccessor.IGNORE_SSL_ERRORS_KEY
         ]
-        
+
     def test_update_profile_does_not_update_when_given_none(
         self, config_parser_for_multiple_profiles
     ):
@@ -244,4 +244,3 @@ class TestConfigAccessor:
         assert accessor.get_profile(_TEST_PROFILE_NAME)[
             ConfigAccessor.IGNORE_SSL_ERRORS_KEY
         ]
-

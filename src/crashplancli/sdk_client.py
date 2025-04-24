@@ -49,7 +49,9 @@ def _validate_connection(
     try:
         if api_client:
             return pycpg.sdk.from_api_client(authority_url, username, password)
-        return pycpg.sdk.from_local_account(authority_url, username, password, totp=totp)
+        return pycpg.sdk.from_local_account(
+            authority_url, username, password, totp=totp
+        )
     except SSLError as err:
         logger.log_error(err)
         raise LoggedCLIError(
