@@ -4,7 +4,6 @@ import click
 from pandas import DataFrame
 from pandas import json_normalize
 from pycpg.exceptions import PycpgNotFoundError
-from pycpg.exceptions import PycpgUserRiskProfileNotFound
 
 from crashplancli.bulk import generate_template_cmd_factory
 from crashplancli.bulk import run_bulk_process
@@ -678,11 +677,3 @@ def _deactivate_user(sdk, username):
 def _reactivate_user(sdk, username):
     user_id = _get_legacy_user_id(sdk, username)
     sdk.users.reactivate(user_id)
-
-
-def _get_user(sdk, username):
-    # use when retrieving the user risk profile information
-    try:
-        return sdk.userriskprofile.get_by_username(username)
-    except PycpgUserRiskProfileNotFound:
-        raise UserDoesNotExistError(username)

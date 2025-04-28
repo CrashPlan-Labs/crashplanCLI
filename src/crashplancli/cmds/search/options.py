@@ -45,7 +45,12 @@ def server_options(f):
     return f
 
 
-class BeginOption:
+AdvancedQueryAndSavedSearchIncompatible = incompatible_with(
+    ["advanced_query", "saved_search"]
+)
+
+
+class BeginOption(AdvancedQueryAndSavedSearchIncompatible):
     """click.Option subclass that enforces correct --begin option usage."""
 
     def __init__(self, *args, **kwargs):
