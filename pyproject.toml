@@ -44,7 +44,7 @@ Repository = "https://github.com/CrashPlan-Labs/crashplancli"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["pycpg*"]
+include = ["crashplancli*"]
 
 [project.optional-dependencies]
 docs = [
