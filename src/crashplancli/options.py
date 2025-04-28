@@ -167,6 +167,17 @@ def begin_option(term, **kwargs):
     return click.option("-b", "--begin", **defaults)
 
 
+def end_option(term, **kwargs):
+    defaults = dict(
+        type=MagicDate(rounding_func=round_datetime_to_day_end),
+        help=f"The end of the date range in which to look for {term}, argument format options are "
+        "the same as `--begin`.",
+        callback=lambda ctx, param, arg: convert_datetime_to_timestamp(arg),
+    )
+    defaults.update(kwargs)
+    return click.option("-e", "--end", **defaults)
+
+
 def checkpoint_option(term, **kwargs):
     defaults = dict(
         help=f"Use a checkpoint with the given name to only get {term} that were not previously retrieved."
