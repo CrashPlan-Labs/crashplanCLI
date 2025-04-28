@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import timezone
 
 import click
 
@@ -52,11 +53,7 @@ class BeginOption:
 
     def handle_parse_result(self, ctx, opts, args):
         # if ctx.obj is None it means we're in autocomplete mode and don't want to validate
-        if (
-            ctx.obj is not None
-            and "saved_search" not in opts
-            and "advanced_query" not in opts
-        ):
+        if ctx.obj is not None:
             profile = opts.get("profile") or ctx.obj.profile.name
             cursor = ctx.obj.cursor_getter(profile)
             checkpoint_arg_present = "use_checkpoint" in opts
@@ -73,8 +70,8 @@ class BeginOption:
             ):
                 opts.pop("begin")
                 try:
-                    checkpoint_value = datetime.utcfromtimestamp(
-                        float(checkpoint_value)
+                    checkpoint_value = datetime.fromtimestamp(
+                        float(checkpoint_value), timezone.utc
                     )
                 except ValueError:
                     pass
