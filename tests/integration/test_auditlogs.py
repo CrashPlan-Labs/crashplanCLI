@@ -9,9 +9,9 @@ from tests.integration.util import assert_test_is_successful
 from crashplancli.main import cli
 
 
-begin_date = datetime.utcnow() - timedelta(days=2)
+begin_date = datetime.now(datetime.UTC) - timedelta(days=2)
 begin_date_str = begin_date.strftime("%Y-%m-%d %H:%M:%S")
-end_date = datetime.utcnow() - timedelta(days=0)
+end_date = datetime.now(datetime.UTC) - timedelta(days=0)
 end_date_str = end_date.strftime("%Y-%m-%d %H:%M:%S")
 
 

@@ -165,7 +165,7 @@ def convert_str_to_date(date_str):
 
 def get_test_date(days_ago=None, hours_ago=None, minutes_ago=None):
     """Note: only pass in one parameter to get the right test date... this is just a test func."""
-    now = datetime.utcnow()
+    now = datetime.now(datetime.UTC)
     if days_ago:
         return now - timedelta(days=days_ago)
     if hours_ago:

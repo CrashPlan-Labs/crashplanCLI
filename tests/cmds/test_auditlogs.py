@@ -88,7 +88,7 @@ def audit_log_cursor_with_checkpoint_and_events(mocker):
 
 @pytest.fixture
 def date_str():
-    dt = datetime.utcnow() - timedelta(days=10)
+    dt = datetime.now(datetime.UTC) - timedelta(days=10)
     return dt.strftime("%Y-%m-%d %H:%M:%S")
 
 
@@ -236,7 +236,7 @@ def test_search_and_send_to_handles_filter_parameters(
 def test_search_and_send_to_handles_all_filter_parameters(
     runner, cli_state, date_str, command
 ):
-    end_time = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    end_time = datetime.now(datetime.UTC).strftime("%Y-%m-%d %H:%M:%S")
     expected_begin_timestamp = convert_datetime_to_timestamp(
         MagicDate(rounding_func=round_datetime_to_day_start).convert(
             date_str, None, None
