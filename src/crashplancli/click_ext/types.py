@@ -117,7 +117,7 @@ class MagicDate(click.ParamType):
             delta = timedelta(minutes=num)
         else:
             raise BadParameter(f"Couldn't parse magic time string: {num}{period}")
-        return datetime.now(datetime.UTC) - delta
+        return datetime.now(timezone.utc) - delta
 
     @staticmethod
     def _get_dt_from_date_time_pair(date, time):

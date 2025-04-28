@@ -35,7 +35,7 @@ def verify_timestamp_order(
 def limit_date_range(dt, max_days_back=90, param=None):
     if dt is None:
         return
-    now = datetime.now(datetime.UTC).replace(tzinfo=timezone.utc)
+    now = datetime.now(timezone.utc).replace(tzinfo=timezone.utc)
     if now - dt > timedelta(days=max_days_back):
         raise click.BadParameter(
             message=f"must be within {max_days_back} days.", param=param
