@@ -5,7 +5,6 @@ from collections import OrderedDict
 
 import click
 from pycpg.exceptions import PycpgActiveLegalHoldError
-from pycpg.exceptions import PycpgDescriptionLimitExceededError
 from pycpg.exceptions import PycpgForbiddenError
 from pycpg.exceptions import PycpgHTTPError
 from pycpg.exceptions import PycpgInvalidEmailError
@@ -65,7 +64,6 @@ class ExceptionHandlingGroup(click.Group):
             PycpgUserAlreadyAddedError,
             PycpgLegalHoldNotFoundOrPermissionDeniedError,
             SyslogServerNetworkConnectionError,
-            PycpgDescriptionLimitExceededError,
             PycpgUsernameMustBeEmailError,
             PycpgInvalidEmailError,
             PycpgInvalidPageTokenError,
