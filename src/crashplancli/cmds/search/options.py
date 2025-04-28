@@ -1,8 +1,9 @@
+from datetime import datetime
+
 import click
 
 from crashplancli.click_ext.options import incompatible_with
 from crashplancli.logger.enums import ServerProtocol
-
 
 include_all_option = click.option(
     "--include-all",
@@ -41,3 +42,56 @@ def server_options(f):
     f = certs_option(f)
     f = ignore_cert_validation(f)
     return f
+
+
+class BeginOption:
+    """click.Option subclass that enforces correct --begin option usage."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def handle_parse_result(self, ctx, opts, args):
+        # if ctx.obj is None it means we're in autocomplete mode and don't want to validate
+        if (
+            ctx.obj is not None
+            and "saved_search" not in opts
+            and "advanced_query" not in opts
+        ):
+            profile = opts.get("profile") or ctx.obj.profile.name
+            cursor = ctx.obj.cursor_getter(profile)
+            checkpoint_arg_present = "use_checkpoint" in opts
+            checkpoint_value = (
+                cursor.get(opts.get("use_checkpoint", ""))
+                if checkpoint_arg_present
+                else None
+            )
+            begin_present = "begin" in opts
+            if (
+                checkpoint_arg_present
+                and checkpoint_value is not None
+                and begin_present
+            ):
+                opts.pop("begin")
+                try:
+                    checkpoint_value = datetime.utcfromtimestamp(
+                        float(checkpoint_value)
+                    )
+                except ValueError:
+                    pass
+                click.echo(
+                    "Ignoring --begin value as --use-checkpoint was passed and checkpoint of "
+                    f"{checkpoint_value} exists.\n",
+                    err=True,
+                )
+            if (
+                checkpoint_arg_present
+                and checkpoint_value is None
+                and not begin_present
+            ):
+                raise click.UsageError(
+                    message="--begin date is required for --use-checkpoint when no checkpoint "
+                    "exists yet.",
+                )
+            if not checkpoint_arg_present and not begin_present:
+                raise click.UsageError(message="--begin date is required.")
+        return super().handle_parse_result(ctx, opts, args)
