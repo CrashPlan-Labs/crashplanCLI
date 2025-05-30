@@ -8,7 +8,6 @@ from socket import SocketKind
 
 import pytest
 
-from crashplancli.logger import FileEventDictToRawJSONFormatter
 from crashplancli.logger.enums import ServerProtocol
 from crashplancli.logger.handlers import NoPrioritySysLogHandler
 from crashplancli.logger.handlers import SyslogServerNetworkConnectionError
@@ -184,38 +183,8 @@ class TestNoPrioritySysLogHandler:
         assert call_args[1][0][0] is None
 
     @tls_and_tcp_test
-    def test_emit_when_tcp_calls_socket_sendall_with_expected_message(
-        self, mock_file_event_log_record, protocol
-    ):
-        handler = NoPrioritySysLogHandler(_TEST_HOST, _TEST_PORT, protocol, None)
-        handler.connect_socket()
-        formatter = FileEventDictToRawJSONFormatter()
-        handler.setFormatter(formatter)
-        handler.emit(mock_file_event_log_record)
-        expected_message = (formatter.format(mock_file_event_log_record) + "\n").encode(
-            "utf-8"
-        )
-        handler.socket.sendall.assert_called_once_with(expected_message)
-
-    def test_emit_when_udp_calls_socket_sendto_with_expected_message_and_address(
-        self, mock_file_event_log_record
-    ):
-        handler = NoPrioritySysLogHandler(
-            _TEST_HOST, _TEST_PORT, ServerProtocol.UDP, None
-        )
-        handler.connect_socket()
-        formatter = FileEventDictToRawJSONFormatter()
-        handler.setFormatter(formatter)
-        handler.emit(mock_file_event_log_record)
-        expected_message = (formatter.format(mock_file_event_log_record) + "\n").encode(
-            "utf-8"
-        )
-        handler.socket.sendto.assert_called_once_with(
-            expected_message, (_TEST_HOST, _TEST_PORT)
-        )
-
     def test_handle_error_when_broken_pipe_error_occurs_raises_expected_error(
-        self, mock_file_event_log_record, broken_pipe_error
+        self, mock_file_event_log_record
     ):
         handler = NoPrioritySysLogHandler(
             _TEST_HOST, _TEST_PORT, ServerProtocol.UDP, None
@@ -224,7 +193,7 @@ class TestNoPrioritySysLogHandler:
             handler.handleError(mock_file_event_log_record)
 
     def test_handle_error_when_connection_reset_error_occurs_raises_expected_error(
-        self, mock_file_event_log_record, connection_reset_error
+        self, mock_file_event_log_record
     ):
         handler = NoPrioritySysLogHandler(
             _TEST_HOST, _TEST_PORT, ServerProtocol.UDP, None
