@@ -21,7 +21,7 @@ dependencies = [
     "ipython>=7.16.3;python_version<'3.8'",
     "ipython>=8.10.0;python_version>='3.8'",
     "pandas>=1.1.3",
-    "pycpg>=1.0.0",
+    "pycpg>=1.0.1",
     "setuptools>=66.0.0",
 ]
 classifiers = [
@@ -53,11 +53,10 @@ docs = [
     "sphinx_rtd_theme==3.0.2",
     "docutils == 0.21.2",
     "sphinx-click",
-
 ]
 dev = [
     "flake8 == 4.0.0",
-    "pytest == 7.2.0",
+    "pytest == 8.3.5",
     "pytest-cov == 4.0.0",
     "pytest-mock == 3.10.0",
     "tox == 4.25.0",
