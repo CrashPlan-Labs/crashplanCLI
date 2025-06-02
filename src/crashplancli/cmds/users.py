@@ -235,8 +235,6 @@ def change_organization(state, username, org_id):
     _change_organization(state.sdk, username, org_id)
 
 
-@users.command()
-@click.argument("username")
 @users.group(cls=OrderedGroup)
 @sdk_options(hidden=True)
 def orgs(state):
