@@ -66,54 +66,6 @@ To see all your profiles, do:
 crashplan profile list
 ```
 
-## Security Data and Alerts
-
-Using the CLI, you can query for security events and alerts just like in the admin console, but the results are output
-to stdout so they can be written to a file or piped out to another process (for sending to an external syslog server, for
-example).
-
-
-The following examples pertain to security events, but can also be used for alerts by replacing `security-data` with
-`alerts`:
-
-To print events to stdout, do:
-
-```bash
-crashplan security-data search -b <begin_date>
-```
-
-Note that `-b` or `--begin` is usually required.
-
-And end date can also be given with `-e` or `--end` to query for a specific date range (if end is not passed, it will get all events up to the present time).
-
-To specify a begin/end time, you can pass a date or a date w/ time as a string:
-
-```bash
-crashplan security-data search -b '2020-02-02 12:51:00'
-```
-
-```bash
-crashplan security-data search -b '2020-02-02 12:30'
-```
-
-```bash
-crashplan security-data search -b '2020-02-02 12'
-```
-
-```bash
-crashplan security-data search -b 2020-02-02
-```
-
-or a shorthand string specifying either days, hours, or minutes back from the current time:
-
-```bash
-crashplan security-data search -b 30d
-```
-
-```bash
-crashplan security-data search -b 10d -e 12h
-```
-
 Begin date will be ignored if provided on subsequent queries using `-c/--use-checkpoint`.
 
 Use other formats with `-f`:

@@ -26,7 +26,7 @@ def get_logger_for_server(hostname, protocol, output_format, certs):
     Args:
         hostname: The hostname of the server. It may include the port.
         protocol: The transfer protocol for sending logs.
-        output_format: CEF, JSON, or RAW_JSON. Each type results in a different logger instance.
+        output_format: JSON, or RAW_JSON. Each type results in a different logger instance.
         certs: Use for passing SSL/TLS certificates when connecting to the server.
     """
     logger = logging.getLogger(f"crashplan_syslog_{output_format.lower()}")
