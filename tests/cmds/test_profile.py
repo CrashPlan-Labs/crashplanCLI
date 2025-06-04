@@ -269,7 +269,7 @@ def test_create_api_client_profile_with_api_client_id_and_secret_creates_profile
         ],
     )
     mock_cliprofile_namespace.create_profile.assert_called_once_with(
-        "foo", "bar", "baz", True, None, api_client_auth=True
+        "foo", "bar", "baz", True, api_client_auth=True
     )
     assert "Successfully created profile 'foo'." in result.output
 
@@ -296,7 +296,7 @@ def test_update_profile_updates_existing_profile(
         ],
     )
     mock_cliprofile_namespace.update_profile.assert_called_once_with(
-        name, "bar", "baz", True, None
+        name, "bar", "baz", True
     )
 
 

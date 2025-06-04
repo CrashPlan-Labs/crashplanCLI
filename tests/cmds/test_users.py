@@ -57,28 +57,6 @@ TEST_USER_RESPONSE = {
     "state": "MN",
     "country": "US",
 }
-TEST_PROFILE_RESPONSE = {
-    "userId": "12345-42",
-    "tenantId": "SampleTenant1",
-    "username": "foo@bar.com",
-    "displayName": "Foo Bar",
-    "notes": "",
-    "managerId": "123-42",
-    "managerUsername": "test@bar.com",
-    "managerDisplayName": "",
-    "title": "Engineer",
-    "division": "Engineering",
-    "department": "RDO",
-    "employmentType": "Remote",
-    "country": "USA",
-    "region": "Minnesota",
-    "locality": "Minneapolis",
-    "active": True,
-    "deleted": False,
-    "supportUser": False,
-    "startDate": {"year": 2020, "month": 8, "day": 10},
-    "endDate": {"year": 2021, "month": 5, "day": 1},
-}
 
 TEST_MATTER_RESPONSE = {
     "legalHolds": [
