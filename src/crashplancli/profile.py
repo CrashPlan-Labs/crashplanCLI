@@ -29,10 +29,6 @@ class crashplanProfile:
         return self._profile[ConfigAccessor.IGNORE_SSL_ERRORS_KEY]
 
     @property
-    def use_v2_file_events(self):
-        return self._profile.get(ConfigAccessor.USE_V2_FILE_EVENTS_KEY)
-
-    @property
     def api_client_auth(self):
         return self._profile.get(ConfigAccessor.API_CLIENT_AUTH_KEY)
 
@@ -107,13 +103,11 @@ def switch_default_profile(profile_name):
     config_accessor.switch_default_profile(profile.name)
 
 
-def create_profile(
-    name, server, username, ignore_ssl_errors, use_v2_file_events, api_client_auth
-):
+def create_profile(name, server, username, ignore_ssl_errors, api_client_auth):
     if profile_exists(name):
         raise crashplancliError(f"A profile named '{name}' already exists.")
     config_accessor.create_profile(
-        name, server, username, ignore_ssl_errors, use_v2_file_events, api_client_auth
+        name, server, username, ignore_ssl_errors, api_client_auth
     )
 
 
@@ -128,11 +122,9 @@ def delete_profile(profile_name):
     config_accessor.delete_profile(profile_name)
 
 
-def update_profile(
-    name, server, username, ignore_ssl_errors, use_v2_file_events, api_client_auth=None
-):
+def update_profile(name, server, username, ignore_ssl_errors, api_client_auth=None):
     config_accessor.update_profile(
-        name, server, username, ignore_ssl_errors, use_v2_file_events, api_client_auth
+        name, server, username, ignore_ssl_errors, api_client_auth
     )
 
 

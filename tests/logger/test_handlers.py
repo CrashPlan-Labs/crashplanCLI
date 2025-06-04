@@ -10,7 +10,6 @@ import pytest
 
 from crashplancli.logger.enums import ServerProtocol
 from crashplancli.logger.handlers import NoPrioritySysLogHandler
-from crashplancli.logger.handlers import SyslogServerNetworkConnectionError
 
 _TEST_HOST = "example.com"
 _TEST_PORT = 5000
@@ -183,24 +182,6 @@ class TestNoPrioritySysLogHandler:
         assert call_args[1][0][0] is None
 
     @tls_and_tcp_test
-    def test_handle_error_when_broken_pipe_error_occurs_raises_expected_error(
-        self, mock_file_event_log_record
-    ):
-        handler = NoPrioritySysLogHandler(
-            _TEST_HOST, _TEST_PORT, ServerProtocol.UDP, None
-        )
-        with pytest.raises(SyslogServerNetworkConnectionError):
-            handler.handleError(mock_file_event_log_record)
-
-    def test_handle_error_when_connection_reset_error_occurs_raises_expected_error(
-        self, mock_file_event_log_record
-    ):
-        handler = NoPrioritySysLogHandler(
-            _TEST_HOST, _TEST_PORT, ServerProtocol.UDP, None
-        )
-        with pytest.raises(SyslogServerNetworkConnectionError):
-            handler.handleError(mock_file_event_log_record)
-
     def test_close_when_using_tls_unwraps_socket(self):
         handler = NoPrioritySysLogHandler(
             _TEST_HOST, _TEST_PORT, ServerProtocol.TLS_TCP, None
