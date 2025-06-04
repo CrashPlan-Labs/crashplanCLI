@@ -123,7 +123,6 @@ def test_create_profile_if_user_does_not_set_password_is_created(
             "baz",
             "--disable-ssl-errors",
             "True",
-            "--use-v2-file-events",
             "True",
         ],
     )
@@ -318,7 +317,6 @@ def test_update_profile_updates_default_profile(
             "baz",
             "--disable-ssl-errors",
             "True",
-            "--use-v2-file-events",
             "True",
         ],
     )
@@ -335,7 +333,7 @@ def test_update_profile_updates_name_alone(
     mock_cliprofile_namespace.get_profile.return_value = profile
     runner.invoke(
         cli,
-        ["profile", "update", "-u", "baz", "--disable-ssl-errors", "True"],
+        ["profile", "update", "-u", "baz", "--disable-ssl-errors", "True", "None"],
     )
     mock_cliprofile_namespace.update_profile.assert_called_once_with(
         name, None, "baz", True, None
@@ -428,10 +426,7 @@ def test_update_profile_when_given_zero_args_prints_error_message(
     profile.ignore_ssl_errors = "False"
     mock_cliprofile_namespace.get_profile.return_value = profile
     result = runner.invoke(cli, ["profile", "update"])
-    expected = (
-        "Must provide at least one of `--server`, `--username`, `--password`, "
-        "`--use-v2-file-events` or `--disable-ssl-errors` when updating a username/password authenticated profile."
-    )
+    expected = "Must provide at least one of `--server`, `--username`, `--password`, or `--disable-ssl-errors` when updating a username/password authenticated profile."
     assert "Profile 'foo' has been updated" not in result.output
     assert expected in result.output
 
@@ -444,10 +439,7 @@ def test_update_profile_when_api_client_authentication_and_is_given_zero_args_pr
     profile.api_client_auth = "True"
     mock_cliprofile_namespace.get_profile.return_value = profile
     result = runner.invoke(cli, ["profile", "update"])
-    expected = (
-        "Must provide at least one of `--server`, `--api-client-id`, `--secret`, `--use-v2-file-events` or "
-        "`--disable-ssl-errors` when updating an API client profile."
-    )
+    expected = "Must provide at least one of `--server`, `--api-client-id`, `--secret`, or `--disable-ssl-errors` when updating an API client profile."
     assert "Profile 'foo' has been updated" not in result.output
     assert expected in result.output
 
@@ -470,7 +462,6 @@ def test_update_profile_when_api_client_authentication_updates_existing_profile(
             "bar",
             "--api-client-id",
             "baz",
-            "--use-v2-file-events",
             "True",
         ],
     )
@@ -500,7 +491,6 @@ def test_update_profile_when_updating_auth_profile_to_api_client_updates_existin
             "baz",
             "--secret",
             "fob",
-            "--use-v2-file-events",
             "True",
             "-y",
         ],
@@ -531,7 +521,6 @@ def test_update_profile_when_updating_api_client_profile_to_user_credentails_upd
             "baz",
             "--password",
             "fob",
-            "--use-v2-file-events",
             "True",
             "-y",
         ],
