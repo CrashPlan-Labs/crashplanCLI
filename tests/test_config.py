@@ -153,7 +153,7 @@ class TestConfigAccessor:
         accessor = ConfigAccessor(config_parser_for_create)
         with pytest.raises(NoConfigProfileError):
             accessor.create_profile(
-                ConfigAccessor.DEFAULT_VALUE, "foo", "bar", False, False, False
+                ConfigAccessor.DEFAULT_VALUE, "foo", "bar", False, False
             )
 
     def test_create_profile_when_no_default_profile_sets_default(
@@ -165,9 +165,7 @@ class TestConfigAccessor:
         accessor = ConfigAccessor(config_parser_for_create)
         accessor.switch_default_profile = mocker.MagicMock()
 
-        accessor.create_profile(
-            _TEST_PROFILE_NAME, "example.com", "bar", None, None, None
-        )
+        accessor.create_profile(_TEST_PROFILE_NAME, "example.com", "bar", None, None)
         assert accessor.switch_default_profile.call_count == 1
 
     def test_create_profile_when_has_default_profile_does_not_set_default(
@@ -179,9 +177,7 @@ class TestConfigAccessor:
         accessor = ConfigAccessor(config_parser_for_create)
         accessor.switch_default_profile = mocker.MagicMock()
 
-        accessor.create_profile(
-            _TEST_PROFILE_NAME, "example.com", "bar", None, None, None
-        )
+        accessor.create_profile(_TEST_PROFILE_NAME, "example.com", "bar", None, None)
         assert not accessor.switch_default_profile.call_count
 
     def test_create_profile_when_not_existing_saves(
@@ -192,9 +188,7 @@ class TestConfigAccessor:
         setup_parser_one_profile(mock_internal, mock_internal, config_parser_for_create)
         accessor = ConfigAccessor(config_parser_for_create)
 
-        accessor.create_profile(
-            _TEST_PROFILE_NAME, "example.com", "bar", None, None, None
-        )
+        accessor.create_profile(_TEST_PROFILE_NAME, "example.com", "bar", None, None)
         assert mock_saver.call_count
 
     def test_update_profile_when_no_profile_exists_raises_exception(
@@ -232,7 +226,7 @@ class TestConfigAccessor:
         username = "NOT NONE"
         accessor.update_profile(_TEST_PROFILE_NAME, address, username, True, True)
 
-        accessor.update_profile(_TEST_PROFILE_NAME, None, None, None, None)
+        accessor.update_profile(_TEST_PROFILE_NAME, None, None)
         assert (
             accessor.get_profile(_TEST_PROFILE_NAME)[ConfigAccessor.AUTHORITY_KEY]
             == address
