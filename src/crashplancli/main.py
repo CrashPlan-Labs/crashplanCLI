@@ -3,11 +3,11 @@ import signal
 import site
 import sys
 import warnings
+from importlib.metadata import entry_points
 from importlib.metadata import version as get_version
 
 import click
 from click_plugins import with_plugins
-from pkg_resources import iter_entry_points
 from pycpg.settings import set_user_agent_prefix
 
 from crashplancli import BANNER
@@ -44,7 +44,7 @@ CONTEXT_SETTINGS = {
 }
 
 
-@with_plugins(iter_entry_points("crashplancli.plugins"))
+@with_plugins(entry_points().select(group="crashplancli.plugins"))
 @click.group(
     cls=ExceptionHandlingGroup,
     context_settings=CONTEXT_SETTINGS,
