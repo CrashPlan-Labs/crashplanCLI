@@ -44,7 +44,17 @@ CONTEXT_SETTINGS = {
 }
 
 
-@with_plugins(entry_points().select(group="crashplancli.plugins"))
+def get_plugins():
+    try:
+        eps = entry_points()
+        # Use the older dictionary-based API
+        return [ep.load() for ep in eps.get("crashplancli.plugins", [])]
+    except Exception:
+        # Handle cases where no plugins are found
+        return []
+
+
+@with_plugins(get_plugins())
 @click.group(
     cls=ExceptionHandlingGroup,
     context_settings=CONTEXT_SETTINGS,
