@@ -102,7 +102,7 @@ def test_create_profile_if_user_sets_password_is_created(
         ],
     )
     mock_cliprofile_namespace.create_profile.assert_called_once_with(
-        "foo", "bar", "baz", True, None, api_client_auth=False
+        "foo", "bar", "baz", True, api_client_auth=False
     )
 
 
@@ -127,7 +127,7 @@ def test_create_profile_if_user_does_not_set_password_is_created(
         ],
     )
     mock_cliprofile_namespace.create_profile.assert_called_once_with(
-        "foo", "bar", "baz", True, True, api_client_auth=False
+        "foo", "bar", "baz", True, api_client_auth=False
     )
 
 
