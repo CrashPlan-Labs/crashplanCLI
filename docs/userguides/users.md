@@ -88,7 +88,7 @@ The new values that will be updated and their corresponding headers are:
   - `last_name`           The new last name for the user.
   - `notes`               Notes about this user.
 
-Once the CSV is created and saved to the working directory the bulk command to update users is as follows:
+Once the CSV is created and saved to the working directory the bulk command to update users is:
 ```bash
 crashplan users bulk update update-users-bulk.csv
 ```
