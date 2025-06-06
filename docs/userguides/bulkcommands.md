@@ -21,3 +21,6 @@ To run a bulk method, simply pass the CSV file path to the desired command.  For
 ```bash
 crashplan devices bulk deactivate devices_bulk_deactivate.csv
 ```
+
+
+A CSV with a `user_uid` column and the new information is required for the `update` command.

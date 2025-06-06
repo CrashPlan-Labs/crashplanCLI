@@ -38,8 +38,10 @@ inactive_option = click.option(
     help="Limits results to only deactivated users.",
     cls=incompatible_with("active"),
 )
-user_id_option = click.option(
-    "--user-id", help="The unique identifier of the user to be modified.", required=True
+user_uid_option = click.option(
+    "--user-uid",
+    help="The unique identifier of the user to be modified.",
+    required=True,
 )
 org_id_option = click.option(
     "--org-id",
@@ -149,7 +151,7 @@ def remove_role(state, username, role_name):
 
 
 @users.command(name="update")
-@user_id_option
+@user_uid_option
 @click.option("--username", help="The new username for the user.")
 @click.option("--password", help="The new password for the user.")
 @click.option("--email", help="The new email for the user.")
@@ -162,7 +164,7 @@ def remove_role(state, username, role_name):
 @sdk_options()
 def update_user(
     state,
-    user_id,
+    user_uid,
     username,
     email,
     password,
@@ -174,7 +176,7 @@ def update_user(
     """Update a user with the specified unique identifier."""
     _update_user(
         state.sdk,
-        user_id,
+        user_uid,
         username,
         email,
         password,
@@ -204,7 +206,7 @@ def reactivate(state, username):
 
 
 _bulk_user_update_headers = [
-    "user_id",
+    "user_uid",
     "username",
     "email",
     "password",
@@ -217,10 +219,6 @@ _bulk_user_update_headers = [
 _bulk_user_move_headers = ["username", "org_id"]
 
 _bulk_user_roles_headers = ["username", "role_name"]
-
-_bulk_user_alias_headers = ["username", "alias"]
-
-_bulk_user_risk_profile_headers = ["username", "start_date", "end_date", "notes"]
 
 _bulk_user_activation_headers = ["username"]
 
@@ -555,9 +553,9 @@ def _add_user_role(sdk, username, role_name):
 
 
 def _remove_user_role(sdk, role_name, username):
-    user_id = _get_legacy_user_id(sdk, username)
+    user_uid = _get_legacy_user_id(sdk, username)
     _get_role_id(sdk, role_name)  # function provides role name validation
-    sdk.users.remove_role(user_id, role_name)
+    sdk.users.remove_role(user_uid, role_name)
 
 
 def _get_legacy_user_id(sdk, username):
@@ -635,7 +633,7 @@ def _get_all_active_hold_memberships(sdk):
 
 def _update_user(
     sdk,
-    user_id,
+    user_uid,
     username,
     email,
     password,
@@ -645,7 +643,7 @@ def _update_user(
     archive_size_quota,
 ):
     return sdk.users.update_user(
-        user_id,
+        user_uid,
         username=username,
         email=email,
         password=password,

@@ -36,11 +36,11 @@ You can add multiple profiles with different names and the change the default pr
 crashplan profile use MY_SECOND_PROFILE
 ```
 
-When you use the `--profile` flag with other commands, such as those in `security-data`, that profile is used
+When you use the `--profile` flag with other commands, such as those in `audit-logs`, that profile is used
 instead of the default profile. For example,
 
 ```bash
-crashplan security-data search -b 2020-02-02 --profile MY_SECOND_PROFILE
+crashplan audit-logs search -b 2020-02-02 --profile MY_SECOND_PROFILE
 ```
 
 To see all your profiles, do:

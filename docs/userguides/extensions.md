@@ -1,6 +1,6 @@
 # Write custom extension scripts using the crashplan CLI and pycpg
 
-While the crashplan CLI aims to provide an easy way to automate many common crashplan tasks, there will likely be times when
+While the crashplan CLI aims to provide an easy way to automate many common CrashPlan tasks, there will likely be times when
 you need to script something the CLI doesn't have out-of-the-box.
 
 To accommodate for those scenarios, the crashplan CLI exposes a few helper objects in the `crashplancli.extensions` module
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     script()
 ```
 
-## Ensuring your script runs in the crashplan CLI python environment
+## Ensuring your script runs in the CrashPlan CLI python environment
 
 The above example works as a standalone script, if it were named `my_script.py` you could execute it by running:
 
@@ -57,7 +57,7 @@ The above example works as a standalone script, if it were named `my_script.py` 
 python3 my_script.py
 ```
 
-However, if the crashplan CLI is installed in a different python environment than your `python3` command, it might fail to
+However, if the CrashPlan CLI is installed in a different python environment than your `python3` command, it might fail to
 import the extensions.
 
 To workaround environment and path issues, the CLI has a `--python` option that prints out the path to the python
@@ -88,9 +88,9 @@ setup(
 )
 ```
 
-The `entry_points` section tells the crashplan CLI where to look for the commands to add to its main group. If you have
+The `entry_points` section tells the CrashPlan CLI where to look for the commands to add to its main group. If you have
 multiple commands defined in your script you can add one per line in the `entry_points` and they'll all get installed
-into the crashplan CLI.
+into the CrashPlan CLI.
 
 Once your `setup.py` is ready, install it with pip while in the directory of `setup.py`:
 

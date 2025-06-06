@@ -73,6 +73,26 @@ Alternatively, to move multiple users between organizations, fill out the `move`
 crashplan users bulk move bulk-command.csv
 ```
 
+## Bulk update users
+
+To update a list of users in bulk, for example to update usernames and emails you will need a list of the user's `userUid` values and then the new items that you want to update as headers in a provided csv.
+
+A CSV with a `user_uid` column and the new values is required for the `update` command.
+
+The new values that will be updated and their corresponding headers are:
+
+  - `username`            The new username for the user.
+  - `email`            The new email for the user.
+  - `password`            The new password for the user.
+  - `first_name`          The new first name for the user.
+  - `last_name`           The new last name for the user.
+  - `notes`               Notes about this user.
+
+Once the CSV is created and saved to the working directory the bulk command to update users is as follows:
+```bash
+crashplan users bulk update update-users-bulk.csv
+```
+
 ## Get CSV Template for bulk commands
 
 The following command generates a CSV template for each of the available bulk user commands.  The CSV file is saved to the current working directory.

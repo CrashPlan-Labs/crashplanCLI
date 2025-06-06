@@ -808,7 +808,7 @@ def test_bulk_update_uses_expected_arguments_when_only_some_are_passed(
         with open("test_bulk_update.csv", "w") as csv:
             csv.writelines(
                 [
-                    "user_id,username,email,password,first_name,last_name,notes,archive_size_quota\n",
+                    "user_uid,username,email,password,first_name,last_name,notes,archive_size_quota\n",
                     "12345,,test_email,,,,,\n",
                 ]
             )
@@ -817,7 +817,7 @@ def test_bulk_update_uses_expected_arguments_when_only_some_are_passed(
         )
     assert bulk_processor.call_args[0][1] == [
         {
-            "user_id": "12345",
+            "user_uid": "12345",
             "username": "",
             "email": "test_email",
             "password": "",
@@ -838,7 +838,7 @@ def test_bulk_update_uses_expected_arguments_when_all_are_passed(
         with open("test_bulk_update.csv", "w") as csv:
             csv.writelines(
                 [
-                    "user_id,username,email,password,first_name,last_name,notes,archive_size_quota\n",
+                    "user_uid,username,email,password,first_name,last_name,notes,archive_size_quota\n",
                     "12345,test_username,test_email,test_pword,test_fname,test_lname,test notes,4321\n",
                 ]
             )
@@ -847,7 +847,7 @@ def test_bulk_update_uses_expected_arguments_when_all_are_passed(
         )
     assert bulk_processor.call_args[0][1] == [
         {
-            "user_id": "12345",
+            "user_uid": "12345",
             "username": "test_username",
             "email": "test_email",
             "password": "test_pword",
@@ -866,7 +866,7 @@ def test_bulk_update_ignores_blank_lines(runner, mocker, cli_state):
         with open("test_bulk_update.csv", "w") as csv:
             csv.writelines(
                 [
-                    "user_id,username,email,password,first_name,last_name,notes,archive_size_quota\n",
+                    "user_uid,username,email,password,first_name,last_name,notes,archive_size_quota\n",
                     "\n",
                     "12345,test_username,test_email,test_pword,test_fname,test_lname,test notes,4321\n",
                     "\n",
@@ -877,7 +877,7 @@ def test_bulk_update_ignores_blank_lines(runner, mocker, cli_state):
         )
     assert bulk_processor.call_args[0][1] == [
         {
-            "user_id": "12345",
+            "user_uid": "12345",
             "username": "test_username",
             "email": "test_email",
             "password": "test_pword",
@@ -894,12 +894,12 @@ def test_bulk_update_uses_handler_that_when_encounters_error_increments_total_er
     runner, mocker, cli_state, worker_stats
 ):
     lines = [
-        "user_id,username,email,password,first_name,last_name,notes,archive_size_quota\n",
+        "user_uid,username,email,password,first_name,last_name,notes,archive_size_quota\n",
         "12345,test_username,test_email,test_pword,test_fname,test_lname,test notes,4321\n",
     ]
 
-    def _update(user_id, *args, **kwargs):
-        if user_id == "12345":
+    def _update(user_uid, *args, **kwargs):
+        if user_uid == "12345":
             raise Exception("TEST")
         return create_mock_response(mocker, data=TEST_USERS_RESPONSE)
 
@@ -915,7 +915,7 @@ def test_bulk_update_uses_handler_that_when_encounters_error_increments_total_er
         )
     handler = bulk_processor.call_args[0][0]
     handler(
-        user_id="12345",
+        user_uid="12345",
         username="test",
         email="test",
         password="test",
@@ -925,7 +925,7 @@ def test_bulk_update_uses_handler_that_when_encounters_error_increments_total_er
         archive_size_quota="test",
     )
     handler(
-        user_id="not 12345",
+        user_uid="not 12345",
         username="test",
         email="test",
         password="test",
