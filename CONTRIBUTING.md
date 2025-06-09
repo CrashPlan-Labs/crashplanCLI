@@ -56,7 +56,7 @@ Use `source deactivate` to exit the virtual environment and `pyenv activate cras
 
 ### Windows/Linux
 
-Install a version of python 3.9 or higher from [python.org](https://python.org).
+Install a version of python 3.10 or higher from [python.org](https://python.org).
 Next, in a directory somewhere outside the project, create and activate your virtual environment:
 
 ```bash

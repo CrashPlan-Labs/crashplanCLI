@@ -22,10 +22,10 @@ python3 -m pip install crashplancli
 ```
 
 To install a previous version of the crashplan CLI via `pip`, add the version number. For example, to install version
-0.5.3, enter:
+1.0.0, enter:
 
 ```bash
-python3 -m pip install crashplancli==0.5.3
+python3 -m pip install crashplancli==1.0.0
 ```
 
 Visit the [project history](https://pypi.org/project/crashplancli/#history) on PyPI to see all published versions.
