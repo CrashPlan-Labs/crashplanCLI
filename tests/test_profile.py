@@ -1,44 +1,42 @@
 import pytest
 
-import code42cli.profile as cliprofile
+import crashplancli.profile as cliprofile
 from .conftest import create_mock_profile
 from .conftest import MockSection
-from code42cli.cmds.search.cursor_store import AlertCursorStore
-from code42cli.cmds.search.cursor_store import AuditLogCursorStore
-from code42cli.cmds.search.cursor_store import FileEventCursorStore
-from code42cli.config import ConfigAccessor
-from code42cli.config import NoConfigProfileError
-from code42cli.errors import Code42CLIError
+from crashplancli.cmds.search.cursor_store import AuditLogCursorStore
+from crashplancli.config import ConfigAccessor
+from crashplancli.config import NoConfigProfileError
+from crashplancli.errors import crashplancliError
 
 
 @pytest.fixture
 def config_accessor(mocker):
     mock = mocker.MagicMock(spec=ConfigAccessor, name="Config Accessor")
-    attr = mocker.patch("code42cli.profile.config_accessor", mock)
+    attr = mocker.patch("crashplancli.profile.config_accessor", mock)
     return attr
 
 
 @pytest.fixture
 def password_setter(mocker):
-    return mocker.patch("code42cli.password.set_password")
+    return mocker.patch("crashplancli.password.set_password")
 
 
 @pytest.fixture
 def password_getter(mocker):
-    return mocker.patch("code42cli.password.get_stored_password")
+    return mocker.patch("crashplancli.password.get_stored_password")
 
 
 @pytest.fixture
 def password_deleter(mocker):
-    return mocker.patch("code42cli.password.delete_password")
+    return mocker.patch("crashplancli.password.delete_password")
 
 
-class TestCode42Profile:
+class TestcrashplanProfile:
     def test_get_password_when_is_none_returns_password_from_getpass(
         self, mocker, password_getter
     ):
         password_getter.return_value = None
-        mock_getpass = mocker.patch("code42cli.password.get_password_from_prompt")
+        mock_getpass = mocker.patch("crashplancli.password.get_password_from_prompt")
         mock_getpass.return_value = "Test Password"
         actual = create_mock_profile().get_password()
         assert actual == "Test Password"
@@ -66,10 +64,6 @@ class TestCode42Profile:
         mock_profile = create_mock_profile()
         assert mock_profile.ignore_ssl_errors == "True"
 
-    def test_use_v2_file_events_returns_expected_value(self):
-        mock_profile = create_mock_profile()
-        assert mock_profile.use_v2_file_events == "False"
-
     def test_api_client_auth_returns_expected_value(self):
         mock_profile = create_mock_profile()
         assert mock_profile.api_client_auth == "False"
@@ -84,7 +78,7 @@ def test_get_profile_returns_expected_profile(config_accessor):
 
 def test_get_profile_when_config_accessor_raises_cli_error(config_accessor):
     config_accessor.get_profile.side_effect = NoConfigProfileError()
-    with pytest.raises(Code42CLIError):
+    with pytest.raises(crashplancliError):
         cliprofile.get_profile("testprofilename")
 
 
@@ -105,7 +99,7 @@ def test_validate_default_profile_prints_set_default_help_when_no_valid_default_
 ):
     config_accessor.get_profile.side_effect = NoConfigProfileError()
     config_accessor.get_all_profiles.return_value = [MockSection("thisprofilexists")]
-    with pytest.raises(Code42CLIError):
+    with pytest.raises(crashplancliError):
         cliprofile.validate_default_profile()
         capture = capsys.readouterr()
         assert "No default profile set." in capture.out
@@ -116,7 +110,7 @@ def test_validate_default_profile_prints_create_profile_help_when_no_valid_defau
 ):
     config_accessor.get_profile.side_effect = NoConfigProfileError()
     config_accessor.get_all_profiles.return_value = []
-    with pytest.raises(Code42CLIError):
+    with pytest.raises(crashplancliError):
         cliprofile.validate_default_profile()
         capture = capsys.readouterr()
         assert "No existing profile." in capture.out
@@ -149,10 +143,10 @@ def test_create_profile_when_user_credentials_uses_expected_profile_values(
     username = "username"
     ssl_errors_disabled = True
     cliprofile.create_profile(
-        profile_name, server, username, ssl_errors_disabled, False, False
+        profile_name, server, username, ssl_errors_disabled, False
     )
     config_accessor.create_profile.assert_called_once_with(
-        profile_name, server, username, ssl_errors_disabled, False, False
+        profile_name, server, username, ssl_errors_disabled, False
     )
 
 
@@ -163,10 +157,10 @@ def test_create_profile_when_api_client_uses_expected_profile_values(config_acce
     api_client_id = "key-42"
     ssl_errors_disabled = True
     cliprofile.create_profile(
-        profile_name, server, api_client_id, ssl_errors_disabled, False, True
+        profile_name, server, api_client_id, ssl_errors_disabled, True
     )
     config_accessor.create_profile.assert_called_once_with(
-        profile_name, server, api_client_id, ssl_errors_disabled, False, True
+        profile_name, server, api_client_id, ssl_errors_disabled, True
     )
 
 
@@ -174,8 +168,8 @@ def test_create_profile_if_profile_exists_exits(
     mocker, cli_state, caplog, config_accessor
 ):
     config_accessor.get_profile.return_value = mocker.MagicMock()
-    with pytest.raises(Code42CLIError):
-        cliprofile.create_profile("foo", "bar", "baz", True, False, False)
+    with pytest.raises(crashplancliError):
+        cliprofile.create_profile("foo", "bar", "baz", True, False)
 
 
 def test_get_all_profiles_returns_expected_profile_list(config_accessor):
@@ -228,7 +222,7 @@ def test_set_password_uses_expected_password(config_accessor, password_setter):
 def test_delete_profile_deletes_profile(config_accessor, mocker):
     name = "deleteme"
     profile = create_mock_profile(name)
-    mock_get_profile = mocker.patch("code42cli.profile._get_profile")
+    mock_get_profile = mocker.patch("crashplancli.profile._get_profile")
     mock_get_profile.return_value = profile
     cliprofile.delete_profile(name)
     config_accessor.delete_profile.assert_called_once_with(name)
@@ -237,7 +231,7 @@ def test_delete_profile_deletes_profile(config_accessor, mocker):
 def test_delete_profile_deletes_profile_from_object_name(config_accessor, mocker):
     expected = "deleteme - different name than the arg"
     profile = create_mock_profile(expected)
-    mock_get_profile = mocker.patch("code42cli.profile._get_profile")
+    mock_get_profile = mocker.patch("crashplancli.profile._get_profile")
     mock_get_profile.return_value = profile
     cliprofile.delete_profile("deleteme")
     config_accessor.delete_profile.assert_called_once_with(expected)
@@ -247,7 +241,7 @@ def test_delete_profile_deletes_password_if_exists(
     config_accessor, mocker, password_getter, password_deleter
 ):
     profile = create_mock_profile("deleteme")
-    mock_get_profile = mocker.patch("code42cli.profile._get_profile")
+    mock_get_profile = mocker.patch("crashplancli.profile._get_profile")
     mock_get_profile.return_value = profile
     password_getter.return_value = "i_exist"
     cliprofile.delete_profile("deleteme")
@@ -256,16 +250,12 @@ def test_delete_profile_deletes_password_if_exists(
 
 def test_delete_profile_clears_checkpoints(config_accessor, mocker):
     profile = create_mock_profile("deleteme")
-    mock_get_profile = mocker.patch("code42cli.profile._get_profile")
+    mock_get_profile = mocker.patch("crashplancli.profile._get_profile")
     mock_get_profile.return_value = profile
-    event_store = mocker.MagicMock(spec=FileEventCursorStore)
-    alert_store = mocker.MagicMock(spec=AlertCursorStore)
     auditlog_store = mocker.MagicMock(spec=AuditLogCursorStore)
     mock_get_cursor_store = mocker.patch(
-        "code42cli.profile.get_all_cursor_stores_for_profile"
+        "crashplancli.profile.get_all_cursor_stores_for_profile"
     )
-    mock_get_cursor_store.return_value = [event_store, alert_store, auditlog_store]
+    mock_get_cursor_store.return_value = [auditlog_store]
     cliprofile.delete_profile("deleteme")
-    assert event_store.clean.call_count == 1
-    assert alert_store.clean.call_count == 1
     assert auditlog_store.clean.call_count == 1

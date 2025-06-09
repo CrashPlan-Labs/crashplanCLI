@@ -16,11 +16,11 @@
 
 ## Set up your Development environment
 
-The very first thing to do is to fork the code42cli repo, clone it, and make it your working directory!
+The very first thing to do is to fork the crashplancli repo, clone it, and make it your working directory!
 
 ```bash
-git clone https://github.com/myaccount/code42cli
-cd code42cli
+git clone https://github.com/myaccount/crashplancli
+cd crashplancli
 ```
 
 To set up your development environment, create a python virtual environment and activate it. This keeps your dependencies sandboxed so that they are unaffected by (and do not affect) other python packages you may have installed.
@@ -45,14 +45,14 @@ eval "$(pyenv virtualenv-init -)"
 Then, create your virtual environment.
 
 ```bash
-pyenv install 3.9.10
-pyenv virtualenv 3.9.10 code42cli
-pyenv activate code42cli
+pyenv install 3.11
+pyenv virtualenv 3.11 crashplancli
+pyenv activate crashplancli
 ```
 
 **Note**: The CLI supports pythons versions 3.9 through 3.12 for end users. Use `pyenv --versions` to see all versions available for install.
 
-Use `source deactivate` to exit the virtual environment and `pyenv activate code42cli` to reactivate it.
+Use `source deactivate` to exit the virtual environment and `pyenv activate crashplancli` to reactivate it.
 
 ### Windows/Linux
 
@@ -60,11 +60,11 @@ Install a version of python 3.9 or higher from [python.org](https://python.org).
 Next, in a directory somewhere outside the project, create and activate your virtual environment:
 
 ```bash
-python -m venv code42cli
+python -m venv crashplancli
 # macOS/Linux
-source code42cli/bin/activate
+source crashplancli/bin/activate
 # Windows
-.\code42cli\Scripts\Activate
+.\crashplancli\Scripts\Activate
 ```
 
 To leave the virtual environment, simply use:
@@ -74,7 +74,7 @@ deactivate
 
 ## Installation
 
-Next, with your virtual environment activated, install code42cli and its development dependencies. The `-e` option installs code42cli in
+Next, with your virtual environment activated, install crashplancli and its development dependencies. The `-e` option installs crashplancli in
 ["editable mode"](https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs).
 
 ```bash
@@ -159,7 +159,7 @@ Command functions should have accompanying documentation. Documentation is writt
 
 ### Generating documentation
 
-code42cli uses [Sphinx](http://www.sphinx-doc.org/) to generate documentation.
+crashplancli uses [Sphinx](http://www.sphinx-doc.org/) to generate documentation.
 
 #### Performing a test build
 
@@ -198,7 +198,7 @@ Document all notable consumer-affecting changes in CHANGELOG.md per principles a
 
 When you're satisfied with your changes, open a PR and fill out the pull request template file. We recommend prefixing the name of your branch and/or PR title with `bugfix`, `chore`, or `feature` to help quickly categorize your change. Your unit tests and other checks will run against all supported python versions when you do this.
 
-For contributions from non-Code42 employees, we require you to agree to our [Contributor License Agreement](https://code42.github.io/code42-cla/Code42_Individual_Contributor_License_Agreement).
+For contributions from non-crashplan employees, we require you to agree to our [Contributor License Agreement](https://crashplan.github.io/crashplan-cla/crashplan_Individual_Contributor_License_Agreement).
 
 On submission of your first PR, a GitHub action will run requiring you to reply in a comment with your affirmation of the CLA before the PR will be able to be merged.
 

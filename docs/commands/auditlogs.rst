@@ -1,3 +1,3 @@
-.. click:: code42cli.cmds.auditlogs:audit_logs
+.. click:: crashplancli.cmds.auditlogs:audit_logs
   :prog: audit-logs
   :nested: full

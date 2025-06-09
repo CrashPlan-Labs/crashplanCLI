@@ -1,4 +1,4 @@
-from code42cli.click_ext.types import PromptChoice
+from crashplancli.click_ext.types import PromptChoice
 
 
 class TestPromptChoice:

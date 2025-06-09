@@ -1,3 +1,3 @@
-.. click:: code42cli.cmds.profile:profile
+.. click:: crashplancli.cmds.profile:profile
   :prog: profile
   :nested: full

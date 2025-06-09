@@ -3,8 +3,8 @@ from configparser import ConfigParser
 import pytest
 
 from .conftest import MockSection
-from code42cli.config import ConfigAccessor
-from code42cli.config import NoConfigProfileError
+from crashplancli.config import ConfigAccessor
+from crashplancli.config import NoConfigProfileError
 
 _TEST_PROFILE_NAME = "ProfileA"
 _TEST_SECOND_PROFILE_NAME = "ProfileB"
@@ -13,7 +13,7 @@ _INTERNAL = "Internal"
 
 @pytest.fixture(autouse=True)
 def mock_saver(mocker):
-    return mocker.patch("code42cli.config.open")
+    return mocker.patch("crashplancli.config.open")
 
 
 @pytest.fixture
@@ -153,7 +153,7 @@ class TestConfigAccessor:
         accessor = ConfigAccessor(config_parser_for_create)
         with pytest.raises(NoConfigProfileError):
             accessor.create_profile(
-                ConfigAccessor.DEFAULT_VALUE, "foo", "bar", False, False, False
+                ConfigAccessor.DEFAULT_VALUE, "foo", "bar", False, False
             )
 
     def test_create_profile_when_no_default_profile_sets_default(
@@ -165,9 +165,7 @@ class TestConfigAccessor:
         accessor = ConfigAccessor(config_parser_for_create)
         accessor.switch_default_profile = mocker.MagicMock()
 
-        accessor.create_profile(
-            _TEST_PROFILE_NAME, "example.com", "bar", None, None, None
-        )
+        accessor.create_profile(_TEST_PROFILE_NAME, "example.com", "bar", None, None)
         assert accessor.switch_default_profile.call_count == 1
 
     def test_create_profile_when_has_default_profile_does_not_set_default(
@@ -179,9 +177,7 @@ class TestConfigAccessor:
         accessor = ConfigAccessor(config_parser_for_create)
         accessor.switch_default_profile = mocker.MagicMock()
 
-        accessor.create_profile(
-            _TEST_PROFILE_NAME, "example.com", "bar", None, None, None
-        )
+        accessor.create_profile(_TEST_PROFILE_NAME, "example.com", "bar", None, None)
         assert not accessor.switch_default_profile.call_count
 
     def test_create_profile_when_not_existing_saves(
@@ -192,9 +188,7 @@ class TestConfigAccessor:
         setup_parser_one_profile(mock_internal, mock_internal, config_parser_for_create)
         accessor = ConfigAccessor(config_parser_for_create)
 
-        accessor.create_profile(
-            _TEST_PROFILE_NAME, "example.com", "bar", None, None, None
-        )
+        accessor.create_profile(_TEST_PROFILE_NAME, "example.com", "bar", None, None)
         assert mock_saver.call_count
 
     def test_update_profile_when_no_profile_exists_raises_exception(
@@ -221,9 +215,6 @@ class TestConfigAccessor:
         assert accessor.get_profile(_TEST_PROFILE_NAME)[
             ConfigAccessor.IGNORE_SSL_ERRORS_KEY
         ]
-        assert accessor.get_profile(_TEST_PROFILE_NAME)[
-            ConfigAccessor.USE_V2_FILE_EVENTS_KEY
-        ]
 
     def test_update_profile_does_not_update_when_given_none(
         self, config_parser_for_multiple_profiles
@@ -235,7 +226,7 @@ class TestConfigAccessor:
         username = "NOT NONE"
         accessor.update_profile(_TEST_PROFILE_NAME, address, username, True, True)
 
-        accessor.update_profile(_TEST_PROFILE_NAME, None, None, None, None)
+        accessor.update_profile(_TEST_PROFILE_NAME, None, None)
         assert (
             accessor.get_profile(_TEST_PROFILE_NAME)[ConfigAccessor.AUTHORITY_KEY]
             == address
@@ -246,7 +237,4 @@ class TestConfigAccessor:
         )
         assert accessor.get_profile(_TEST_PROFILE_NAME)[
             ConfigAccessor.IGNORE_SSL_ERRORS_KEY
-        ]
-        assert accessor.get_profile(_TEST_PROFILE_NAME)[
-            ConfigAccessor.USE_V2_FILE_EVENTS_KEY
         ]

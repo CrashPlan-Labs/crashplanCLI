@@ -11,26 +11,25 @@
 #
 import os
 import sys
-
-import code42cli.__version__ as meta
+from importlib.metadata import version as get_version
 
 # -- Project information -----------------------------------------------------
 
-project = "code42cli"
-copyright = "2022, Code42 Software"
-author = "Code42 Software"
+project = "crashplancli"
+copyright = "2025, CrashPlan Group"
+author = "CrashPlan Group"
 
 # The short X.Y version
-version = f"code42cli v{meta.__version__}"
+version = get_version("crashplancli")
 # The full version, including alpha/beta/rc tags
-release = f"code42cli v{meta.__version__}"
+release = get_version("crashplancli")
 
 
 # -- General configuration ---------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-needs_sphinx = "4.4.0"
+needs_sphinx = "8.2.3"
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom

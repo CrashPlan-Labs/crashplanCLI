@@ -1,9 +1,8 @@
 import pytest
 
-from code42cli.cmds.search import _try_get_logger_for_server
-from code42cli.enums import SendToFileEventsOutputFormat
-from code42cli.errors import Code42CLIError
-from code42cli.logger.enums import ServerProtocol
+from crashplancli.cmds.search import _try_get_logger_for_server
+from crashplancli.errors import crashplancliError
+from crashplancli.logger.enums import ServerProtocol
 
 
 _TEST_ERROR_MESSAGE = "TEST ERROR MESSAGE"
@@ -13,7 +12,7 @@ _TEST_CERTS = "./certs.pem"
 
 @pytest.fixture
 def patched_get_logger_method(mocker):
-    return mocker.patch("code42cli.cmds.search.get_logger_for_server")
+    return mocker.patch("crashplancli.cmds.search.get_logger_for_server")
 
 
 @pytest.fixture
@@ -27,25 +26,22 @@ def test_try_get_logger_for_server_calls_get_logger_for_server(
     _try_get_logger_for_server(
         _TEST_HOST,
         ServerProtocol.TLS_TCP,
-        SendToFileEventsOutputFormat.CEF,
         _TEST_CERTS,
     )
     patched_get_logger_method.assert_called_once_with(
         _TEST_HOST,
         ServerProtocol.TLS_TCP,
-        SendToFileEventsOutputFormat.CEF,
         _TEST_CERTS,
     )
 
 
-def test_try_get_logger_for_server_when_exception_raised_raises_code42_cli_error(
+def test_try_get_logger_for_server_when_exception_raised_raises_crashplan_cli_error(
     errored_logger,
 ):
-    with pytest.raises(Code42CLIError) as err:
+    with pytest.raises(crashplancliError) as err:
         _try_get_logger_for_server(
             _TEST_HOST,
             ServerProtocol.TCP,
-            SendToFileEventsOutputFormat.RAW,
             _TEST_CERTS,
         )
 

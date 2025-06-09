@@ -1,8 +1,8 @@
 import pytest
 
-from code42cli import errors
-from code42cli.cmds.util import try_get_default_header
-from code42cli.output_formats import OutputFormat
+from crashplancli import errors
+from crashplancli.cmds.util import try_get_default_header
+from crashplancli.output_formats import OutputFormat
 
 key = "events"
 
@@ -18,7 +18,7 @@ def search(*args, **kwargs):
 
 
 def test_try_get_default_header_raises_cli_error_when_using_include_all_with_none_table_format():
-    with pytest.raises(errors.Code42CLIError) as err:
+    with pytest.raises(errors.crashplancliError) as err:
         try_get_default_header(True, {}, OutputFormat.CSV)
 
     assert str(err.value) == "--include-all only allowed for Table output format."

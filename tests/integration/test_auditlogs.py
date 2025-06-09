@@ -1,17 +1,18 @@
 from datetime import datetime
 from datetime import timedelta
+from datetime import timezone
 from shlex import split as split_command
 
 import pytest
 from tests.integration.conftest import append_profile
 from tests.integration.util import assert_test_is_successful
 
-from code42cli.main import cli
+from crashplancli.main import cli
 
 
-begin_date = datetime.utcnow() - timedelta(days=2)
+begin_date = datetime.now(timezone.utc) - timedelta(days=2)
 begin_date_str = begin_date.strftime("%Y-%m-%d %H:%M:%S")
-end_date = datetime.utcnow() - timedelta(days=0)
+end_date = datetime.now(timezone.utc) - timedelta(days=0)
 end_date_str = end_date.strftime("%Y-%m-%d %H:%M:%S")
 
 

@@ -1,18 +1,19 @@
 import json
 from datetime import datetime
 from datetime import timedelta
+from datetime import timezone
 
 import pytest
 from click.testing import CliRunner
-from py42.response import Py42Response
-from py42.sdk import SDKClient
+from pycpg.response import PycpgResponse
+from pycpg.sdk import SDKClient
 from requests import HTTPError
 from requests import Response
 
-import code42cli.errors as error_tracker
-from code42cli.config import ConfigAccessor
-from code42cli.options import CLIState
-from code42cli.profile import Code42Profile
+import crashplancli.errors as error_tracker
+from crashplancli.config import ConfigAccessor
+from crashplancli.options import CLIState
+from crashplancli.profile import crashplanProfile
 
 TEST_ID = "TEST_ID"
 
@@ -27,77 +28,16 @@ def io_prevention(monkeypatch):
     monkeypatch.setattr("logging.FileHandler._open", lambda *args, **kwargs: None)
 
 
-@pytest.fixture
-def file_event_namespace():
-    args = dict(
-        sdk=mock_42,
-        profile=create_mock_profile(),
-        incremental=None,
-        advanced_query=None,
-        begin=None,
-        end=None,
-        type=None,
-        c42_username=None,
-        actor=None,
-        md5=None,
-        sha256=None,
-        source=None,
-        file_name=None,
-        file_path=None,
-        process_owner=None,
-        tab_url=None,
-        include_non_exposure=None,
-        format=None,
-        output_file=None,
-        server=None,
-        protocol=None,
-        saved_search=None,
-    )
-    return args
-
-
-@pytest.fixture
-def alert_namespace():
-    args = dict(
-        sdk=mock_42,
-        profile=create_mock_profile(),
-        incremental=None,
-        advanced_query=None,
-        begin=None,
-        end=None,
-        severity=None,
-        state=None,
-        actor=None,
-        actor_contains=None,
-        exclude_actor=None,
-        exclude_actor_contains=None,
-        rule_name=None,
-        exclude_rule_name=None,
-        rule_id=None,
-        exclude_rule_id=None,
-        rule_type=None,
-        exclude_rule_type=None,
-        description=None,
-        format=None,
-        output_file=None,
-        server=None,
-        protocol=None,
-    )
-    return args
-
-
 def create_profile_values_dict(
     authority=None,
     username=None,
     ignore_ssl=False,
-    use_v2_file_events=False,
     api_client_auth="False",
 ):
     return {
         ConfigAccessor.AUTHORITY_KEY: "example.com",
         ConfigAccessor.USERNAME_KEY: "foo",
         ConfigAccessor.IGNORE_SSL_ERRORS_KEY: "True",
-        ConfigAccessor.USE_V2_FILE_EVENTS_KEY: "False",
         ConfigAccessor.API_CLIENT_AUTH_KEY: "False",
     }
 
@@ -121,7 +61,7 @@ def sdk_without_user(sdk):
 
 @pytest.fixture
 def mock_42(mocker):
-    return mocker.patch("py42.sdk.from_local_account")
+    return mocker.patch("pycpg.sdk.from_local_account")
 
 
 @pytest.fixture
@@ -152,7 +92,7 @@ class MockSection:
 
 def create_mock_profile(name="Test Profile Name"):
     profile_section = MockSection(name)
-    profile = Code42Profile(profile_section)
+    profile = crashplanProfile(profile_section)
     return profile
 
 
@@ -164,7 +104,7 @@ def setup_mock_accessor(mock_accessor, name=None, values_dict=None):
 
 @pytest.fixture
 def profile(mocker):
-    mock = mocker.MagicMock(spec=Code42Profile)
+    mock = mocker.MagicMock(spec=crashplanProfile)
     mock.name = "testcliprofile"
     return mock
 
@@ -226,7 +166,7 @@ def convert_str_to_date(date_str):
 
 def get_test_date(days_ago=None, hours_ago=None, minutes_ago=None):
     """Note: only pass in one parameter to get the right test date... this is just a test func."""
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     if days_ago:
         return now - timedelta(days=days_ago)
     if hours_ago:
@@ -263,22 +203,22 @@ TEST_FILE_PATH = "some/path"
 
 @pytest.fixture
 def mock_to_table(mocker):
-    return mocker.patch("code42cli.output_formats.to_table")
+    return mocker.patch("crashplancli.output_formats.to_table")
 
 
 @pytest.fixture
 def mock_to_csv(mocker):
-    return mocker.patch("code42cli.output_formats.to_csv")
+    return mocker.patch("crashplancli.output_formats.to_csv")
 
 
 @pytest.fixture
 def mock_to_json(mocker):
-    return mocker.patch("code42cli.output_formats.to_json")
+    return mocker.patch("crashplancli.output_formats.to_json")
 
 
 @pytest.fixture
 def mock_to_formatted_json(mocker):
-    return mocker.patch("code42cli.output_formats.to_formatted_json")
+    return mocker.patch("crashplancli.output_formats.to_formatted_json")
 
 
 @pytest.fixture
@@ -306,7 +246,7 @@ def create_mock_response(mocker, data=None, status=200):
     response.status_code = status
     response.encoding = None
     response._content_consumed = ""
-    return Py42Response(response)
+    return PycpgResponse(response)
 
 
 def create_mock_http_error(mocker, data=None, status=400):

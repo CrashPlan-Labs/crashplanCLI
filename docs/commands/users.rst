@@ -1,3 +1,3 @@
-.. click:: code42cli.cmds.users:users
+.. click:: crashplancli.cmds.users:users
   :prog: users
   :nested: full

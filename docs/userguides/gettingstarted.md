@@ -1,4 +1,4 @@
-# Get started with the Code42 command-line interface (CLI)
+# Get started with the crashplan command-line interface (CLI)
 
 * [Licensing](#licensing)
 * [Installation](#installation)
@@ -7,35 +7,35 @@
 
 ## Licensing
 
-This project uses the [MIT License](https://github.com/code42/code42cli/blob/main/LICENSE.md).
+This project uses the [MIT License](https://github.com/CrashPlan-Labs/crashplancli/blob/main/LICENSE.md).
 
 ## Installation
 
-You can install the Code42 CLI from PyPI, from source, or from distribution.
+You can install the crashplan CLI from PyPI, from source, or from distribution.
 
 ### From PyPI
 
 The easiest and most common way is to use `pip`:
 
 ```bash
-python3 -m pip install code42cli
+python3 -m pip install crashplancli
 ```
 
-To install a previous version of the Code42 CLI via `pip`, add the version number. For example, to install version
+To install a previous version of the crashplan CLI via `pip`, add the version number. For example, to install version
 0.5.3, enter:
 
 ```bash
-python3 -m pip install code42cli==0.5.3
+python3 -m pip install crashplancli==0.5.3
 ```
 
-Visit the [project history](https://pypi.org/project/code42cli/#history) on PyPI to see all published versions.
+Visit the [project history](https://pypi.org/project/crashplancli/#history) on PyPI to see all published versions.
 
 ### From source
 
-Alternatively, you can install the Code42 CLI directly from [source code](https://github.com/code42/code42cli):
+Alternatively, you can install the crashplan CLI directly from [source code](https://github.com/CrashPlan-Labs/crashplancli):
 
 ```bash
-git clone https://github.com/code42/code42cli.git
+git clone https://github.com/CrashPlan-Labs/crashplancli.git
 ```
 
 When it finishes downloading, from the root project directory, run:
@@ -55,7 +55,7 @@ python setup.py sdist
 After it finishes building, the `.tar` ball will be located in the newly created `dist` directory. To install it, enter:
 
 ```bash
-python3 -m pip install code42cli-[VERSION].tar.gz
+python3 -m pip install crashplancli-[VERSION].tar.gz
 ```
 
 ## Updates
@@ -63,35 +63,35 @@ python3 -m pip install code42cli-[VERSION].tar.gz
 To update the CLI, use the pip `--upgrade` flag.
 
 ```bash
-python3 -m pip install code42cli --upgrade
+python3 -m pip install crashplancli --upgrade
 ```
 
 ## Authentication
 
 ```{eval-rst}
-.. important:: The Code42 CLI currently only supports token-based authentication.
+.. important:: The crashplan CLI currently only supports token-based authentication.
 ```
 
-Create a user in Code42 to authenticate (basic authentication) and access data via the CLI. The CLI returns data based
+Create a user in crashplan to authenticate (basic authentication) and access data via the CLI. The CLI returns data based
 on the roles assigned to this user. To ensure that the user's rights are not too permissive, create a user with the lowest
-level of privilege necessary. See our [Role assignment use cases](https://support.code42.com/Administrator/Cloud/Monitoring_and_managing/Role_assignment_use_cases)
+level of privilege necessary. See our [Role assignment use cases](https://support.crashplan.com/hc/en-us/articles/9112366299789-Roles-reference)
 for information on recommended roles. We recommend you test to confirm that the user can access the right data.
 
 If you choose not to store your password in the CLI, you must enter it for each command that requires a connection.
 
-The Code42 CLI supports local accounts with MFA (multi-factor authentication) enabled. The Time-based One-Time
+The crashplan CLI supports local accounts with MFA (multi-factor authentication) enabled. The Time-based One-Time
 Password (TOTP) must be provided at every invocation of the CLI, either via the `--totp` option or when prompted.
 
-The Code42 CLI currently does **not** support SSO login providers or any other identity providers such as Active
+The crashplan CLI currently does **not** support SSO login providers or any other identity providers such as Active
 Directory or Okta.
 
 ## Proxy Support
 
 ```{eval-rst}
-.. note:: Proxy support was added in code42cli version 1.16.0
+.. note:: Proxy support was added in crashplancli version 1.16.0
 ```
 
-The Code42 CLI will attempt to connect through a proxy if the `https_proxy`/`HTTPS_PROXY` environment variable is set.
+The crashplan CLI will attempt to connect through a proxy if the `https_proxy`/`HTTPS_PROXY` environment variable is set.
 
 ### Windows and Mac
 
@@ -99,10 +99,10 @@ For Windows and Mac systems, the CLI uses Keyring when storing passwords.
 
 ### Red Hat Enterprise Linux
 
-To use Keyring to store the credentials you 2enter in the Code42 CLI, enter the following commands before installing.
+To use Keyring to store the credentials you 2enter in the crashplan CLI, enter the following commands before installing.
 ```bash
 yum -y install python-pip python3 dbus-python gnome-keyring libsecret dbus-x11
-pip3 install code42cli
+pip3 install crashplancli
 ```
 If the following directories do not already exist, create them:
 ```bash
@@ -120,10 +120,10 @@ Close out your D-bus session and GNOME Keyring:
 pkill gnome
 pkill dbus
 ```
-If you do not use Keyring to store your credentials, the Code42 CLI will ask permission to store your credentials in a local flat file with read/write permissions for only the operating system user who set the password. Alternatively, you can enter your password with each command you enter.
+If you do not use Keyring to store your credentials, the crashplan CLI will ask permission to store your credentials in a local flat file with read/write permissions for only the operating system user who set the password. Alternatively, you can enter your password with each command you enter.
 
 ### Ubuntu
-If Keyring doesn't support your Ubuntu system, the Code42 CLI will ask permission to store your credentials in a local flat file with read/write permissions for only the operating system user who set the password. Alternatively, you can enter your password with each command you enter.
+If Keyring doesn't support your Ubuntu system, the crashplan CLI will ask permission to store your credentials in a local flat file with read/write permissions for only the operating system user who set the password. Alternatively, you can enter your password with each command you enter.
 
 
 
@@ -131,33 +131,33 @@ To learn more about authenticating in the CLI, follow the [Configure profile gui
 
 ## Troubleshooting and support
 
-### Code42 command not found
+### crashplan command not found
 
-If your python installation has added itself to your environment's PATH variable, then running `code42` _should_ just work.
+If your python installation has added itself to your environment's PATH variable, then running `crashplan` _should_ just work.
 
-However, if after installation the `code42` command is not found, the CLI has some helpers for this (added in version 1.10):
+However, if after installation the `crashplan` command is not found, the CLI has some helpers for this (added in version 1.10):
 
 You can execute the CLI by calling the python module directly:
 
 ```bash
-python3 -m code42cli
+python3 -m crashplancli
 ```
 
-And the base `code42` command now has a `--script-dir` option that will print out the directory the `code42` script was
-installed into, so you can manually add it to your PATH, enabling the `code42` command to work.
+And the base `crashplan` command now has a `--script-dir` option that will print out the directory the `crashplan` script was
+installed into, so you can manually add it to your PATH, enabling the `crashplan` command to work.
 
 #### On Mac/Linux:
 
-Run the following to make `code42` visible in your shell's PATH (to persist the change, add it to your shell's configuration file):
+Run the following to make `crashplan` visible in your shell's PATH (to persist the change, add it to your shell's configuration file):
 
 ```bash
-export PATH=$PATH:$(python3 -m code42cli --script-dir)
+export PATH=$PATH:$(python3 -m crashplancli --script-dir)
 ```
 
 #### On Windows:
 
 ```powershell
-$env:Path += ";$(python -m code42cli --script-dir)"
+$env:Path += ";$(python -m crashplancli --script-dir)"
 ```
 
 To persist the change, add the updated PATH to your registry:
@@ -173,19 +173,19 @@ on, the CLI logs HTTP request data to the console. Use the `-d` flag to enable d
 `-d` can appear anywhere in the command chain:
 
 ```bash
-code42 <command> <subcommand> <args> -d
+crashplan <command> <subcommand> <args> -d
 ```
 
 ### File an issue on GitHub
 
-If you are experiencing an issue with the Code42 CLI, select *New issue* at the
-[project repository](https://github.com/code42/code42cli/issues) to create an issue. See the Github
+If you are experiencing an issue with the crashplan CLI, select *New issue* at the
+[project repository](https://github.com/CrashPlan-Labs/crashplancli/issues) to create an issue. See the Github
 [guide on creating an issue](https://help.github.com/en/github/managing-your-work-on-github/creating-an-issue) for more information.
 
-### Contact Code42 Support
+### Contact crashplan Support
 
 If you don't have a GitHub account and are experiencing issues, contact
-[Code42 support](https://support.code42.com/).
+[crashplan support](https://support.crashplan.com/).
 
 ## What's next?
 

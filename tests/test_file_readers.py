@@ -1,10 +1,10 @@
 import click.exceptions
 import pytest
 
-from code42cli.click_ext.types import AutoDecodedFile
-from code42cli.click_ext.types import FileOrString
-from code42cli.errors import Code42CLIError
-from code42cli.file_readers import read_csv
+from crashplancli.click_ext.types import AutoDecodedFile
+from crashplancli.click_ext.types import FileOrString
+from crashplancli.errors import crashplancliError
+from crashplancli.file_readers import read_csv
 
 HEADERLESS_CSV = [
     "col1_val1,col2_val1,col3_val1\n",
@@ -45,7 +45,7 @@ def test_read_csv_raises_when_no_header_detected_and_column_count_doesnt_match_e
         with open("test_csv.csv", "w") as csv:
             csv.writelines(HEADERLESS_CSV)
         with open("test_csv.csv") as csv:
-            with pytest.raises(Code42CLIError):
+            with pytest.raises(crashplancliError):
                 read_csv(csv, ["column1", "column2"])
 
 
@@ -63,7 +63,7 @@ def test_read_csv_when_some_but_not_all_required_headers_present_raises(runner):
         with open("test_csv.csv", "w") as csv:
             csv.writelines(HEADERED_CSV)
         with open("test_csv.csv") as csv:
-            with pytest.raises(Code42CLIError):
+            with pytest.raises(crashplancliError):
                 read_csv(file=csv, headers=HEADERS + ["extra_header"])
 
 

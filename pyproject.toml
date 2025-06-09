@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+license = "MIT"
+license-files = ["LICENSE.md"]
+name = "crashplancli"
+version = "1.0.0"
+description = "The official command line tool for interacting with CrashPlan"
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.10, <4"
+keywords = ["backup","crashplan"]
+dependencies = [
+    "chardet",
+    "click>=8.1.8",
+    "click_plugins>=1.1.1",
+    "colorama>=0.4.6",
+    "keyring==25.6.0",
+    "keyrings.alt==5.0.2",
+    "ipython>=8.10.0;python_version>='3.10'",
+    "pandas>=2.2.3",
+    "pycpg>=1.0.1",
+    "setuptools>=66.0.0",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Natural Language :: English",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython"
+]
+
+[project.urls]
+Homepage = "https://github.com/CrashPlan-Labs"
+Issues = "https://github.com/CrashPlan-Labs/crashplancli/issues"
+Documentation = "https://crashplanclidocs.CrashPlan.com/"
+Repository = "https://github.com/CrashPlan-Labs/crashplancli"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["crashplancli*"]
+
+[project.optional-dependencies]
+docs = [
+    "sphinx==8.2.3",
+    "myst-parser==4.0.1",
+    "sphinx_rtd_theme==3.0.2",
+    "docutils == 0.21.2",
+    "sphinx-click == 6.0.0",
+]
+dev = [
+    "flake8 == 4.0.0",
+    "pytest == 8.3.5",
+    "pytest-cov == 4.0.0",
+    "pytest-mock == 3.10.0",
+    "tox == 4.25.0",
+    "importlib-metadata<5.0",
+]
+
+[project.scripts]
+crashplan = "crashplancli.main:cli"

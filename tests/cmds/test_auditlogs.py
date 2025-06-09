@@ -1,21 +1,22 @@
 import json
 from datetime import datetime
 from datetime import timedelta
+from datetime import timezone
 from logging import Logger
 
 import pytest
 from tests.cmds.conftest import get_mark_for_search_and_send_to
 from tests.conftest import create_mock_response
 
-from code42cli.click_ext.types import MagicDate
-from code42cli.cmds.search.cursor_store import AuditLogCursorStore
-from code42cli.date_helper import convert_datetime_to_timestamp
-from code42cli.date_helper import round_datetime_to_day_end
-from code42cli.date_helper import round_datetime_to_day_start
-from code42cli.logger.handlers import ServerProtocol
-from code42cli.main import cli
-from code42cli.util import hash_event
-from code42cli.util import parse_timestamp
+from crashplancli.click_ext.types import MagicDate
+from crashplancli.cmds.search.cursor_store import AuditLogCursorStore
+from crashplancli.date_helper import convert_datetime_to_timestamp
+from crashplancli.date_helper import round_datetime_to_day_end
+from crashplancli.date_helper import round_datetime_to_day_start
+from crashplancli.logger.handlers import ServerProtocol
+from crashplancli.main import cli
+from crashplancli.util import hash_event
+from crashplancli.util import parse_timestamp
 
 TEST_AUDIT_LOG_TIMESTAMP_1 = "2020-01-01T12:00:00.000Z"
 TEST_AUDIT_LOG_TIMESTAMP_2 = "2020-02-01T12:01:00.000111Z"
@@ -26,7 +27,7 @@ TEST_EVENTS_WITH_SAME_TIMESTAMP = [
         "type$": "audit_log::logged_in/1",
         "actorId": "42",
         "actorName": "42@example.com",
-        "actorAgent": "py42 python code42cli",
+        "actorAgent": "pycpg python crashplancli",
         "actorIpAddress": "200.100.300.42",
         "timestamp": TEST_AUDIT_LOG_TIMESTAMP_1,
     },
@@ -34,7 +35,7 @@ TEST_EVENTS_WITH_SAME_TIMESTAMP = [
         "type$": "audit_log::logged_in/1",
         "actorId": "43",
         "actorName": "43@example.com",
-        "actorAgent": "py42 python code42cli",
+        "actorAgent": "pycpg python crashplancli",
         "actorIpAddress": "200.100.300.42",
         "timestamp": TEST_AUDIT_LOG_TIMESTAMP_1,
     },
@@ -45,7 +46,7 @@ TEST_EVENTS_WITH_DIFFERENT_TIMESTAMPS = [
         "type$": "audit_log::logged_in/1",
         "actorId": "44",
         "actorName": "44@example.com",
-        "actorAgent": "py42 python code42cli",
+        "actorAgent": "pycpg python crashplancli",
         "actorIpAddress": "200.100.300.42",
         "timestamp": TEST_AUDIT_LOG_TIMESTAMP_2,
     },
@@ -53,7 +54,7 @@ TEST_EVENTS_WITH_DIFFERENT_TIMESTAMPS = [
         "type$": "audit_log::logged_in/1",
         "actorId": "45",
         "actorName": "45@example.com",
-        "actorAgent": "py42 python code42cli",
+        "actorAgent": "pycpg python crashplancli",
         "actorIpAddress": "200.100.300.42",
         "timestamp": TEST_AUDIT_LOG_TIMESTAMP_3,
     },
@@ -66,7 +67,7 @@ def audit_log_cursor_with_checkpoint(mocker):
     mock_cursor = mocker.MagicMock(spec=AuditLogCursorStore)
     mock_cursor.get.return_value = CURSOR_TIMESTAMP
     mocker.patch(
-        "code42cli.cmds.auditlogs._get_audit_log_cursor_store",
+        "crashplancli.cmds.auditlogs._get_audit_log_cursor_store",
         return_value=mock_cursor,
     )
     return mock_cursor
@@ -80,7 +81,7 @@ def audit_log_cursor_with_checkpoint_and_events(mocker):
         hash_event(TEST_EVENTS_WITH_SAME_TIMESTAMP[0])
     ]
     mocker.patch(
-        "code42cli.cmds.auditlogs._get_audit_log_cursor_store",
+        "crashplancli.cmds.auditlogs._get_audit_log_cursor_store",
         return_value=mock_cursor,
     )
     return mock_cursor
@@ -88,13 +89,13 @@ def audit_log_cursor_with_checkpoint_and_events(mocker):
 
 @pytest.fixture
 def date_str():
-    dt = datetime.utcnow() - timedelta(days=10)
+    dt = datetime.now(timezone.utc) - timedelta(days=10)
     return dt.strftime("%Y-%m-%d %H:%M:%S")
 
 
 @pytest.fixture
 def send_to_logger_factory(mocker):
-    return mocker.patch("code42cli.cmds.search._try_get_logger_for_server")
+    return mocker.patch("crashplancli.cmds.search._try_get_logger_for_server")
 
 
 @pytest.fixture
@@ -236,7 +237,7 @@ def test_search_and_send_to_handles_filter_parameters(
 def test_search_and_send_to_handles_all_filter_parameters(
     runner, cli_state, date_str, command
 ):
-    end_time = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    end_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
     expected_begin_timestamp = convert_datetime_to_timestamp(
         MagicDate(rounding_func=round_datetime_to_day_start).convert(
             date_str, None, None

@@ -2,12 +2,12 @@ from collections import OrderedDict
 
 import pytest
 
-from code42cli import errors
-from code42cli import PRODUCT_NAME
-from code42cli.bulk import BulkProcessor
-from code42cli.bulk import generate_template_cmd_factory
-from code42cli.bulk import run_bulk_process
-from code42cli.logger import get_view_error_details_message
+from crashplancli import errors
+from crashplancli import PRODUCT_NAME
+from crashplancli.bulk import BulkProcessor
+from crashplancli.bulk import generate_template_cmd_factory
+from crashplancli.bulk import run_bulk_process
+from crashplancli.logger import get_view_error_details_message
 
 _NAMESPACE = f"{PRODUCT_NAME}.bulk"
 

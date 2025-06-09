@@ -1,10 +1,10 @@
 import pytest
-from py42.sdk import SDKClient
+from pycpg.sdk import SDKClient
 
 from ..conftest import create_mock_profile
-from code42cli.errors import Code42CLIError
-from code42cli.errors import LoggedCLIError
-from code42cli.main import cli
+from crashplancli.errors import crashplancliError
+from crashplancli.errors import LoggedCLIError
+from crashplancli.main import cli
 
 
 _SELECTED_PROFILE_NAME = "test_profile"
@@ -12,32 +12,32 @@ _SELECTED_PROFILE_NAME = "test_profile"
 
 @pytest.fixture
 def user_agreement(mocker):
-    mock = mocker.patch("code42cli.cmds.profile.does_user_agree")
+    mock = mocker.patch("crashplancli.cmds.profile.does_user_agree")
     mock.return_value = True
     return mocker
 
 
 @pytest.fixture
 def user_disagreement(mocker):
-    mock = mocker.patch("code42cli.cmds.profile.does_user_agree")
+    mock = mocker.patch("crashplancli.cmds.profile.does_user_agree")
     mock.return_value = False
     return mocker
 
 
 @pytest.fixture
 def mock_cliprofile_namespace(mocker):
-    return mocker.patch("code42cli.cmds.profile.cliprofile")
+    return mocker.patch("crashplancli.cmds.profile.cliprofile")
 
 
 @pytest.fixture(autouse=True)
 def mock_getpass(mocker):
-    mock = mocker.patch("code42cli.cmds.profile.getpass")
+    mock = mocker.patch("crashplancli.cmds.profile.getpass")
     mock.return_value = "newpassword"
 
 
 @pytest.fixture
 def mock_verify(mocker):
-    return mocker.patch("code42cli.cmds.profile.create_sdk")
+    return mocker.patch("crashplancli.cmds.profile.create_sdk")
 
 
 @pytest.fixture
@@ -55,7 +55,7 @@ def invalid_connection(mock_verify):
 
 @pytest.fixture
 def profile_name_selector(mocker):
-    mock = mocker.patch("code42cli.cmds.profile.click.prompt")
+    mock = mocker.patch("crashplancli.cmds.profile.click.prompt")
     mock.return_value = _SELECTED_PROFILE_NAME
     return mock
 
@@ -102,7 +102,7 @@ def test_create_profile_if_user_sets_password_is_created(
         ],
     )
     mock_cliprofile_namespace.create_profile.assert_called_once_with(
-        "foo", "bar", "baz", True, None, api_client_auth=False
+        "foo", "bar", "baz", True, api_client_auth=False
     )
 
 
@@ -123,12 +123,11 @@ def test_create_profile_if_user_does_not_set_password_is_created(
             "baz",
             "--disable-ssl-errors",
             "True",
-            "--use-v2-file-events",
             "True",
         ],
     )
     mock_cliprofile_namespace.create_profile.assert_called_once_with(
-        "foo", "bar", "baz", True, True, api_client_auth=False
+        "foo", "bar", "baz", True, api_client_auth=False
     )
 
 
@@ -270,7 +269,7 @@ def test_create_api_client_profile_with_api_client_id_and_secret_creates_profile
         ],
     )
     mock_cliprofile_namespace.create_profile.assert_called_once_with(
-        "foo", "bar", "baz", True, None, api_client_auth=True
+        "foo", "bar", "baz", True, api_client_auth=True
     )
     assert "Successfully created profile 'foo'." in result.output
 
@@ -297,7 +296,7 @@ def test_update_profile_updates_existing_profile(
         ],
     )
     mock_cliprofile_namespace.update_profile.assert_called_once_with(
-        name, "bar", "baz", True, None
+        name, "bar", "baz", True
     )
 
 
@@ -318,7 +317,6 @@ def test_update_profile_updates_default_profile(
             "baz",
             "--disable-ssl-errors",
             "True",
-            "--use-v2-file-events",
             "True",
         ],
     )
@@ -335,7 +333,7 @@ def test_update_profile_updates_name_alone(
     mock_cliprofile_namespace.get_profile.return_value = profile
     runner.invoke(
         cli,
-        ["profile", "update", "-u", "baz", "--disable-ssl-errors", "True"],
+        ["profile", "update", "-u", "baz", "--disable-ssl-errors", "True", "None"],
     )
     mock_cliprofile_namespace.update_profile.assert_called_once_with(
         name, None, "baz", True, None
@@ -428,10 +426,7 @@ def test_update_profile_when_given_zero_args_prints_error_message(
     profile.ignore_ssl_errors = "False"
     mock_cliprofile_namespace.get_profile.return_value = profile
     result = runner.invoke(cli, ["profile", "update"])
-    expected = (
-        "Must provide at least one of `--server`, `--username`, `--password`, "
-        "`--use-v2-file-events` or `--disable-ssl-errors` when updating a username/password authenticated profile."
-    )
+    expected = "Must provide at least one of `--server`, `--username`, `--password`, or `--disable-ssl-errors` when updating a username/password authenticated profile."
     assert "Profile 'foo' has been updated" not in result.output
     assert expected in result.output
 
@@ -444,10 +439,7 @@ def test_update_profile_when_api_client_authentication_and_is_given_zero_args_pr
     profile.api_client_auth = "True"
     mock_cliprofile_namespace.get_profile.return_value = profile
     result = runner.invoke(cli, ["profile", "update"])
-    expected = (
-        "Must provide at least one of `--server`, `--api-client-id`, `--secret`, `--use-v2-file-events` or "
-        "`--disable-ssl-errors` when updating an API client profile."
-    )
+    expected = "Must provide at least one of `--server`, `--api-client-id`, `--secret`, or `--disable-ssl-errors` when updating an API client profile."
     assert "Profile 'foo' has been updated" not in result.output
     assert expected in result.output
 
@@ -470,7 +462,6 @@ def test_update_profile_when_api_client_authentication_updates_existing_profile(
             "bar",
             "--api-client-id",
             "baz",
-            "--use-v2-file-events",
             "True",
         ],
     )
@@ -500,7 +491,6 @@ def test_update_profile_when_updating_auth_profile_to_api_client_updates_existin
             "baz",
             "--secret",
             "fob",
-            "--use-v2-file-events",
             "True",
             "-y",
         ],
@@ -531,7 +521,6 @@ def test_update_profile_when_updating_api_client_profile_to_user_credentails_upd
             "baz",
             "--password",
             "fob",
-            "--use-v2-file-events",
             "True",
             "-y",
         ],
@@ -630,7 +619,7 @@ def test_reset_pw_if_credentials_valid_password_saved(
 def test_reset_pw_if_credentials_invalid_password_not_saved(
     runner, user_agreement, mock_verify, mock_cliprofile_namespace
 ):
-    mock_verify.side_effect = Code42CLIError("Invalid credentials for user")
+    mock_verify.side_effect = crashplancliError("Invalid credentials for user")
     mock_cliprofile_namespace.profile_exists.return_value = False
     runner.invoke(cli, ["profile", "reset-pw"])
     assert not mock_cliprofile_namespace.set_password.call_count
@@ -707,7 +696,7 @@ def test_totp_option_passes_token_to_sdk_on_profile_cmds_that_init_sdk(
 ):
     totp1 = "123456"
     totp2 = "234567"
-    mock_create_sdk = mocker.patch("code42cli.cmds.profile.create_sdk")
+    mock_create_sdk = mocker.patch("crashplancli.cmds.profile.create_sdk")
     runner.invoke(
         cli,
         [
@@ -747,7 +736,7 @@ def test_totp_option_passes_token_to_sdk_on_profile_cmds_that_init_sdk(
 def test_debug_option_passed_to_sdk_on_profile_cmds_that_init_sdk(
     runner, mocker, mock_cliprofile_namespace, cli_state
 ):
-    mock_create_sdk = mocker.patch("code42cli.cmds.profile.create_sdk")
+    mock_create_sdk = mocker.patch("crashplancli.cmds.profile.create_sdk")
     runner.invoke(
         cli,
         [
