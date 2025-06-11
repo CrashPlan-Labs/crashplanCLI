@@ -34,7 +34,7 @@ As a best practice, use a separate profile when executing a scheduled task. Usin
 #### Audit Logs
 Print audit log events since June 5 which affected a certain user:
 ```bash
-crashplan audit-logs search -b 2021-06-05 --affected-username 'arthur.pendragon@examply.com'
+crashplan audit-logs search -b 2025-06-05 --affected-username 'arthur.pendragon@examply.com'
 ```
 
 #### Example Outputs

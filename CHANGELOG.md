@@ -12,8 +12,9 @@ how a consumer would use the library (e.g. adding unit tests, updating documenta
 
 ## Updated
 
-- Removed support for python version 3.9 added support for python 3.13, includes many dependency updates
-
+- Increased python minimum version to 3.11
+- Added support for python 3.13, includes many dependency updates
+- Removed Incydr features and updated branding to CrashPlan
 
 ## Legacy Versions
 

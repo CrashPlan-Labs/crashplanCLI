@@ -10,14 +10,14 @@ Use the `crashplan` command to interact with your CrashPlan environment.
 
 ## Requirements
 
-- Python 3.10+
+- Python 3.11+
 
 ## Installation
 
 Install the `crashplan` CLI using:
 
 ```bash
-$ python3 -m pip install crashplancli
+$ python -m pip install crashplancli
 ```
 
 ## Usage
