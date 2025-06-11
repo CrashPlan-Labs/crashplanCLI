@@ -432,7 +432,7 @@ def _get_all_active_hold_memberships(sdk):
         if sdk._auth_flag == 1:  # noqa: api client endpoint returns a list directly
             matters = page.data
         else:
-            matters = page["legalHolds"]
+            matters = page["matters"]
         for matter in matters:
             if sdk._auth_flag == 1:  # noqa: api client endpoint returns a list directly
                 for _page in sdk.legalhold.get_all_matter_custodians(

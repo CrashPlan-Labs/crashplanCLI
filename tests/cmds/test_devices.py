@@ -241,80 +241,50 @@ TEST_USERS_LIST_PAGE = {
         },
     ],
 }
+
 MATTER_RESPONSE = {
-    "legalHolds": [
+    "matters": [
         {
             "legalHoldUid": "123456789",
             "name": "Test legal hold matter",
             "description": "",
-            "notes": None,
-            "holdExtRef": None,
             "active": True,
             "creationDate": "2020-08-05T10:49:58.353-05:00",
             "lastModified": "2020-08-05T10:49:58.358-05:00",
             "creator": {
-                "userUid": "12345",
-                "username": "user@crashplan.com",
-                "email": "user@crashplan.com",
-                "userExtRef": None,
+                "type": "USER",
+                "principalId": "12345",
+                "displayName": "user@crashplan.com",
+                "user": {
+                    "email": "user@crashplan.com",
+                    "firstName": "Test",
+                    "lastName": "User",
+                },
             },
-            "holdPolicyUid": "966191295667423997",
+            "policyId": "966191295667423997",
         },
         {
             "legalHoldUid": "987654321",
             "name": "Another Matter",
             "description": "",
-            "notes": None,
-            "holdExtRef": None,
             "active": True,
             "creationDate": "2020-05-20T15:58:31.375-05:00",
             "lastModified": "2020-05-28T13:49:16.098-05:00",
             "creator": {
-                "userUid": "76543",
-                "username": "user2@crashplan.com",
-                "email": "user2@crashplan.com",
-                "userExtRef": None,
+                "type": "USER",
+                "principalId": "76543",
+                "displayName": "user2@crashplan.com",
+                "user": {
+                    "email": "user2@crashplan.com",
+                    "firstName": "Second",
+                    "lastName": "User",
+                },
             },
-            "holdPolicyUid": "946178665645035826",
+            "policyId": "946178665645035826",
         },
     ]
 }
-API_CLIENT_MATTER_RESPONSE = [
-    {
-        "legalHoldUid": "123456789",
-        "name": "Test legal hold matter",
-        "description": "",
-        "notes": None,
-        "holdExtRef": None,
-        "active": True,
-        "creationDate": "2020-08-05T10:49:58.353-05:00",
-        "lastModified": "2020-08-05T10:49:58.358-05:00",
-        "creator": {
-            "userUid": "12345",
-            "username": "user@crashplan.com",
-            "email": "user@crashplan.com",
-            "userExtRef": None,
-        },
-        "holdPolicyUid": "966191295667423997",
-    },
-    {
-        "legalHoldUid": "987654321",
-        "name": "Another Matter",
-        "description": "",
-        "notes": None,
-        "holdExtRef": None,
-        "active": True,
-        "creationDate": "2020-05-20T15:58:31.375-05:00",
-        "lastModified": "2020-05-28T13:49:16.098-05:00",
-        "creator": {
-            "userUid": "76543",
-            "username": "user2@crashplan.com",
-            "email": "user2@crashplan.com",
-            "userExtRef": None,
-        },
-        "holdPolicyUid": "946178665645035826",
-    },
-]
+
 ALL_CUSTODIANS_RESPONSE = {
     "legalHoldMemberships": [
         {
@@ -346,35 +316,6 @@ ALL_CUSTODIANS_RESPONSE = {
         },
     ]
 }
-API_CLIENT_ALL_CUSTODIANS_RESPONSE = [
-    {
-        "legalHoldMembershipUid": "99999",
-        "active": True,
-        "creationDate": "2020-07-16T08:50:23.405Z",
-        "legalHold": {
-            "legalHoldUid": "123456789",
-            "name": "Test legal hold matter",
-        },
-        "user": {
-            "userUid": "840103986007089121",
-            "username": "ttranda_deactivated@ttrantest.com",
-            "email": "ttranda_deactivated@ttrantest.com",
-            "userExtRef": None,
-        },
-    },
-    {
-        "legalHoldMembershipUid": "88888",
-        "active": True,
-        "creationDate": "2020-07-16T08:50:23.405Z",
-        "legalHold": {"legalHoldUid": "987654321", "name": "Another Matter"},
-        "user": {
-            "userUid": "840103986007089121",
-            "username": "ttranda_deactivated@ttrantest.com",
-            "email": "ttranda_deactivated@ttrantest.com",
-            "userExtRef": None,
-        },
-    },
-]
 
 
 @pytest.fixture
@@ -420,18 +361,12 @@ def users_list_generator():
     yield TEST_USERS_LIST_PAGE
 
 
-def matter_list_generator(mocker, api_client=False):
-    if api_client:
-        yield create_mock_response(mocker, data=API_CLIENT_MATTER_RESPONSE)
-    else:
-        yield create_mock_response(mocker, data=MATTER_RESPONSE)
+def matter_list_generator(mocker):
+    yield create_mock_response(mocker, data=MATTER_RESPONSE)
 
 
-def custodian_list_generator(mocker, api_client=False):
-    if api_client:
-        yield create_mock_response(mocker, data=API_CLIENT_ALL_CUSTODIANS_RESPONSE)
-    else:
-        yield create_mock_response(mocker, data=ALL_CUSTODIANS_RESPONSE)
+def custodian_list_generator(mocker):
+    yield create_mock_response(mocker, data=ALL_CUSTODIANS_RESPONSE)
 
 
 @pytest.fixture

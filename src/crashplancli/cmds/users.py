@@ -624,7 +624,7 @@ def _add_legal_hold_membership_to_user_dataframe(sdk, df):
 
 def _get_all_active_hold_memberships(sdk):
     for page in sdk.legalhold.get_all_matters(active=True):
-        for matter in page["legalHolds"]:
+        for matter in page["matters"]:
             for _page in sdk.legalhold.get_all_matter_custodians(
                 legal_hold_uid=matter["legalHoldUid"], active=True
             ):
