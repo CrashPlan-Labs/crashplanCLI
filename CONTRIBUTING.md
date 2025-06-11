@@ -50,13 +50,13 @@ pyenv virtualenv 3.11 crashplancli
 pyenv activate crashplancli
 ```
 
-**Note**: The CLI supports pythons versions 3.9 through 3.12 for end users. Use `pyenv --versions` to see all versions available for install.
+**Note**: The CLI supports pythons versions 3.11 through 3.13 for end users. Use `pyenv --versions` to see all versions available for install.
 
 Use `source deactivate` to exit the virtual environment and `pyenv activate crashplancli` to reactivate it.
 
 ### Windows/Linux
 
-Install a version of python 3.10 or higher from [python.org](https://python.org).
+Install a version of python 3.11 or higher from [python.org](https://python.org).
 Next, in a directory somewhere outside the project, create and activate your virtual environment:
 
 ```bash
@@ -86,7 +86,7 @@ point to your virtual environment, and you should be ready to go!
 
 ## Run a full build
 
-We use [tox](https://tox.readthedocs.io/en/latest/#) to run our build against Python 3.9, 3.10, 3.11 and 3.12. When run locally, `tox` will run only against the version of python that your virtual envrionment is running, but all versions will be validated against when you [open a PR](#opening-a-pr).
+We use [tox](https://tox.readthedocs.io/en/latest/#) to run our build against Python 3.11, 3.12, and 3.13. When run locally, `tox` will run only against the version of python that your virtual envrionment is running, but all versions will be validated against when you [open a PR](#opening-a-pr).
 
 To run all the unit tests, do a test build of the documentation, and check that the code meets all style requirements, simply run:
 
