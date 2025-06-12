@@ -1,6 +1,6 @@
 # Configure profile
 
-Use the [crashplan profile](../commands/profile.md) set of commands to establish the crashplan environment you're working
+Use the [crashplan profile](../commands/profile.md) set of commands to establish the CrashPlan environment you're working
 within and your user information.
 
 ## User token authentication
@@ -19,7 +19,7 @@ time you run a command.
 
 ## API client authentication
 
-Once you've generated an API Client in your crashplan console, use the following command to create your profile with API client authentication:
+Once you've generated an API Client in your CrashPlan console, use the following command to create your profile with API client authentication:
 ```bash
 crashplan profile create-api-client --name MY_API_CLIENT_PROFILE --server example.authority.com --api-client-id 'key-42' --secret 'crashplan%api%client%secret'
 ```
@@ -51,5 +51,5 @@ crashplan profile list
 
 ## Profiles with Multi-Factor Authentication
 
-If your crashplan user account requires multi-factor authentication, the MFA token can either be passed in with the `--totp`
+If your CrashPlan user account requires multi-factor authentication, the MFA token can either be passed in with the `--totp`
 option, or if not passed you will be prompted to enter it before the command executes.

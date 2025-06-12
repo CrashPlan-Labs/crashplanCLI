@@ -1,6 +1,6 @@
 # Manage legal hold custodians
 
-Once you [create a legal hold matter in the crashplan console](https://support.crashplan.com/hc/en-us/articles/8603769878157-Create-a-legal-hold-matter), you can use the CrashPlan CLI to add or release custodians from the matter.
+Once you [create a legal hold matter in the CrashPlan console](https://support.crashplan.com/hc/en-us/articles/8603769878157-Create-a-legal-hold-matter), you can use the CrashPlan CLI to add or release custodians from the matter.
 
 To see a list of all the users currently in your organization:
 - Export a list from the [Users action menu](https://support.crashplan.com/hc/en-us/articles/9218711102989--Users-reference#01GD3GQS4DA14X4JGVV0SPC7YA).
@@ -25,7 +25,7 @@ To add multiple custodians to a legal hold matter:
 
     The CSV templates for `add` and `remove` have the same columns, but the commands generate different default filenames.
 
-2. Use the CSV template to enter the matter ID(s) and crashplan usernames for the custodians you want to add to the matters.
+2. Use the CSV template to enter the matter ID(s) and CrashPlan usernames for the custodians you want to add to the matters.
 To get the ID for a matter, enter `crashplan legal-hold list`.
 3. Save the CSV file.
 
@@ -47,7 +47,7 @@ To add a single custodian to a legal hold matter, use the following command as a
 #### Options
 
  - `--matter-id` (required):   The identification number of the legal hold matter. To get the ID for a matter, run the command `crashplan legal-hold list`.
- - `--username` (required):    The crashplan username of the custodian to add to the matter.
+ - `--username` (required):    The CrashPlan username of the custodian to add to the matter.
  - `--profile` (optional):     The profile to use to execute the command. If not specified, the default profile is used.
 
 ## Release custodians
@@ -57,7 +57,7 @@ You can [release one or more custodians](https://support.crashplan.com/hc/en-us/
 
 To release multiple custodians at once:
 
-1. Enter the matter ID(s) and crashplan usernames to the [CSV file template you generated](#get-csv-template).
+1. Enter the matter ID(s) and CrashPlan usernames to the [CSV file template you generated](#get-csv-template).
 2. Save the file to your current working directory.
 3. Use the `bulk remove` command with the file path of the CSV you created. For example:
     `crashplan legal-hold bulk remove /Users/admin/remove_users_from_legal_hold.csv`

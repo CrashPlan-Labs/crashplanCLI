@@ -1,11 +1,11 @@
 # Ingest Audit Logs into a SIEM tool
 
-This guide provides instructions on using the CLI to ingest crashplan Audit logs
+This guide provides instructions on using the CLI to ingest CrashPlan Audit logs
 into a security information and event management (SIEM) tool like LogRhythm, Sumo Logic, or IBM QRadar.
 
 ## Considerations
 
-To ingest Audit logs into a SIEM tool using the crashplan command-line interface, the crashplan user account running the integration
+To ingest Audit logs into a SIEM tool using the CrashPlan command-line interface, the CrashPlan user account running the integration
 must be assigned roles that provide the necessary permissions.
 
 ## Before you begin

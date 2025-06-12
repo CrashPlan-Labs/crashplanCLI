@@ -87,7 +87,7 @@ crashplan devices list --active \
 --last-connected-before 365d \
 --exclude-most-recently-connected 1 \
 -f CSV \
-| crashplan devices bulk deactivate - \
+| CrashPlan devices bulk deactivate - \
 -f CSV \
 > deactivation_results.csv
 ```
