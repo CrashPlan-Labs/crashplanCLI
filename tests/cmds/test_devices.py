@@ -457,23 +457,9 @@ def get_all_matter_success(mocker, cli_state):
 
 
 @pytest.fixture
-def get_api_client_all_matter_success(mocker, cli_state):
-    cli_state.sdk.legalhold.get_all_matters.return_value = matter_list_generator(
-        mocker, api_client=True
-    )
-
-
-@pytest.fixture
 def get_all_custodian_success(mocker, cli_state):
     cli_state.sdk.legalhold.get_all_matter_custodians.return_value = (
         custodian_list_generator(mocker)
-    )
-
-
-@pytest.fixture
-def get_api_client_all_custodian_success(mocker, cli_state):
-    cli_state.sdk.legalhold.get_all_matter_custodians.return_value = (
-        custodian_list_generator(mocker, api_client=True)
     )
 
 

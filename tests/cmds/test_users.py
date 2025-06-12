@@ -686,7 +686,7 @@ def test_remove_user_role_raises_error_when_username_does_not_exist(
 def test_update_user_calls_update_user_with_correct_parameters_when_only_some_are_passed(
     runner, cli_state, update_user_success
 ):
-    command = ["users", "update", "--user-id", "12345", "--email", "test_email"]
+    command = ["users", "update", "--user-uid", "12345", "--email", "test_email"]
     runner.invoke(cli, command, obj=cli_state)
     cli_state.sdk.users.update_user.assert_called_once_with(
         "12345",
@@ -706,7 +706,7 @@ def test_update_user_calls_update_user_with_correct_parameters_when_all_are_pass
     command = [
         "users",
         "update",
-        "--user-id",
+        "--user-uid",
         "12345",
         "--email",
         "test_email",
@@ -744,7 +744,7 @@ def test_update_when_pycpg_raises_invalid_email_outputs_error_message(
     cli_state.sdk.users.update_user.side_effect = PycpgInvalidEmailError(
         test_email, mock_http_error
     )
-    command = ["users", "update", "--user-id", "12345", "--email", test_email]
+    command = ["users", "update", "--user-uid", "12345", "--email", test_email]
     result = runner.invoke(cli, command, obj=cli_state)
     assert "Error: 'test_email' is not a valid email." in result.output
 
@@ -756,7 +756,7 @@ def test_update_when_pycpg_raises_invalid_username_outputs_error_message(
     cli_state.sdk.users.update_user.side_effect = PycpgInvalidUsernameError(
         mock_http_error
     )
-    command = ["users", "update", "--user-id", "12345", "--username", "test_username"]
+    command = ["users", "update", "--user-uid", "12345", "--username", "test_username"]
     result = runner.invoke(cli, command, obj=cli_state)
     assert "Error: Invalid username." in result.output
 
@@ -768,7 +768,7 @@ def test_update_when_pycpg_raises_invalid_password_outputs_error_message(
     cli_state.sdk.users.update_user.side_effect = PycpgInvalidPasswordError(
         mock_http_error
     )
-    command = ["users", "update", "--user-id", "12345", "--password", "test_password"]
+    command = ["users", "update", "--user-uid", "12345", "--password", "test_password"]
     result = runner.invoke(cli, command, obj=cli_state)
     assert "Error: Invalid password." in result.output
 
