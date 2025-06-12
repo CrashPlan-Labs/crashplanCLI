@@ -6,7 +6,7 @@ from crashplancli.errors import UserDoesNotExistError
 @lru_cache(maxsize=None)
 def get_user_id(sdk, username):
     """Returns the user's UID.
-    Raises `UserDoesNotExistError` if the user doesn't exist in the crashplan server.
+    Raises `UserDoesNotExistError` if the user doesn't exist in the CrashPlan server.
 
     Args:
         sdk (pycpg.sdk.SDKClient): The pycpg sdk.

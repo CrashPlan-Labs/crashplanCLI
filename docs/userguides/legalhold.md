@@ -1,6 +1,6 @@
 # Manage legal hold custodians
 
-Once you [create a legal hold matter in the crashplan console](https://support.crashplan.com/hc/en-us/articles/8603769878157-Create-a-legal-hold-matter), you can use the crashplan CLI to add or release custodians from the matter.
+Once you [create a legal hold matter in the crashplan console](https://support.crashplan.com/hc/en-us/articles/8603769878157-Create-a-legal-hold-matter), you can use the CrashPlan CLI to add or release custodians from the matter.
 
 To see a list of all the users currently in your organization:
 - Export a list from the [Users action menu](https://support.crashplan.com/hc/en-us/articles/9218711102989--Users-reference#01GD3GQS4DA14X4JGVV0SPC7YA).
@@ -31,7 +31,7 @@ To get the ID for a matter, enter `crashplan legal-hold list`.
 
 ## Add custodians to a legal hold matter
 
-You can add one or more custodians to a legal hold matter using the crashplan CLI.
+You can add one or more custodians to a legal hold matter using the CrashPlan CLI.
 
 ### Add multiple custodians
 Once you have entered the matter ID and user information in the CSV file, use the `bulk add` command with the CSV file path to add multiple custodians at once. For example:
@@ -51,7 +51,7 @@ To add a single custodian to a legal hold matter, use the following command as a
  - `--profile` (optional):     The profile to use to execute the command. If not specified, the default profile is used.
 
 ## Release custodians
-You can [release one or more custodians](https://support.crashplan.com/hc/en-us/articles/8603769878157-Create-a-legal-hold-matter#Release-or-reactivate-custodians) from a legal hold matter using the crashplan CLI.
+You can [release one or more custodians](https://support.crashplan.com/hc/en-us/articles/8603769878157-Create-a-legal-hold-matter#Release-or-reactivate-custodians) from a legal hold matter using the CrashPlan CLI.
 
 ### Release multiple custodians
 
@@ -72,7 +72,7 @@ Options are the same as `add-user` shown above.
 
 ## View matters and custodians
 
-You can use the crashplan CLI to get a list of all the [legal hold matters](https://support.crashplan.com/hc/en-us/articles/9225467244045--Legal-Hold-reference#All-matters) for your organization, or get full details for a matter.
+You can use the CrashPlan CLI to get a list of all the [legal hold matters](https://support.crashplan.com/hc/en-us/articles/9225467244045--Legal-Hold-reference#All-matters) for your organization, or get full details for a matter.
 
 ### List legal hold matters
 

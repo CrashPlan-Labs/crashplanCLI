@@ -1,7 +1,7 @@
 # Clean up your environment by deactivating devices
 
-Your crashplan environment may contain many old devices that are no
-longer active computers and that have not connected to crashplan in
+Your CrashPlan environment may contain many old devices that are no
+longer active computers and that have not connected to CrashPlan in
 quite some time. In order to clean up your environment, you can
 use the CLI to deactivate these devices in bulk.
 

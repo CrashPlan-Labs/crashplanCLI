@@ -92,7 +92,7 @@ def list_users(
     include_roles,
     format,
 ):
-    """List users in your crashplan environment."""
+    """List users in your CrashPlan environment."""
     if inactive:
         active = False
     role_id = _get_role_id(state.sdk, role_name) if role_name else None

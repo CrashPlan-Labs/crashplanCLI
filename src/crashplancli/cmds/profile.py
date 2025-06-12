@@ -17,7 +17,7 @@ from crashplancli.util import does_user_agree
 
 @click.group()
 def profile():
-    """Manage crashplan connection settings."""
+    """Manage CrashPlan connection settings."""
     pass
 
 
@@ -41,7 +41,7 @@ def name_option(required=False):
         "-n",
         "--name",
         required=required,
-        help="The name of the crashplan CLI profile to use when executing this command.",
+        help="The name of the CrashPlan CLI profile to use when executing this command.",
     )
 
 
@@ -60,21 +60,21 @@ def username_option(required=False):
         "--username",
         required=required,
         cls=incompatible_with(["api_client_id", "secret"]),
-        help="The username of the crashplan API user.",
+        help="The username of the CrashPlan API user.",
     )
 
 
 password_option = click.option(
     "--password",
     cls=incompatible_with(["api_client_id", "secret"]),
-    help="The password for the crashplan API user. If this option is omitted, interactive prompts "
+    help="The password for the CrashPlan API user. If this option is omitted, interactive prompts "
     "will be used to obtain the password.",
 )
 
 disable_ssl_option = click.option(
     "--disable-ssl-errors",
     type=click.types.BOOL,
-    help="For development purposes, do not validate the SSL certificates of crashplan servers. "
+    help="For development purposes, do not validate the SSL certificates of CrashPlan servers. "
     "This is not recommended, except for specific scenarios like testing. Attach this flag to the update command to toggle the setting.",
     default=None,
 )
@@ -173,7 +173,7 @@ def create_api_client(
     debug,
 ):
     """
-    Create a profile with crashplan API client authentication.
+    Create a profile with CrashPlan API client authentication.
     The first profile created will be the default.
     """
     cliprofile.create_profile(
@@ -232,7 +232,7 @@ def update(
             raise click.UsageError(
                 "Must provide at least one of `--server`, `--username`, `--password`, or "
                 "`--disable-ssl-errors` when updating a username/password authenticated profile.  "
-                "Provide both `--api-client-id` and `--secret` options to switch this profile to crashplan API client authentication."
+                "Provide both `--api-client-id` and `--secret` options to switch this profile to CrashPlan API client authentication."
             )
 
     if cpgprofile.api_client_auth == "True":
@@ -243,7 +243,7 @@ def update(
             )
         elif username and password:
             if does_user_agree(
-                "You passed the `--username` and `--password options for a profile currently using crashplan API client authentication.  "
+                "You passed the `--username` and `--password options for a profile currently using CrashPlan API client authentication.  "
                 "Are you sure you would like to update this profile to use username/password authentication? This will overwrite existing credentials. (y/n): "
             ):
                 cliprofile.update_profile(
@@ -271,12 +271,12 @@ def update(
         if (api_client_id and not secret) or (api_client_id and not secret):
             raise click.UsageError(
                 "This profile currently uses username/password authentication.  "
-                "Please provide both the `--api-client-id` and `--secret` options to update this profile to use crashplan API client authentication."
+                "Please provide both the `--api-client-id` and `--secret` options to update this profile to use CrashPlan API client authentication."
             )
         elif api_client_id and secret:
             if does_user_agree(
                 "You passed the `--api-client-id` and `--secret options for a profile currently using username/password authentication.  "
-                "Are you sure you would like to update this profile to use crashplan API client authentication? This will overwrite existing credentials. (y/n): "
+                "Are you sure you would like to update this profile to use CrashPlan API client authentication? This will overwrite existing credentials. (y/n): "
             ):
                 cliprofile.update_profile(
                     cpgprofile.name,
@@ -311,7 +311,7 @@ def update(
 def reset_pw(profile_name, debug):
     """\b
     Change the stored password for a profile. Only affects what's stored in the local profile,
-    does not make any changes to the crashplan user account."""
+    does not make any changes to the CrashPlan user account."""
     password = getpass()
     profile_name_saved = _set_pw(profile_name, password, debug)
     echo(f"Password updated for profile '{profile_name_saved}'.")

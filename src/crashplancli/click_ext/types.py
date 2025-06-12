@@ -168,7 +168,7 @@ class PromptChoice(click.ParamType):
 
 
 class TOTP(click.ParamType):
-    """Validates param to be a 6-digit integer, which is what all crashplan TOTP tokens will be."""
+    """Validates param to be a 6-digit integer, which is what all CrashPlan TOTP tokens will be."""
 
     def get_metavar(self, param):
         return "TEXT"

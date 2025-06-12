@@ -10,7 +10,7 @@ must be assigned roles that provide the necessary permissions.
 
 ## Before you begin
 
-First install and configure the crashplan CLI following the instructions in
+First install and configure the CrashPlan CLI following the instructions in
 [Getting Started](gettingstarted.md).
 
 ## Run queries

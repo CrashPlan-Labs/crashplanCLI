@@ -30,7 +30,7 @@ from crashplancli.worker import create_worker_stats
 @click.group(cls=OrderedGroup)
 @sdk_options(hidden=True)
 def devices(state):
-    """Manage devices within your crashplan environment."""
+    """Manage devices within your CrashPlan environment."""
     pass
 
 

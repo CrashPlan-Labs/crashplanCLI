@@ -98,7 +98,7 @@ def profile_option(hidden=False):
         expose_value=False,
         callback=set_profile,
         hidden=hidden,
-        help="The name of the crashplan CLI profile to use when executing this command.",
+        help="The name of the CrashPlan CLI profile to use when executing this command.",
     )
     return opt
 
