@@ -17,7 +17,7 @@ ERROR_LOG_FILE_NAME = "crashplan_errors.log"
 
 def _init_logger(logger, handler, output_format):
     logger.setLevel(logging.INFO)
-    return add_handler_to_logger(logger, handler)
+    return add_handler_to_logger(logger, handler, output_format)
 
 
 def get_logger_for_server(hostname, protocol, output_format, certs):
