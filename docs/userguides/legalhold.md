@@ -100,8 +100,10 @@ To view all custodians (including inactive) for a legal hold matter, enter
 
 To view a list of legal hold administrative events, use the following command:
 
-`crashplan legal-hold search-events`
+`crashplan legal-hold search-events -m <matterID>`
 
-This command takes the optional filters of a specific matter uid, beginning timestamp, end timestamp, and event type.
+This command takes the required filters of a specific matter uid, and optional filters of beginning timestamp, end timestamp, and event type.
+
+Future versions of the crashplancli will allow searching events from all legal holds.
 
 Learn more about the [Legal Hold](../commands/legalhold.md) commands.

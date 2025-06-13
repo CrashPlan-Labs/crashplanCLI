@@ -155,7 +155,7 @@ def show(state, matter_id, include_inactive=False, include_policy=False):
 
 
 @legal_hold.command()
-@matter_id_option(False, "Filter results by legal hold UID.")
+@matter_id_option(True, "Filter results by legal hold UID.")
 @click.option(
     "--event-type",
     type=click.Choice(LEGAL_HOLD_EVENT_TYPES),
@@ -291,7 +291,7 @@ def _get_all_events(sdk, legal_hold_uid, begin_date, end_date):
     events_generator = sdk.legalhold.get_all_events(
         legal_hold_uid, begin_date, end_date
     )
-    events = [event for page in events_generator for event in page["legalHoldEvents"]]
+    events = [event for page in events_generator for event in page]
     return events
 
 
