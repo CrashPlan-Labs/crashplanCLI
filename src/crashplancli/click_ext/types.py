@@ -78,7 +78,7 @@ class MagicDate(click.ParamType):
     def __init__(self, rounding_func=None):
         self.round = rounding_func
 
-    def get_metavar(self, param):
+    def get_metavar(self, param, ctx=None):
         return "[DATE|TIMESTAMP|SHORT_TIME]"
 
     def __repr__(self):
@@ -170,7 +170,7 @@ class PromptChoice(click.ParamType):
 class TOTP(click.ParamType):
     """Validates param to be a 6-digit integer, which is what all CrashPlan TOTP tokens will be."""
 
-    def get_metavar(self, param):
+    def get_metavar(self, param, ctx=None):
         return "TEXT"
 
     def convert(self, value, param, ctx):
