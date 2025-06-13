@@ -208,8 +208,8 @@ TEST_EVENT_PAGE = {
     ]
 }
 EMPTY_EVENTS_RESPONSE = '{"legalHoldEvents": []}'
-EMPTY_MATTERS_RESPONSE = '{"legalHolds": []}'
-ALL_MATTERS_RESPONSE = f'{{"legalHolds": [{MATTER_RESPONSE}]}}'
+EMPTY_MATTERS_RESPONSE = '{"matters": []}'
+ALL_MATTERS_RESPONSE = f'{{"matters": [{MATTER_RESPONSE}]}}'
 LEGAL_HOLD_COMMAND = "legal-hold"
 
 

@@ -4,7 +4,6 @@ from pprint import pformat
 
 import click
 from click import echo
-from click import style
 
 from crashplancli.bulk import generate_template_cmd_factory
 from crashplancli.bulk import run_bulk_process
@@ -121,14 +120,10 @@ def _list(state, format=None):
 def show(state, matter_id, include_inactive=False, include_policy=False):
     """Display details of a given legal hold matter."""
     matter = _check_matter_is_accessible(state.sdk, matter_id)
-
-    if state.profile.api_client_auth == "True":
-        try:
-            matter["creator_username"] = matter["creator"]["user"]["email"]
-        except KeyError:
-            pass
-    else:
-        matter["creator_username"] = matter["creator"]["username"]
+    try:
+        matter["creator_username"] = matter["creator"]["user"]["email"]
+    except KeyError:
+        pass
     matter = json.loads(matter.text)
 
     # if `active` is None then all matters (whether active or inactive) are returned. True returns
@@ -169,15 +164,6 @@ def show(state, matter_id, include_inactive=False, include_policy=False):
 @sdk_options()
 def search_events(state, matter_id, event_type, begin, end, format):
     """Tools for getting legal hold event data."""
-    if state.profile.api_client_auth == "True":
-        echo(
-            style(
-                "WARNING: This method is unavailable with API Client Authentication.",
-                fg="red",
-            ),
-            err=True,
-        )
-
     formatter = OutputFormatter(format, _EVENT_KEYS_MAP)
     events = _get_all_events(state.sdk, matter_id, begin, end)
     if event_type:
@@ -271,37 +257,22 @@ def _get_legal_hold_memberships_for_matter(state, sdk, matter_id, active=True):
     memberships_generator = sdk.legalhold.get_all_matter_custodians(
         matter_id, active=active
     )
-    if state.profile.api_client_auth == "True":
-        memberships = [member for page in memberships_generator for member in page]
-    else:
-        memberships = [
-            member
-            for page in memberships_generator
-            for member in page["legalHoldMemberships"]
-        ]
+
+    memberships = [member for page in memberships_generator for member in page]
+
     return memberships
 
 
 def _get_all_active_matters(state):
     matters_generator = state.sdk.legalhold.get_all_matters()
-    if state.profile.api_client_auth == "True":
-        matters = [
-            matter for page in matters_generator for matter in page if matter["active"]
-        ]
-        for matter in matters:
-            try:
-                matter["creator_username"] = matter["creator"]["user"]["email"]
-            except KeyError:
-                pass
-    else:
-        matters = [
-            matter
-            for page in matters_generator
-            for matter in page["legalHolds"]
-            if matter["active"]
-        ]
-        for matter in matters:
-            matter["creator_username"] = matter["creator"]["username"]
+    matters = [
+        matter for page in matters_generator for matter in page if matter["active"]
+    ]
+    for matter in matters:
+        try:
+            matter["creator_username"] = matter["creator"]["user"]["email"]
+        except KeyError:
+            pass
     return matters
 
 

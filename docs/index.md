@@ -26,7 +26,7 @@ CrashPlan console or making API calls directly. For example, you can use it to e
 To use the CrashPlan CLI, you must have:
 
 * A [CrashPlan product plan](https://support.crashplan.com/hc/en-us/articles/9802774807821-CrashPlan-product-plans) that supports the feature or functionality for your use case
-* Python version 3.10 and later installed
+* Python version 3.11 and later installed
 
 ## Content
 

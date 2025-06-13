@@ -83,9 +83,7 @@ class DataFrameOutputFormatter:
         if df.empty:
             return
         # convert everything to strings so we can left-justify format
-        # applymap() is deprecated in favor of map() for pandas 2.0+ (method renamed)
-        # pandas only supports Python 3.8+, update this once we drop support for Python 3.7
-        df = df.fillna("").applymap(str)
+        df = df.fillna("").map(str)
         # set overrideable default kwargs
         kwargs = {
             "index": False,

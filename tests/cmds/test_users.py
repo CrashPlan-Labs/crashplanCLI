@@ -59,7 +59,7 @@ TEST_USER_RESPONSE = {
 }
 
 TEST_MATTER_RESPONSE = {
-    "legalHolds": [
+    "matters": [
         {"legalHoldUid": "123456789", "name": "Legal Hold #1", "active": True},
         {"legalHoldUid": "987654321", "name": "Legal Hold #2", "active": True},
     ]
@@ -92,8 +92,8 @@ TEST_CUSTODIANS_RESPONSE = {
         },
     ]
 }
-TEST_EMPTY_CUSTODIANS_RESPONSE = {"legalHoldMemberships": []}
-TEST_EMPTY_MATTERS_RESPONSE = {"legalHolds": []}
+TEST_EMPTY_CUSTODIANS_RESPONSE = {"memberships": []}
+TEST_EMPTY_MATTERS_RESPONSE = {"matters": []}
 TEST_EMPTY_USERS_RESPONSE = {"users": []}
 TEST_USERNAME = TEST_USERS_RESPONSE["users"][0]["username"]
 TEST_USER_ID = TEST_USERS_RESPONSE["users"][0]["userId"]

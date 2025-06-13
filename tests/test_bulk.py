@@ -45,7 +45,7 @@ def test_generate_template_cmd_factory_returns_expected_command():
     assert template.name == "generate-template"
     assert len(template.params) == 2
     assert template.params[0].name == "cmd"
-    assert template.params[0].type.choices == ["add", "remove"]
+    assert template.params[0].type.choices == ("add", "remove")
     assert template.params[1].name == "path"
 
 
@@ -63,7 +63,7 @@ def test_generate_template_cmd_factory_when_using_defaults_returns_expected_comm
     assert template.name == "generate-template"
     assert len(template.params) == 2
     assert template.params[0].name == "cmd"
-    assert template.params[0].type.choices == ["add", "remove"]
+    assert template.params[0].type.choices == ("add", "remove")
     assert template.params[1].name == "path"
 
 
