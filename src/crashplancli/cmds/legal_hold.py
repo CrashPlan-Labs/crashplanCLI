@@ -37,13 +37,13 @@ _EVENT_KEYS_MAP = {
 }
 LEGAL_HOLD_KEYWORD = "legal hold events"
 LEGAL_HOLD_EVENT_TYPES = [
-    "MembershipCreated",
-    "MembershipReactivated",
-    "MembershipDeactivated",
-    "HoldCreated",
-    "HoldDeactivated",
-    "HoldReactivated",
-    "Restore",
+    "MEMBERSHIP_CREATED",
+    "MEMBERSHIP_REACTIVATED",
+    "MEMBERSHIP_DEACTIVATED",
+    "HOLD_CREATED",
+    "HOLD_DEACTIVATED",
+    "HOLD_REACTIVATED",
+    "RESTORE",
 ]
 BEGIN_DATE_DICT = set_begin_default_dict(LEGAL_HOLD_KEYWORD)
 END_DATE_DICT = set_end_default_dict(LEGAL_HOLD_KEYWORD)
@@ -292,6 +292,23 @@ def _get_all_events(sdk, legal_hold_uid, begin_date, end_date):
         legal_hold_uid, begin_date, end_date
     )
     events = [event for page in events_generator for event in page]
+    for event in events:
+        try:
+            if event["actorPrincipal"]["type"] == "USER":
+                event["actorUsername"] = event["actorPrincipal"]["user"]["email"]
+            else:
+                event["actorUsername"] = event["actorPrincipal"]["principalId"]
+        except KeyError:
+            pass
+        try:
+            if event["custodianPrincipal"]["type"] == "USER":
+                event["custodianUsername"] = event["custodianPrincipal"]["user"][
+                    "email"
+                ]
+            else:
+                event["custodianUsername"] = event["custodianPrincipal"]["principalId"]
+        except KeyError:
+            pass
     return events
 
 

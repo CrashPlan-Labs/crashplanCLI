@@ -173,42 +173,59 @@ ALL_ACTIVE_AND_INACTIVE_CUSTODIANS_RESPONSE = """
     ]
 }
 """
-TEST_EVENT_PAGE = {
-    "legalHoldEvents": [
-        {
-            "eventUid": "564564654566",
-            "eventType": "HoldCreated",
-            "eventDate": "2015-05-16T15:07:44.820Z",
-            "legalHoldUid": "88888",
-            "actorUserUid": "12345",
-            "actorUsername": "holdcreator@example.com",
-            "actorFirstName": "john",
-            "actorLastName": "doe",
-            "actorUserExtRef": None,
-            "actorEmail": "holdcreatorr@example.com",
+TEST_EVENT_PAGE = [
+    {
+        "eventUid": "564564654566",
+        "eventType": "HOLD_CREATED",
+        "eventDate": "2015-05-16T15:07:44.820Z",
+        "legalHoldUid": "88888",
+        "actorPrincipal": {
+            "type": "USER",
+            "principalId": "12345",
+            "displayName": "holdcreator@example.com",
+            "user": {"email": "holdcreator@example.com"},
         },
-        {
-            "eventUid": "74533457745",
-            "eventType": "MembershipCreated",
-            "eventDate": "2019-05-17T15:07:44.820Z",
-            "legalHoldUid": "88888",
-            "legalHoldMembershipUid": "645576514441664433",
-            "custodianUserUid": "12345",
-            "custodianUsername": "kim.jones@crashplan.com",
-            "custodianFirstName": "kim",
-            "custodianLastName": "jones",
-            "custodianUserExtRef": None,
-            "custodianEmail": "user@example.com",
-            "actorUserUid": "1234512345",
-            "actorUsername": "creator@example.com",
-            "actorFirstName": "john",
-            "actorLastName": "doe",
-            "actorUserExtRef": None,
-            "actorEmail": "user@example.com",
+    },
+    {
+        "eventUid": "74533457745",
+        "eventType": "MEMBERSHIP_CREATED",
+        "eventDate": "2019-05-17T15:07:44.820Z",
+        "legalHoldUid": "88888",
+        "legalHoldMembershipUid": "645576514441664433",
+        "actorPrincipal": {
+            "type": "USER",
+            "principalId": "1234512345",
+            "displayName": "creator@example.com",
+            "user": {"email": "creator@example.com"},
         },
-    ]
-}
-EMPTY_EVENTS_RESPONSE = '{"legalHoldEvents": []}'
+        "custodianPrincipal": {
+            "type": "USER",
+            "principalId": "12345",
+            "displayName": "kim.jones@crashplan.com",
+            "user": {"email": "kim.jones@crashplan.com"},
+        },
+    },
+    {
+        "eventUid": "74533457745",
+        "eventType": "MEMBERSHIP_CREATED",
+        "eventDate": "2019-05-17T15:07:44.820Z",
+        "legalHoldUid": "88888",
+        "legalHoldMembershipUid": "645576514441664433",
+        "actorPrincipal": {
+            "type": "API_KEY",
+            "principalId": "key-bb5709f7-508d-4ea4-98a0-cpgf11111b42",
+            "displayName": "key-bb5709f7-508d-4ea4-98a0-cpgf11111b42 (pycpg API client)",
+        },
+        "custodianPrincipal": {
+            "type": "USER",
+            "principalId": "12345",
+            "displayName": "kim.jones@crashplan.com",
+            "user": {"email": "kim.jones@crashplan.com"},
+        },
+    },
+]
+
+EMPTY_EVENTS_RESPONSE = "{[]}"
 EMPTY_MATTERS_RESPONSE = '{"matters": []}'
 ALL_MATTERS_RESPONSE = f'{{"matters": [{MATTER_RESPONSE}]}}'
 LEGAL_HOLD_COMMAND = "legal-hold"
@@ -625,7 +642,11 @@ def test_list_with_csv_format_returns_no_response_when_response_is_empty(
     runner, cli_state, empty_legal_hold_memberships_response, empty_matters_response
 ):
     cli_state.sdk.legalhold.get_all_matters.return_value = empty_matters_response
-    result = runner.invoke(cli, ["legal-hold", "list", "-f", "csv"], obj=cli_state)
+    result = runner.invoke(
+        cli,
+        ["legal-hold", "list", "--matter-id", TEST_MATTER_ID, "-f", "csv"],
+        obj=cli_state,
+    )
     assert "Matter ID,Name,Description,Creator,Creation Date" not in result.output
 
 
@@ -635,7 +656,14 @@ def test_search_events_shows_events_that_respect_type_filters(
 
     result = runner.invoke(
         cli,
-        ["legal-hold", "search-events", "--event-type", "HoldCreated"],
+        [
+            "legal-hold",
+            "search-events",
+            "--matter-id",
+            TEST_MATTER_ID,
+            "--event-type",
+            "HOLD_CREATED",
+        ],
         obj=cli_state,
     )
 
@@ -647,7 +675,11 @@ def test_search_events_with_csv_returns_no_events_when_response_is_empty(
     runner, cli_state, get_all_events_success, empty_events_response
 ):
     cli_state.sdk.legalhold.get_all_events.return_value = empty_events_response
-    result = runner.invoke(cli, ["legal-hold", "events", "-f", "csv"], obj=cli_state)
+    result = runner.invoke(
+        cli,
+        ["legal-hold", "events", "--matter-id", TEST_MATTER_ID, "-f", "csv"],
+        obj=cli_state,
+    )
 
     assert (
         "actorEmail,actorUsername,actorLastName,actorUserUid,actorUserExtRef"
@@ -659,17 +691,24 @@ def test_search_events_is_called_with_expected_begin_timestamp(runner, cli_state
     expected_timestamp = convert_datetime_to_timestamp(
         datetime.datetime.strptime("2017-01-01", "%Y-%m-%d")
     )
-    command = ["legal-hold", "search-events", "--begin", "2017-01-01T00:00:00"]
+    command = [
+        "legal-hold",
+        "search-events",
+        "--matter-id",
+        TEST_MATTER_ID,
+        "--begin",
+        "2017-01-01T00:00:00",
+    ]
     runner.invoke(cli, command, obj=cli_state)
 
     cli_state.sdk.legalhold.get_all_events.assert_called_once_with(
-        None, expected_timestamp, None
+        TEST_MATTER_ID, expected_timestamp, None
     )
 
 
 def test_search_events_when_no_results_outputs_no_results(runner, cli_state):
     cli_state.sdk.legalhold.get_all_matters.return_value = empty_matters_response
-    command = ["legal-hold", "search-events"]
+    command = ["legal-hold", "search-events", "--matter-id", TEST_MATTER_ID]
     result = runner.invoke(cli, command, obj=cli_state)
     assert "No results found." in result.output
 
