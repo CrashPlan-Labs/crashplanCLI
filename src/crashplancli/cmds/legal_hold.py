@@ -121,7 +121,10 @@ def show(state, matter_id, include_inactive=False, include_policy=False):
     """Display details of a given legal hold matter."""
     matter = _check_matter_is_accessible(state.sdk, matter_id)
     try:
-        matter["creator_username"] = matter["creator"]["user"]["email"]
+        if matter["creator"]["type"] == "USER":
+            matter["creator_username"] = matter["creator"]["user"]["email"]
+        else:
+            matter["creator_username"] = matter["creator"]["principalId"]
     except KeyError:
         pass
     matter = json.loads(matter.text)
@@ -258,7 +261,9 @@ def _get_legal_hold_memberships_for_matter(state, sdk, matter_id, active=True):
         matter_id, active=active
     )
 
-    memberships = [member for page in memberships_generator for member in page]
+    memberships = [
+        member for page in memberships_generator for member in page["memberships"]
+    ]
 
     return memberships
 
@@ -266,11 +271,17 @@ def _get_legal_hold_memberships_for_matter(state, sdk, matter_id, active=True):
 def _get_all_active_matters(state):
     matters_generator = state.sdk.legalhold.get_all_matters()
     matters = [
-        matter for page in matters_generator for matter in page if matter["active"]
+        matter
+        for page in matters_generator
+        for matter in page["matters"]
+        if matter["active"]
     ]
     for matter in matters:
         try:
-            matter["creator_username"] = matter["creator"]["user"]["email"]
+            if matter["creator"]["type"] == "USER":
+                matter["creator_username"] = matter["creator"]["user"]["email"]
+            else:
+                matter["creator_username"] = matter["creator"]["principalId"]
         except KeyError:
             pass
     return matters

@@ -628,7 +628,7 @@ def _get_all_active_hold_memberships(sdk):
             for _page in sdk.legalhold.get_all_matter_custodians(
                 legal_hold_uid=matter["legalHoldUid"], active=True
             ):
-                yield from _page["legalHoldMemberships"]
+                yield from _page["memberships"]
 
 
 def _update_user(

@@ -65,7 +65,7 @@ TEST_MATTER_RESPONSE = {
     ]
 }
 TEST_CUSTODIANS_RESPONSE = {
-    "legalHoldMemberships": [
+    "memberships": [
         {
             "legalHoldMembershipUid": "99999",
             "active": True,

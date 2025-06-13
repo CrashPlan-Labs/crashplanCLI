@@ -32,6 +32,7 @@ MATTER_RESPONSE = """
     "active": true,
     "creationDate": "2020-01-01T00:00:00.000-06:00",
     "lastModified": "2019-12-19T20:32:10.781Z",
+    "creator_username": "creator@example.com",
     "creator": {
         "userUid": "12345",
         "username": "creator@example.com",
@@ -93,10 +94,10 @@ POLICY_RESPONSE = """
     "modificationDate": "2019-05-14T16:19:09.930Z"
 }
 """
-EMPTY_CUSTODIANS_RESPONSE = """{"legalHoldMemberships": []}"""
+EMPTY_CUSTODIANS_RESPONSE = """{"memberships": []}"""
 ALL_ACTIVE_CUSTODIANS_RESPONSE = """
 {
-    "legalHoldMemberships": [
+    "memberships": [
         {
             "legalHoldMembershipUid": "88888",
             "active": true,
@@ -117,7 +118,7 @@ ALL_ACTIVE_CUSTODIANS_RESPONSE = """
 """
 ALL_INACTIVE_CUSTODIANS_RESPONSE = """
 {
-    "legalHoldMemberships": [
+    "memberships": [
         {
             "legalHoldMembershipUid": "88888",
             "active": false,
@@ -138,7 +139,7 @@ ALL_INACTIVE_CUSTODIANS_RESPONSE = """
 """
 ALL_ACTIVE_AND_INACTIVE_CUSTODIANS_RESPONSE = """
 {
-    "legalHoldMemberships": [
+    "memberships": [
         {
             "legalHoldMembershipUid": "88888",
             "active": true,

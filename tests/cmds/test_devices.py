@@ -282,11 +282,25 @@ MATTER_RESPONSE = {
             },
             "policyId": "946178665645035826",
         },
+        {
+            "legalHoldUid": "1223189099908444242",
+            "name": "API Key Matter",
+            "description": "",
+            "active": True,
+            "creationDate": "2025-06-13T14:31:58.069+00:00",
+            "lastModifiedDate": "2025-06-13T14:31:59.486+00:00",
+            "creator": {
+                "type": "API_KEY",
+                "principalId": "key-bb5709f7-508d-4ea4-98a0-cpgf11111b42",
+                "displayName": "pycpg API client",
+            },
+            "policyId": "946178665645035826",
+        },
     ]
 }
 
 ALL_CUSTODIANS_RESPONSE = {
-    "legalHoldMemberships": [
+    "memberships": [
         {
             "legalHoldMembershipUid": "99999",
             "active": True,
@@ -735,21 +749,6 @@ def test_add_usernames_to_device_dataframe_adds_usernames_to_dataframe(
 def test_add_legal_hold_membership_to_device_dataframe_adds_legal_hold_columns_to_dataframe(
     cli_state, get_all_matter_success, get_all_custodian_success
 ):
-    testdf = DataFrame.from_records(
-        [
-            {"userUid": "840103986007089121", "status": "Active"},
-            {"userUid": "836473273124890369", "status": "Active, Deauthorized"},
-        ]
-    )
-    result = _add_legal_hold_membership_to_device_dataframe(cli_state.sdk, testdf)
-    assert "legalHoldUid" in result.columns
-    assert "legalHoldName" in result.columns
-
-
-def test_api_client_add_legal_hold_membership_to_device_dataframe_adds_legal_hold_columns_to_dataframe(
-    cli_state, get_api_client_all_matter_success, get_api_client_all_custodian_success
-):
-    cli_state.sdk._auth_flag = 1
     testdf = DataFrame.from_records(
         [
             {"userUid": "840103986007089121", "status": "Active"},
