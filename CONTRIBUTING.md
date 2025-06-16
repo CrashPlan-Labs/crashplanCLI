@@ -60,7 +60,7 @@ Install a version of python 3.11 or higher from [python.org](https://python.org)
 Next, in a directory somewhere outside the project, create and activate your virtual environment:
 
 ```bash
-python -m venv crashplancli
+python3 -m venv crashplancli
 # macOS/Linux
 source crashplancli/bin/activate
 # Windows
@@ -78,7 +78,7 @@ Next, with your virtual environment activated, install crashplancli and its deve
 ["editable mode"](https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs).
 
 ```bash
-pip install -e .'[dev]'
+pip3 install -e .'[dev]'
 ```
 
 Open the project in your IDE of choice and change the python environment to
@@ -114,7 +114,7 @@ You can optionally also choose to have these checks / automatic adjustments
 occur automatically on each git commit that you make (instead of only when running `tox`.) To do so, install `pre-commit` and install the pre-commit hooks:
 
 ```bash
-pip install pre-commit
+pip3 install pre-commit
 pre-commit install
 ```
 
@@ -184,7 +184,7 @@ For the best viewing experience, run a local server to view the documentation.
 You can this by running the below from the `docs` directory using python 3:
 
 ```bash
-python -m http.server --directory "_build/html" 1337
+python3 -m http.server --directory "_build/html" 1337
 ```
 
 and then pointing your browser to `localhost:1337`.

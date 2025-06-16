@@ -31,4 +31,17 @@ To use the CrashPlan CLI, you must have:
 ## Content
 
 * [User Guides](guides.md)
+    * [Get started with the CrashPlan command-line interface (CLI)](userguides/gettingstarted.md)
+    * [Configure a profile](userguides/profile.md)
+    * [Manage legal hold users](userguides/legalhold.md)
+    * [Clean up your environment by deactivating devices](userguides/deactivatedevices.md)
+    * [Manage users](userguides/users.md)
+    * [Perform bulk actions](userguides/bulkcommands.md)
+    * [Send audit logs to a SIEM](userguides/siemexample.md)
+    * [Write custom extension scripts using the CrashPlan CLI and Pycpg](userguides/extensions.md)
 * [Commands](commands.md)
+    * [Audit Logs](commands/auditlogs.rst)
+    * [Devices](commands/devices.rst)
+    * [Legal Hold](commands/legalhold.rst)
+    * [Profile](commands/profile.rst)
+    * [Users](commands/users.rst)

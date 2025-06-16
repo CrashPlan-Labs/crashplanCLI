@@ -17,11 +17,16 @@ Use the `legal-hold` commands to manage legal hold custodians.
 To add multiple custodians to a legal hold matter:
 
 1. Generate a CSV template. Below is an example command that generates a template to use when bulk adding custodians to legal hold matter. Once generated, the CSV file is saved to your current working directory.
-    `crashplan legal-hold bulk generate-template add`
+
+    ```bash
+    crashplan legal-hold bulk generate-template add
+    ```
 
     To generate a template to use when bulk releasing custodians from a legal hold matter:
 
-    `crashplan legal-hold bulk generate-template remove`
+    ```bash
+    crashplan legal-hold bulk generate-template remove
+    ```
 
     The CSV templates for `add` and `remove` have the same columns, but the commands generate different default filenames.
 
@@ -36,13 +41,17 @@ You can add one or more custodians to a legal hold matter using the CrashPlan CL
 ### Add multiple custodians
 Once you have entered the matter ID and user information in the CSV file, use the `bulk add` command with the CSV file path to add multiple custodians at once. For example:
 
-`crashplan legal-hold bulk add /Users/admin/add_users_to_legal_hold.csv`
+ ```bash
+    crashplan legal-hold bulk add /Users/admin/add_users_to_legal_hold.csv
+    ```
 
 ### Add a single custodian
 
 To add a single custodian to a legal hold matter, use the following command as an example:
 
-`crashplan legal-hold add-user --matter-id 123456789123456789 --username user@example.com`
+ ```bash
+    crashplan legal-hold add-user --matter-id 123456789123456789 --username user@example.com
+    ```
 
 #### Options
 
@@ -60,13 +69,17 @@ To release multiple custodians at once:
 1. Enter the matter ID(s) and CrashPlan usernames to the [CSV file template you generated](#get-csv-template).
 2. Save the file to your current working directory.
 3. Use the `bulk remove` command with the file path of the CSV you created. For example:
-    `crashplan legal-hold bulk remove /Users/admin/remove_users_from_legal_hold.csv`
+    ```bash
+    crashplan legal-hold bulk remove /Users/admin/remove_users_from_legal_hold.csv
+    ```
 
 ### Release a single custodian
 
 Use `remove-user` to release a single custodian. For example:
 
-`crashplan legal-hold remove-user --matter-id  123456789123456789 --username user@example.com`
+ ```bash
+    crashplan legal-hold remove-user --matter-id  123456789123456789 --username user@example.com
+    ```
 
 Options are the same as `add-user` shown above.
 
@@ -78,29 +91,44 @@ You can use the CrashPlan CLI to get a list of all the [legal hold matters](http
 
 To view a list of legal hold matters for your organization, use the following command:
 
-`crashplan legal-hold list`
+ ```bash
+    crashplan legal-hold list
+    ```
 
 This command produces the matter ID, name, description, creator, and creation date for the legal hold matters.
 
 ### View matter details
 
-To view active custodians for a legal hold matter, enter `crashplan legal-hold show` with the matter ID, for example:
+To view active custodians for a legal hold matter, enter
 
-`crashplan legal-hold show 123456789123456789`
+```bash
+crashplan legal-hold show
+```
+ with the matter ID, for example:
+
+ ```bash
+    crashplan legal-hold show 123456789123456789
+    ```
 
 To view active custodians for a legal hold matter, as well as the details of the preservation policy, enter
 
-`crashplan legal-hold show <matterID> --include-policy`
+ ```bash
+    crashplan legal-hold show <matterID> --include-policy
+    ```
 
 To view all custodians (including inactive) for a legal hold matter, enter
 
-`crashplan legal-hold show <matterID> --include-inactive`
+ ```bash
+    crashplan legal-hold show <matterID> --include-inactive
+    ```
 
 ### List legal hold events
 
 To view a list of legal hold administrative events, use the following command:
 
-`crashplan legal-hold search-events -m <matterID>`
+ ```bash
+    crashplan legal-hold search-events -m <matterID>
+    ```
 
 This command takes the required filters of a specific matter uid, and optional filters of beginning timestamp, end timestamp, and event type.
 

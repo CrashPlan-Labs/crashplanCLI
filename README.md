@@ -17,7 +17,7 @@ Use the `crashplan` command to interact with your CrashPlan environment.
 Install the `crashplan` CLI using:
 
 ```bash
-$ python -m pip install crashplancli
+$ python3 -m pip install crashplancli
 ```
 
 ## Usage
