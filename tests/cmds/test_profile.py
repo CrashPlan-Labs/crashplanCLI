@@ -123,7 +123,6 @@ def test_create_profile_if_user_does_not_set_password_is_created(
             "baz",
             "--disable-ssl-errors",
             "True",
-            "True",
         ],
     )
     mock_cliprofile_namespace.create_profile.assert_called_once_with(
@@ -317,11 +316,10 @@ def test_update_profile_updates_default_profile(
             "baz",
             "--disable-ssl-errors",
             "True",
-            "True",
         ],
     )
     mock_cliprofile_namespace.update_profile.assert_called_once_with(
-        name, "bar", "baz", True, True
+        name, "bar", "baz", True
     )
 
 
@@ -333,10 +331,10 @@ def test_update_profile_updates_name_alone(
     mock_cliprofile_namespace.get_profile.return_value = profile
     runner.invoke(
         cli,
-        ["profile", "update", "-u", "baz", "--disable-ssl-errors", "True", "None"],
+        ["profile", "update", "-u", "baz", "--disable-ssl-errors", "True"],
     )
     mock_cliprofile_namespace.update_profile.assert_called_once_with(
-        name, None, "baz", True, None
+        name, None, "baz", True
     )
 
 
@@ -462,11 +460,10 @@ def test_update_profile_when_api_client_authentication_updates_existing_profile(
             "bar",
             "--api-client-id",
             "baz",
-            "True",
         ],
     )
     mock_cliprofile_namespace.update_profile.assert_called_once_with(
-        name, "bar", "baz", None, True
+        name, "bar", "baz", None
     )
     assert "Profile 'foo' has been updated" in result.output
 
@@ -491,12 +488,11 @@ def test_update_profile_when_updating_auth_profile_to_api_client_updates_existin
             "baz",
             "--secret",
             "fob",
-            "True",
             "-y",
         ],
     )
     mock_cliprofile_namespace.update_profile.assert_called_once_with(
-        name, "bar", "baz", None, True, api_client_auth=True
+        name, "bar", "baz", None, api_client_auth=True
     )
     assert "Profile 'foo' has been updated" in result.output
 
@@ -521,12 +517,11 @@ def test_update_profile_when_updating_api_client_profile_to_user_credentails_upd
             "baz",
             "--password",
             "fob",
-            "True",
             "-y",
         ],
     )
     mock_cliprofile_namespace.update_profile.assert_called_once_with(
-        name, "bar", "baz", None, True, api_client_auth=False
+        name, "bar", "baz", None, api_client_auth=False
     )
     assert "Profile 'foo' has been updated" in result.output
 
