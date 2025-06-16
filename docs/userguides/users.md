@@ -2,7 +2,7 @@
 
 You can use the CLI to manage user information, update user roles, and move users between organizations.
 
-To view a all the users currently in your organization, you can export a list from the [Users list in the crashplan console](https://support.crashplan.com/hc/en-us/articles/9218711102989--Users-reference) or you can use the `list` command.
+To view a all the users currently in your organization, you can export a list from the [Users list in the CrashPlan console](https://support.crashplan.com/hc/en-us/articles/9218711102989--Users-reference) or you can use the `list` command.
 
 You can use optional flags to filter the users you want to view. The following command will print all active users with the `Desktop User` role who belong to the organization with UID `1234567890`:
 ```bash
@@ -50,7 +50,7 @@ Similarly, use the `reactivate` and `bulk reactivate` commands to reactivate a u
 
 ## Assign an Organization
 
-Use [Organizations](https://support.crashplan.com/hc/en-us/articles/9222924876941-Organizations-reference) to group users together in the crashplan environment.
+Use [Organizations](https://support.crashplan.com/hc/en-us/articles/9222924876941-Organizations-reference) to group users together in the CrashPlan environment.
 
 You'll need an organization's unique identifier number (UID) to move a user into it.  You can use the `list` command to view a list of all current user organizations, including UIDs:
 ```bash

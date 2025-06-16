@@ -3,6 +3,7 @@ import pytest
 from crashplancli.cmds.search import _try_get_logger_for_server
 from crashplancli.errors import crashplancliError
 from crashplancli.logger.enums import ServerProtocol
+from crashplancli.output_formats import OutputFormat
 
 
 _TEST_ERROR_MESSAGE = "TEST ERROR MESSAGE"
@@ -26,11 +27,13 @@ def test_try_get_logger_for_server_calls_get_logger_for_server(
     _try_get_logger_for_server(
         _TEST_HOST,
         ServerProtocol.TLS_TCP,
+        OutputFormat.JSON,
         _TEST_CERTS,
     )
     patched_get_logger_method.assert_called_once_with(
         _TEST_HOST,
         ServerProtocol.TLS_TCP,
+        OutputFormat.JSON,
         _TEST_CERTS,
     )
 
@@ -42,6 +45,7 @@ def test_try_get_logger_for_server_when_exception_raised_raises_crashplan_cli_er
         _try_get_logger_for_server(
             _TEST_HOST,
             ServerProtocol.TCP,
+            OutputFormat.JSON,
             _TEST_CERTS,
         )
 

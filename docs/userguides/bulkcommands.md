@@ -1,6 +1,6 @@
 # Using Bulk Commands
 
-Bulk functionality is available for many crashplan CLI methods, more details on which commands have bulk capabilities can be found in the [Commands Documentation](../commands.md).
+Bulk functionality is available for many CrashPlan CLI methods, more details on which commands have bulk capabilities can be found in the [Commands Documentation](../commands.md).
 
 All bulk methods take a CSV file as input.
 

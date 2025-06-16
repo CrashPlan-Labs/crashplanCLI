@@ -14,5 +14,5 @@ BANNER = f"""\b
   \\_____|_|  \\__,_|___/_| |_|_|    |_|\\__,_|_| |_|
 
 
-crashplancli version {cliversion}, by crashplan Software.
+crashplancli version {cliversion}, by CrashPlan.
 powered by pycpg version {pycpgversion}."""

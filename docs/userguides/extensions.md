@@ -1,15 +1,15 @@
-# Write custom extension scripts using the crashplan CLI and pycpg
+# Write custom extension scripts using the CrashPlan CLI and pycpg
 
-While the crashplan CLI aims to provide an easy way to automate many common CrashPlan tasks, there will likely be times when
+While the CrashPlan CLI aims to provide an easy way to automate many common CrashPlan tasks, there will likely be times when
 you need to script something the CLI doesn't have out-of-the-box.
 
-To accommodate for those scenarios, the crashplan CLI exposes a few helper objects in the `crashplancli.extensions` module
+To accommodate for those scenarios, the CrashPlan CLI exposes a few helper objects in the `crashplancli.extensions` module
 that make it easy to write custom scripts with `pycpg` that use features of the CLI (like profiles) to reduce the amount
 of boilerplate needed to be productive.
 
 ## Before you begin
 
-The crashplan CLI is a python application written using the [click framework](https://click.palletsprojects.com/en/7.x/),
+The CrashPlan CLI is a python application written using the [click framework](https://click.palletsprojects.com/en/7.x/),
 and the exposed extension objects are custom `click` classes. A basic knowledge of how to define `click` commands,
 arguments, and options is required.
 
@@ -65,7 +65,7 @@ executable the CLI uses, so you can execute your script with`$(crashplan --pytho
 `&$(crashplan --python) script.py` on Windows to ensure it always uses the correct python path for the extension script to
 work.
 
-## Installing your extension script as a crashplan CLI plugin
+## Installing your extension script as a CrashPlan CLI plugin
 
 The above example works as a standalone script, but it's also possible to install that same script as a plugin into the
 main CLI itself.

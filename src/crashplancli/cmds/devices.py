@@ -30,7 +30,7 @@ from crashplancli.worker import create_worker_stats
 @click.group(cls=OrderedGroup)
 @sdk_options(hidden=True)
 def devices(state):
-    """Manage devices within your crashplan environment."""
+    """Manage devices within your CrashPlan environment."""
     pass
 
 
@@ -429,21 +429,12 @@ def _add_legal_hold_membership_to_device_dataframe(sdk, df):
 
 def _get_all_active_hold_memberships(sdk):
     for page in sdk.legalhold.get_all_matters(active=True):
-        if sdk._auth_flag == 1:  # noqa: api client endpoint returns a list directly
-            matters = page.data
-        else:
-            matters = page["legalHolds"]
+        matters = page["matters"]
         for matter in matters:
-            if sdk._auth_flag == 1:  # noqa: api client endpoint returns a list directly
-                for _page in sdk.legalhold.get_all_matter_custodians(
-                    legal_hold_matter_uid=matter["legalHoldUid"], active=True
-                ):
-                    yield from _page.data
-            else:
-                for _page in sdk.legalhold.get_all_matter_custodians(
-                    legal_hold_uid=matter["legalHoldUid"], active=True
-                ):
-                    yield from _page["legalHoldMemberships"]
+            for _page in sdk.legalhold.get_all_matter_custodians(
+                legal_hold_uid=matter["legalHoldUid"], active=True
+            ):
+                yield from _page["memberships"]
 
 
 def _get_device_dataframe(

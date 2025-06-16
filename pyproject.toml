@@ -9,7 +9,7 @@ name = "crashplancli"
 version = "1.0.0"
 description = "The official command line tool for interacting with CrashPlan"
 readme = {file = "README.md", content-type = "text/markdown"}
-requires-python = ">=3.10, <4"
+requires-python = ">=3.11, <4"
 keywords = ["backup","crashplan"]
 dependencies = [
     "chardet",
@@ -18,9 +18,9 @@ dependencies = [
     "colorama>=0.4.6",
     "keyring==25.6.0",
     "keyrings.alt==5.0.2",
-    "ipython>=8.10.0;python_version>='3.10'",
+    "ipython>=8.10.0;python_version>='3.11'",
     "pandas>=2.2.3",
-    "pycpg>=1.0.1",
+    "pycpg>=1.0.4",
     "setuptools>=66.0.0",
 ]
 classifiers = [
@@ -28,7 +28,6 @@ classifiers = [
     "Natural Language :: English",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",

@@ -4,7 +4,6 @@ from pprint import pformat
 
 import click
 from click import echo
-from click import style
 
 from crashplancli.bulk import generate_template_cmd_factory
 from crashplancli.bulk import run_bulk_process
@@ -38,13 +37,13 @@ _EVENT_KEYS_MAP = {
 }
 LEGAL_HOLD_KEYWORD = "legal hold events"
 LEGAL_HOLD_EVENT_TYPES = [
-    "MembershipCreated",
-    "MembershipReactivated",
-    "MembershipDeactivated",
-    "HoldCreated",
-    "HoldDeactivated",
-    "HoldReactivated",
-    "Restore",
+    "MEMBERSHIP_CREATED",
+    "MEMBERSHIP_REACTIVATED",
+    "MEMBERSHIP_DEACTIVATED",
+    "HOLD_CREATED",
+    "HOLD_DEACTIVATED",
+    "HOLD_REACTIVATED",
+    "RESTORE",
 ]
 BEGIN_DATE_DICT = set_begin_default_dict(LEGAL_HOLD_KEYWORD)
 END_DATE_DICT = set_end_default_dict(LEGAL_HOLD_KEYWORD)
@@ -121,14 +120,13 @@ def _list(state, format=None):
 def show(state, matter_id, include_inactive=False, include_policy=False):
     """Display details of a given legal hold matter."""
     matter = _check_matter_is_accessible(state.sdk, matter_id)
-
-    if state.profile.api_client_auth == "True":
-        try:
+    try:
+        if matter["creator"]["type"] == "USER":
             matter["creator_username"] = matter["creator"]["user"]["email"]
-        except KeyError:
-            pass
-    else:
-        matter["creator_username"] = matter["creator"]["username"]
+        else:
+            matter["creator_username"] = matter["creator"]["principalId"]
+    except KeyError:
+        pass
     matter = json.loads(matter.text)
 
     # if `active` is None then all matters (whether active or inactive) are returned. True returns
@@ -157,7 +155,7 @@ def show(state, matter_id, include_inactive=False, include_policy=False):
 
 
 @legal_hold.command()
-@matter_id_option(False, "Filter results by legal hold UID.")
+@matter_id_option(True, "Filter results by legal hold UID.")
 @click.option(
     "--event-type",
     type=click.Choice(LEGAL_HOLD_EVENT_TYPES),
@@ -169,15 +167,6 @@ def show(state, matter_id, include_inactive=False, include_policy=False):
 @sdk_options()
 def search_events(state, matter_id, event_type, begin, end, format):
     """Tools for getting legal hold event data."""
-    if state.profile.api_client_auth == "True":
-        echo(
-            style(
-                "WARNING: This method is unavailable with API Client Authentication.",
-                fg="red",
-            ),
-            err=True,
-        )
-
     formatter = OutputFormatter(format, _EVENT_KEYS_MAP)
     events = _get_all_events(state.sdk, matter_id, begin, end)
     if event_type:
@@ -271,37 +260,30 @@ def _get_legal_hold_memberships_for_matter(state, sdk, matter_id, active=True):
     memberships_generator = sdk.legalhold.get_all_matter_custodians(
         matter_id, active=active
     )
-    if state.profile.api_client_auth == "True":
-        memberships = [member for page in memberships_generator for member in page]
-    else:
-        memberships = [
-            member
-            for page in memberships_generator
-            for member in page["legalHoldMemberships"]
-        ]
+
+    memberships = [
+        member for page in memberships_generator for member in page["memberships"]
+    ]
+
     return memberships
 
 
 def _get_all_active_matters(state):
     matters_generator = state.sdk.legalhold.get_all_matters()
-    if state.profile.api_client_auth == "True":
-        matters = [
-            matter for page in matters_generator for matter in page if matter["active"]
-        ]
-        for matter in matters:
-            try:
+    matters = [
+        matter
+        for page in matters_generator
+        for matter in page["matters"]
+        if matter["active"]
+    ]
+    for matter in matters:
+        try:
+            if matter["creator"]["type"] == "USER":
                 matter["creator_username"] = matter["creator"]["user"]["email"]
-            except KeyError:
-                pass
-    else:
-        matters = [
-            matter
-            for page in matters_generator
-            for matter in page["legalHolds"]
-            if matter["active"]
-        ]
-        for matter in matters:
-            matter["creator_username"] = matter["creator"]["username"]
+            else:
+                matter["creator_username"] = matter["creator"]["principalId"]
+        except KeyError:
+            pass
     return matters
 
 
@@ -309,7 +291,24 @@ def _get_all_events(sdk, legal_hold_uid, begin_date, end_date):
     events_generator = sdk.legalhold.get_all_events(
         legal_hold_uid, begin_date, end_date
     )
-    events = [event for page in events_generator for event in page["legalHoldEvents"]]
+    events = [event for page in events_generator for event in page]
+    for event in events:
+        try:
+            if event["actorPrincipal"]["type"] == "USER":
+                event["actorUsername"] = event["actorPrincipal"]["user"]["email"]
+            else:
+                event["actorUsername"] = event["actorPrincipal"]["principalId"]
+        except KeyError:
+            pass
+        try:
+            if event["custodianPrincipal"]["type"] == "USER":
+                event["custodianUsername"] = event["custodianPrincipal"]["user"][
+                    "email"
+                ]
+            else:
+                event["custodianUsername"] = event["custodianPrincipal"]["principalId"]
+        except KeyError:
+            pass
     return events
 
 

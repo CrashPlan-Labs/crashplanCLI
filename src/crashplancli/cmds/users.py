@@ -92,7 +92,7 @@ def list_users(
     include_roles,
     format,
 ):
-    """List users in your crashplan environment."""
+    """List users in your CrashPlan environment."""
     if inactive:
         active = False
     role_id = _get_role_id(state.sdk, role_name) if role_name else None
@@ -624,11 +624,11 @@ def _add_legal_hold_membership_to_user_dataframe(sdk, df):
 
 def _get_all_active_hold_memberships(sdk):
     for page in sdk.legalhold.get_all_matters(active=True):
-        for matter in page["legalHolds"]:
+        for matter in page["matters"]:
             for _page in sdk.legalhold.get_all_matter_custodians(
                 legal_hold_uid=matter["legalHoldUid"], active=True
             ):
-                yield from _page["legalHoldMemberships"]
+                yield from _page["memberships"]
 
 
 def _update_user(
