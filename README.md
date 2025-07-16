@@ -19,6 +19,9 @@ Install the `crashplan` CLI using:
 ```bash
 $ python3 -m pip install crashplancli
 ```
+## Documentation
+
+We have a documentation site available [here](https://crashplanclidocs.crashplan.com/).
 
 ## Usage
 
@@ -158,4 +161,4 @@ Open a new shell to enable completion. Or run the eval command directly in your 
 
 ## Writing Extensions
 
-The CLI exposes a few helpers for writing custom extension scripts powered by the CLI. Read the user-guide [here](https://clidocs.crashplan.com/en/feature-extension_scripts/userguides/extensions.html).
+The CLI exposes a few helpers for writing custom extension scripts powered by the CLI. Read the user-guide [here](https://crashplanclidocs.crashplan.com/en/latest/userguides/extensions.html).
