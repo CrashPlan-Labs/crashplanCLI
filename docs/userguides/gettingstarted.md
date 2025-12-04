@@ -1,4 +1,4 @@
-# Get started with theCrashPlancommand-line interface (CLI)
+# Get started with the CrashPlancommand-line interface (CLI)
 
 * [Licensing](#licensing)
 * [Installation](#installation)
