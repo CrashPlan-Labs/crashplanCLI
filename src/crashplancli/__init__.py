@@ -6,7 +6,7 @@ pycpgversion = get_version("pycpg")
 PRODUCT_NAME = "crashplancli"
 MAIN_COMMAND = "crashplan"
 BANNER = f"""\b
-    _____               _     _____  _
+  _____               _     _____  _
   / ____|             | |   |  __ \\| |
  | |     _ __ __ _ ___| |__ | |__) | | __ _ _ __
  | |    | '__/ _` / __| '_ \\|  ___/| |/ _` | '_ \\
