@@ -229,7 +229,7 @@ _bulk_user_activation_headers = ["username"]
 @sdk_options()
 def change_organization(state, username, org_id):
     """Change the organization of the user with the given username
-    to the org with the given org UID."""
+    to the org with the given org_id, or org_uid."""
     _change_organization(state.sdk, username, org_id)
 
 
@@ -626,7 +626,7 @@ def _get_all_active_hold_memberships(sdk):
     for page in sdk.legalhold.get_all_matters(active=True):
         for matter in page["matters"]:
             for _page in sdk.legalhold.get_all_matter_custodians(
-                legal_hold_uid=matter["legalHoldUid"], active=True
+                legal_hold_matter_uid=matter["legalHoldUid"], active=True
             ):
                 yield from _page["memberships"]
 
@@ -656,12 +656,17 @@ def _update_user(
 
 def _change_organization(sdk, username, org_id):
     user_id = _get_legacy_user_id(sdk, username)
-    org_id = _get_org_id(sdk, org_id)
+    # user move takes in org id not uid for the move. But we want to accept both uid and id as input in the column. SO first we do a lookup to see what it is, if org id we use it directly else we lookup the uid to get the id
+    try:
+        org_id_response = sdk.orgs.get_by_uid(org_id)
+        org_id = org_id_response["orgId"]
+    except PycpgNotFoundError:
+        raise crashplancliError(f"Organization with UID '{org_id}' not found.")
     return sdk.users.change_org_assignment(user_id=int(user_id), org_id=int(org_id))
 
 
-def _get_org_id(sdk, org_id):
-    org = sdk.orgs.get_by_uid(org_id)
+def _get_org_id(sdk, org_uid):
+    org = sdk.orgs.get_by_uid(org_uid)
     return org["orgId"]
 
 

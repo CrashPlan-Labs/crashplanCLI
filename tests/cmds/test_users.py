@@ -937,7 +937,7 @@ def test_bulk_update_uses_handler_that_when_encounters_error_increments_total_er
     assert worker_stats.increment_total_errors.call_count == 1
 
 
-def test_move_calls_change_org_assignment_with_correct_parameters(
+def test_move_calls_change_org_assignment_with_org_uid_correct_parameters(
     runner, cli_state, change_org_success, get_user_id_success, get_org_success
 ):
     command = [
@@ -946,7 +946,25 @@ def test_move_calls_change_org_assignment_with_correct_parameters(
         "--username",
         TEST_USERNAME,
         "--org-id",
-        "1007744453331222111",
+        "1007759454961904673",
+    ]
+    runner.invoke(cli, command, obj=cli_state)
+    expected_org_id = TEST_GET_ORG_RESPONSE["orgId"]
+    cli_state.sdk.users.change_org_assignment.assert_called_once_with(
+        user_id=TEST_USER_ID, org_id=expected_org_id
+    )
+
+
+def test_move_calls_change_org_assignment_with_org_id_correct_parameters(
+    runner, cli_state, change_org_success, get_user_id_success, get_org_success
+):
+    command = [
+        "users",
+        "move",
+        "--username",
+        TEST_USERNAME,
+        "--org-id",
+        "9087",
     ]
     runner.invoke(cli, command, obj=cli_state)
     expected_org_id = TEST_GET_ORG_RESPONSE["orgId"]
