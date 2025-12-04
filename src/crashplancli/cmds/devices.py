@@ -432,7 +432,7 @@ def _get_all_active_hold_memberships(sdk):
         matters = page["matters"]
         for matter in matters:
             for _page in sdk.legalhold.get_all_matter_custodians(
-                legal_hold_uid=matter["legalHoldUid"], active=True
+                legal_hold_matter_uid=matter["legalHoldUid"], active=True
             ):
                 yield from _page["memberships"]
 

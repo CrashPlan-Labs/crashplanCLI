@@ -287,9 +287,9 @@ def _get_all_active_matters(state):
     return matters
 
 
-def _get_all_events(sdk, legal_hold_uid, begin_date, end_date):
+def _get_all_events(sdk, legal_hold_matter_uid, begin_date, end_date):
     events_generator = sdk.legalhold.get_all_events(
-        legal_hold_uid, begin_date, end_date
+        legal_hold_matter_uid, begin_date, end_date
     )
     events = [event for page in events_generator for event in page]
     for event in events:
