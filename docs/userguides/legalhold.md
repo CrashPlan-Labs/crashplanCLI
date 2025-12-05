@@ -41,17 +41,17 @@ You can add one or more custodians to a legal hold matter using the CrashPlan CL
 ### Add multiple custodians
 Once you have entered the matter ID and user information in the CSV file, use the `bulk add` command with the CSV file path to add multiple custodians at once. For example:
 
- ```bash
-    crashplan legal-hold bulk add /Users/admin/add_users_to_legal_hold.csv
-    ```
+```bash
+crashplan legal-hold bulk add /Users/admin/add_users_to_legal_hold.csv
+```
 
 ### Add a single custodian
 
 To add a single custodian to a legal hold matter, use the following command as an example:
 
- ```bash
-    crashplan legal-hold add-user --matter-id 123456789123456789 --username user@example.com
-    ```
+```bash
+crashplan legal-hold add-user --matter-id 123456789123456789 --username user@example.com
+```
 
 #### Options
 
@@ -77,9 +77,9 @@ To release multiple custodians at once:
 
 Use `remove-user` to release a single custodian. For example:
 
- ```bash
-    crashplan legal-hold remove-user --matter-id  123456789123456789 --username user@example.com
-    ```
+```bash
+crashplan legal-hold remove-user --matter-id  123456789123456789 --username user@example.com
+```
 
 Options are the same as `add-user` shown above.
 
@@ -91,9 +91,9 @@ You can use the CrashPlan CLI to get a list of all the [legal hold matters](http
 
 To view a list of legal hold matters for your organization, use the following command:
 
- ```bash
-    crashplan legal-hold list
-    ```
+```bash
+crashplan legal-hold list
+```
 
 This command produces the matter ID, name, description, creator, and creation date for the legal hold matters.
 
@@ -106,29 +106,29 @@ crashplan legal-hold show
 ```
  with the matter ID, for example:
 
- ```bash
-    crashplan legal-hold show 123456789123456789
-    ```
+```bash
+crashplan legal-hold show 123456789123456789
+```
 
 To view active custodians for a legal hold matter, as well as the details of the preservation policy, enter
 
- ```bash
-    crashplan legal-hold show <matterID> --include-policy
-    ```
+```bash
+crashplan legal-hold show <matterID> --include-policy
+```
 
 To view all custodians (including inactive) for a legal hold matter, enter
 
- ```bash
-    crashplan legal-hold show <matterID> --include-inactive
-    ```
+```bash
+crashplan legal-hold show <matterID> --include-inactive
+```
 
 ### List legal hold events
 
 To view a list of legal hold administrative events, use the following command:
 
- ```bash
-    crashplan legal-hold search-events -m <matterID>
-    ```
+```bash
+crashplan legal-hold search-events -m <matterID>
+```
 
 This command takes the required filters of a specific matter uid, and optional filters of beginning timestamp, end timestamp, and event type.
 

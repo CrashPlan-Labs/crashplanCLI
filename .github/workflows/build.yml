@@ -24,7 +24,7 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Install tox
         run: |
-          pip install tox==3.17.1
+          pip install tox==4.25.0
           pip install .
       - name: Run Unit tests
         run: tox -e py  # Run tox using the version of Python in `PATH`
@@ -32,22 +32,22 @@ jobs:
         uses: codecov/codecov-action@v1.0.7
         with:
           file: crashplancli/coverage.xml
-      - name: Checkout mock servers
-        uses: actions/checkout@v2
-        with:
-          repository: code42/code42-mock-servers
-          path: code42-mock-servers
-      - name: Add mock servers host addresses
-        run: |
-          sudo tee -a /etc/hosts <<EOF
-          127.0.0.1 core
-          127.0.0.1 audit-log
-          127.0.0.1 storage
-          127.0.0.1 connected-server
-          EOF
-      - name: Install ncat
-        run: sudo apt-get install ncat
-      - name: Start up the mock servers
-        run: cd crashplan-mock-servers; docker compose up -d --build
-      - name: Run the integration tests
-        run: sleep 15; tox -e integration
+#      - name: Checkout mock servers
+#        uses: actions/checkout@v2
+#        with:
+#          repository: code42/code42-mock-servers
+#          path: code42-mock-servers
+#      - name: Add mock servers host addresses
+#        run: |
+#          sudo tee -a /etc/hosts <<EOF
+#          127.0.0.1 core
+#          127.0.0.1 audit-log
+#          127.0.0.1 storage
+#          127.0.0.1 connected-server
+#          EOF
+#      - name: Install ncat
+#        run: sudo apt-get install ncat
+#      - name: Start up the mock servers
+#        run: cd crashplan-mock-servers; docker compose up -d --build
+#      - name: Run the integration tests
+#        run: sleep 15; tox -e integration

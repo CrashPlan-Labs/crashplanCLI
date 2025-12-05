@@ -150,7 +150,7 @@ def show(state, matter_id, include_inactive=False, include_policy=False):
         _print_matter_members(inactive_usernames, member_type="inactive")
 
     if include_policy:
-        _get_and_print_preservation_policy(state.sdk, matter["holdPolicyUid"])
+        _get_and_print_preservation_policy(state.sdk, matter["policyId"])
         echo("")
 
 
@@ -287,9 +287,9 @@ def _get_all_active_matters(state):
     return matters
 
 
-def _get_all_events(sdk, legal_hold_uid, begin_date, end_date):
+def _get_all_events(sdk, legal_hold_matter_uid, begin_date, end_date):
     events_generator = sdk.legalhold.get_all_events(
-        legal_hold_uid, begin_date, end_date
+        legal_hold_matter_uid, begin_date, end_date
     )
     events = [event for page in events_generator for event in page]
     for event in events:

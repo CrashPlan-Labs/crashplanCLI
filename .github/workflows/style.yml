@@ -18,10 +18,10 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v1
       with:
-        python-version: '3.x'
+        python-version: '3.13'
     - name: Install tox
       run: |
-        pip install tox==3.17.1
+        pip install tox==4.25.0
         pip install .
     - name: Run style checks
       run: tox -e style

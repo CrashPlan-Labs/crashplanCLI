@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 license = "MIT"
 license-files = ["LICENSE.md"]
 name = "crashplancli"
-version = "1.0.0"
+version = "1.0.1"
 description = "The official command line tool for interacting with CrashPlan"
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.11, <4"
@@ -37,7 +37,7 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/CrashPlan-Labs"
 Issues = "https://github.com/CrashPlan-Labs/crashplancli/issues"
-Documentation = "https://crashplanclidocs.CrashPlan.com/"
+Documentation = "https://crashplanclidocs.crashplan.com/"
 Repository = "https://github.com/CrashPlan-Labs/crashplancli"
 
 [tool.setuptools.packages.find]

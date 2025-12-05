@@ -1,4 +1,4 @@
-# Configure profile
+# Configure a profile
 
 Use the [crashplan profile](../commands/profile.md) set of commands to establish the CrashPlan environment you're working
 within and your user information.

@@ -39,7 +39,7 @@ MATTER_RESPONSE = """
         "email": "user@example.com",
         "userExtRef": null
     },
-    "holdPolicyUid": "66666"
+    "policyId": "66666"
 }
 """
 POLICY_RESPONSE = """
@@ -630,7 +630,7 @@ def test_list_with_format_csv_returns_csv_format(
     assert "creationDate" in result.output
     assert "lastModified" in result.output
     assert "creator" in result.output
-    assert "holdPolicyUid" in result.output
+    assert "policyId" in result.output
     assert "creator_username" in result.output
     assert "88888" in result.output
     assert "Test_Matter" in result.output
