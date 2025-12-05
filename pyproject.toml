@@ -24,7 +24,7 @@ dependencies = [
     "setuptools>=66.0.0",
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Natural Language :: English",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
