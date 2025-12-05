@@ -3,6 +3,7 @@ import functools
 import click
 from pandas import DataFrame
 from pandas import json_normalize
+from pycpg.exceptions import PycpgError
 from pycpg.exceptions import PycpgNotFoundError
 
 from crashplancli.bulk import generate_template_cmd_factory
@@ -655,16 +656,15 @@ def _update_user(
 
 
 def _change_organization(sdk, username, org_id):
-    # user move takes in org id not uid for the move. But we want to accept both uid and id as input in the column. SO first we do a lookup to see what it is, if org id we use it directly else we lookup the uid to get the id
+    # user move takes in org id not uid for the move. But we want to accept both uid and id as input in the column. SO first we do a lookup to see if its a uid. If that fails we assume its an id and use that directly.
     user_id = _get_legacy_user_id(sdk, username)
-    if len(str(org_id)) < 7:
-        return sdk.users.change_org_assignment(user_id=int(user_id), org_id=int(org_id))
-    else:
+    try:
         org_id_response = sdk.orgs.get_by_uid(str(org_id))
-        org_id_from_uid = org_id_response["orgId"]
-        return sdk.users.change_org_assignment(
-            user_id=int(user_id), org_id=int(org_id_from_uid)
-        )
+        org_id = org_id_response["orgId"]
+    except PycpgError:
+        pass  # we don't actually care about the exception here. If the org uid lookup fails we just assume its an id and use that directly.
+
+    return sdk.users.change_org_assignment(user_id=int(user_id), org_id=int(org_id))
 
 
 def _get_org_id(sdk, org_uid):
