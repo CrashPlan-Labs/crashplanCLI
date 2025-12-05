@@ -150,7 +150,7 @@ def show(state, matter_id, include_inactive=False, include_policy=False):
         _print_matter_members(inactive_usernames, member_type="inactive")
 
     if include_policy:
-        _get_and_print_preservation_policy(state.sdk, matter["holdPolicyUid"])
+        _get_and_print_preservation_policy(state.sdk, matter["policyId"])
         echo("")
 
 
