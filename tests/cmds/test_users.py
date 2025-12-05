@@ -1022,8 +1022,8 @@ def test_bulk_move_uses_handler_that_when_encounters_error_increments_total_erro
             obj=cli_state,
         )
     handler = bulk_processor.call_args[0][0]
-    handler(username="test@example.com", org_id="test")
-    handler(username="not.test@example.com", org_id="test")
+    handler(username="test@example.com", org_id="test_org_uid")
+    handler(username="not.test@example.com", org_id="test_org_uid")
     assert worker_stats.increment_total_errors.call_count == 1
 
 

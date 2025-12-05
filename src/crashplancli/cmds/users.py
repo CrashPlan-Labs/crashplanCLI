@@ -660,7 +660,7 @@ def _change_organization(sdk, username, org_id):
     if len(str(org_id)) < 7:
         return sdk.users.change_org_assignment(user_id=int(user_id), org_id=int(org_id))
     else:
-        org_id_response = sdk.orgs.get_by_uid(org_id)
+        org_id_response = sdk.orgs.get_by_uid(str(org_id))
         org_id_from_uid = org_id_response["orgId"]
         return sdk.users.change_org_assignment(
             user_id=int(user_id), org_id=int(org_id_from_uid)
