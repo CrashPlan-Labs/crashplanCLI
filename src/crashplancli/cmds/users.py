@@ -10,6 +10,7 @@ from crashplancli.bulk import generate_template_cmd_factory
 from crashplancli.bulk import run_bulk_process
 from crashplancli.click_ext.groups import OrderedGroup
 from crashplancli.click_ext.options import incompatible_with
+from crashplancli.cmds.devices import _update_cold_storage_purge_date
 from crashplancli.errors import crashplancliError
 from crashplancli.errors import UserDoesNotExistError
 from crashplancli.file_readers import read_csv_arg
@@ -19,7 +20,6 @@ from crashplancli.output_formats import DataFrameOutputFormatter
 from crashplancli.output_formats import OutputFormat
 from crashplancli.output_formats import OutputFormatter
 from crashplancli.worker import create_worker_stats
-
 
 username_arg = click.argument("username")
 
@@ -54,6 +54,16 @@ include_legal_hold_option = click.option(
     default=False,
     is_flag=True,
     help="Include legal hold membership in output.",
+)
+
+DATE_FORMAT = "%Y-%m-%d"
+purge_date_option = click.option(
+    "--purge-date",
+    required=False,
+    type=click.DateTime(formats=[DATE_FORMAT]),
+    default=None,
+    help="The date on which all a users archives should be purged from cold storage in yyyy-MM-dd format. "
+    "If not provided, the date will be set according to the appropriate organization settings.",
 )
 
 
@@ -190,11 +200,12 @@ def update_user(
 
 @users.command()
 @username_arg
+@purge_date_option
 @sdk_options()
-def deactivate(state, username):
+def deactivate(state, purge_date, username):
     """Deactivate a user."""
     sdk = state.sdk
-    _deactivate_user(sdk, username)
+    _deactivate_user(sdk, purge_date, username)
 
 
 @users.command()
@@ -389,6 +400,7 @@ def bulk_move(state, csv_rows, format):
     formatter.echo_formatted_list(result_rows)
 
 
+@purge_date_option
 @bulk.command(
     name="deactivate",
     help=f"Deactivate a list of users from the provided CSV in format: {','.join(_bulk_user_activation_headers)}",
@@ -396,7 +408,7 @@ def bulk_move(state, csv_rows, format):
 @read_csv_arg(headers=_bulk_user_activation_headers)
 @format_option
 @sdk_options()
-def bulk_deactivate(state, csv_rows, format):
+def bulk_deactivate(state, csv_rows, format, purge_date):
     """Deactivate a list of users."""
 
     # Initialize the SDK before starting any bulk processes
@@ -406,6 +418,9 @@ def bulk_deactivate(state, csv_rows, format):
     csv_rows[0]["deactivated"] = "False"
     formatter = OutputFormatter(format, {key: key for key in csv_rows[0].keys()})
     stats = create_worker_stats(len(csv_rows))
+
+    for row in csv_rows:
+        row["purge_date"] = purge_date
 
     def handle_row(**row):
         try:
@@ -656,7 +671,7 @@ def _update_user(
 
 
 def _change_organization(sdk, username, org_id):
-    # user move takes in org id not uid for the move. But we want to accept both uid and id as input in the column. SO first we do a lookup to see if its a uid. If that fails we assume its an id and use that directly.
+    # user move takes in org id not uid for the move. But we want to accept both uid and id as input in the column. So first we do a lookup to see if its a uid. If that fails we assume its an id and use that directly.
     user_id = _get_legacy_user_id(sdk, username)
     try:
         org_id_response = sdk.orgs.get_by_uid(str(org_id))
@@ -672,9 +687,21 @@ def _get_org_id(sdk, org_uid):
     return org["orgId"]
 
 
-def _deactivate_user(sdk, username):
+def _deactivate_user(
+    sdk,
+    purge_date,
+    username,
+):
     user_id = _get_legacy_user_id(sdk, username)
     sdk.users.deactivate(user_id)
+    if purge_date:
+        user_uid = sdk.users.get_by_id(user_id)["userUid"]
+        device_page = sdk.devices.get_all(user_uid=user_uid)
+        for page in device_page:  # page has 'PycpgResponse' type
+            devices = page["computers"]
+            for device in devices:
+                guid = device["guid"]
+                _update_cold_storage_purge_date(sdk, guid, purge_date)
 
 
 def _reactivate_user(sdk, username):
