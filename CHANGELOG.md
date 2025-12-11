@@ -8,35 +8,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 The intended audience of this file is for pycpg consumers -- as such, changes that don't affect
 how a consumer would use the library (e.g. adding unit tests, updating documentation, etc) are not captured here.
 
+## 1.0.2
+
+### Added
+
+- Added purge-date flag to user deactivations that also sets cold storage dates for a users archive when they are deactivated.
 
 ## 1.0.1
 
 ### Fixed
+
 - Fixed issues with org move not accepting org_id
 - Fixed issue with adding legal hold information to searches
 - Fixed issue with ascii art.
 
 ## 1.0.0
 
-## Updated
+### Updated
 
 - Increased python minimum version to 3.11
 - Added support for python 3.13, includes many dependency updates
 - Removed Incydr features and updated branding to CrashPlan
 - Updated legal-hold regardless of API client or username to use the same rest endpoints.
 
-## Changed
+### Changed
+
  - Legal search requires a matter uid to search.
 
 ## Legacy Versions
 
 ## 1.18.1 - 2025-01-08
 
-## Changed
+### Changed
 
 - Updated the user-agent prefix for compatibility with Incydr conventions.
 
-## Removed
+### Removed
 
 - Removed support for end-of-life python versions 3.6, 3.7, 3.8.
 
