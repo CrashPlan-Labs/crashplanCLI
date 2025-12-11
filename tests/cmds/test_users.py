@@ -1057,7 +1057,11 @@ def test_bulk_deactivate_uses_expected_arguments(runner, mocker, cli_state):
             obj=cli_state,
         )
     assert bulk_processor.call_args[0][1] == [
-        {"username": TEST_USERNAME, "deactivated": "False"}
+        {
+            "username": TEST_USERNAME,
+            "deactivated": "False",
+            "purge_date": None,
+        }
     ]
     bulk_processor.assert_called_once()
 
@@ -1073,7 +1077,11 @@ def test_bulk_deactivate_ignores_blank_lines(runner, mocker, cli_state):
             obj=cli_state,
         )
     assert bulk_processor.call_args[0][1] == [
-        {"username": TEST_USERNAME, "deactivated": "False"}
+        {
+            "username": TEST_USERNAME,
+            "deactivated": "False",
+            "purge_date": None,
+        }
     ]
     bulk_processor.assert_called_once()
 
@@ -1099,8 +1107,8 @@ def test_bulk_deactivate_uses_handler_that_when_encounters_error_increments_tota
             obj=cli_state,
         )
     handler = bulk_processor.call_args[0][0]
-    handler(username="test@example.com")
-    handler(username="not.test@example.com")
+    handler(purge_date=None, username="test@example.com")
+    handler(purge_date=None, username="not.test@example.com")
     assert worker_stats.increment_total_errors.call_count == 1
 
 
