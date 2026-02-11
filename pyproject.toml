@@ -6,21 +6,21 @@ build-backend = "setuptools.build_meta"
 license = "MIT"
 license-files = ["LICENSE.md"]
 name = "crashplancli"
-version = "1.0.2"
+version = "1.0.3"
 description = "The official command line tool for interacting with CrashPlan"
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.11, <4"
 keywords = ["backup","crashplan"]
 dependencies = [
     "chardet",
-    "click>=8.1.8",
+    "click>=8.3.1",
     "click_plugins>=1.1.1",
     "colorama>=0.4.6",
-    "keyring==25.6.0",
+    "keyring==25.7.0",
     "keyrings.alt==5.0.2",
-    "ipython>=8.10.0;python_version>='3.11'",
-    "pandas>=2.2.3",
-    "pycpg>=1.0.4",
+    "ipython>=9.10.0;python_version>='3.11'",
+    "pandas>=3.0.0",
+    "pycpg>=1.0.5",
     "setuptools>=66.0.0",
 ]
 classifiers = [
@@ -31,6 +31,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: Implementation :: CPython"
 ]
 
@@ -46,19 +47,19 @@ include = ["crashplancli*"]
 
 [project.optional-dependencies]
 docs = [
-    "sphinx==8.2.3",
-    "myst-parser==4.0.1",
-    "sphinx_rtd_theme==3.0.2",
-    "docutils == 0.21.2",
-    "sphinx-click == 6.0.0",
+    "sphinx==9.1.0",
+    "myst-parser==5.0.0",
+    "sphinx_rtd_theme==3.1.0",
+    "docutils == 0.22.4",
+    "sphinx-click == 6.2.0",
 ]
 dev = [
-    "flake8 == 4.0.0",
-    "pytest == 8.3.5",
-    "pytest-cov == 4.0.0",
-    "pytest-mock == 3.10.0",
-    "tox == 4.25.0",
-    "importlib-metadata<5.0",
+    "flake8 == 7.3.0",
+    "pytest == 9.0.2",
+    "pytest-cov == 7.0.0",
+    "pytest-mock == 3.15.1",
+    "tox == 4.34.1",
+    "importlib-metadata<8.7.1",
 ]
 
 [project.scripts]

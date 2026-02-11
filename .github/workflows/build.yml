@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ["3.11", "3.12","3.13"]
+        python: ["3.11", "3.12","3.13","3.14"]
 
     steps:
       - uses: actions/checkout@v2
@@ -24,7 +24,7 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Install tox
         run: |
-          pip install tox==4.25.0
+          pip install tox==4.34.1
           pip install .
       - name: Run Unit tests
         run: tox -e py  # Run tox using the version of Python in `PATH`

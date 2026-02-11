@@ -21,7 +21,7 @@ jobs:
         python-version: '3.13'
     - name: Install tox
       run: |
-        pip install tox==4.25.0
+        pip install tox==4.34.1
         pip install .
     - name: Build docs
       run: tox -e docs
