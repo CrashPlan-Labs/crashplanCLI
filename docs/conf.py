@@ -16,7 +16,7 @@ from importlib.metadata import version as get_version
 # -- Project information -----------------------------------------------------
 
 project = "crashplancli"
-copyright = "2025, CrashPlan Group"
+copyright = "2026, CrashPlan Group"
 author = "CrashPlan Group"
 
 # The short X.Y version
