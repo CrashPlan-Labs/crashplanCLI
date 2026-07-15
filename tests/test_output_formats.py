@@ -39,7 +39,4 @@ def test_dataframe_csv_formatter_normalizes_windows_line_endings():
         formatter.get_formatted_output(TEST_DATAFRAME, lineterminator="\r\n")
     )
     assert "\r" not in output
-    assert (
-        output
-        == "string_column,int_column,null_column\nstring1,42,\nstring2,43,\n"
-    )
+    assert output == "string_column,int_column,null_column\nstring1,42,\nstring2,43,\n"
