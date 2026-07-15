@@ -13,6 +13,7 @@ how a consumer would use the library (e.g. adding unit tests, updating documenta
 ### Fixed
 
 - Fixed extra blank lines between rows in CSV output of file-event/dataframe results on Windows.
+- Stabilized `FileOrString` encoding auto-detection test that could fail depending on the installed `chardet` version.
 
 ## 1.0.3
 
