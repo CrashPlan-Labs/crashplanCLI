@@ -116,9 +116,15 @@ class DataFrameOutputFormatter:
             kwargs = {"index": False, "header": header, **kwargs}
             if columns:
                 filtered = self._select_columns(df, columns)
-                formatted_rows = filtered.to_csv(**kwargs).splitlines(keepends=True)
+                csv_text = filtered.to_csv(**kwargs)
             else:
-                formatted_rows = df.to_csv(**kwargs).splitlines(keepends=True)
+                csv_text = df.to_csv(**kwargs)
+            # pandas defaults its line terminator to os.linesep, which is "\r\n"
+            # on Windows. When these rows are echoed to a text-mode stdout the
+            # "\n" gets translated to "\r\n" again, producing "\r\r\n" and a
+            # blank line between rows. Normalize to "\n" (as to_csv() does via
+            # StringIO(newline=None)) so Windows applies its "\r" exactly once.
+            formatted_rows = csv_text.replace("\r\n", "\n").splitlines(keepends=True)
             if header:
                 yield formatted_rows.pop(0)
 
