@@ -95,7 +95,14 @@ def test_AutoDecodedFile_raises_expected_exception_when_file_not_exists(runner):
     ["utf8", "utf16", "latin_1"],
 )
 def test_FileOrString_arg_handles_various_encodings_automatically(runner, encoding):
-    test_data = '{"tést": "dåta"}'
+    # FileOrString auto-detects encoding with chardet, which needs a
+    # representative amount of text to distinguish single-byte encodings (a tiny
+    # sample of accented chars is ambiguous between e.g. latin-1 and latin-2).
+    test_data = (
+        '{"note": "The naïve café in Zürich serves a fine résumé of Málaga '
+        "tapas. Señor Muñoz built the façade; guests coöperate at the fête in "
+        'Besançon."}'
+    )
     with runner.isolated_filesystem():
         with open("test1.json", "w", encoding=encoding) as file:
             file.write(test_data)

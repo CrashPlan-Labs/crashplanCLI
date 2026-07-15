@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 The intended audience of this file is for pycpg consumers -- as such, changes that don't affect
 how a consumer would use the library (e.g. adding unit tests, updating documentation, etc) are not captured here.
 
+## 1.0.4
+
+### Fixed
+
+- Fixed extra blank lines between rows in CSV output of file-event/dataframe results on Windows.
+- Stabilized `FileOrString` encoding auto-detection test that could fail depending on the installed `chardet` version.
+
 ## 1.0.3
 
 ### Updated
