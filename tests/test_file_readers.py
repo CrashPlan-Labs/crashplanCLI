@@ -12,7 +12,7 @@ HEADERLESS_CSV = [
 ]
 HEADERS = ["header1", "header2", "header3"]
 HEADERED_CSV = [
-    "header2,header1,header3,extra_column\n"
+    "header2,header1,header3,extra_column\n",
     "col2_val1,col1_val1,col3_val1,extra_value\n",
     "col2_val2,col1_val2,col3_val2,extra_value\n",
 ]
