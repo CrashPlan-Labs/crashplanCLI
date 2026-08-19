@@ -70,7 +70,7 @@ crashplan users move --username arthur.pendragon@example.com --org-id 1234567890
 
 Alternatively, to move multiple users between organizations, fill out the `move` CSV file template, then use the `bulk move` command with the CSV file path.
 ```bash
-crashplan users bulk move bulk-command.csv
+crashplan users bulk move users_bulk_move.csv
 ```
 
 ## Bulk update users
@@ -82,7 +82,7 @@ A CSV with a `user_uid` column and the new values is required for the `update` c
 The new values that will be updated and their corresponding headers are:
 
   - `username`            The new username for the user.
-  - `email`            The new email for the user.
+  - `email`               The new email for the user.
   - `password`            The new password for the user.
   - `first_name`          The new first name for the user.
   - `last_name`           The new last name for the user.
@@ -90,7 +90,7 @@ The new values that will be updated and their corresponding headers are:
 
 Once the CSV is created and saved to the working directory the bulk command to update users is:
 ```bash
-crashplan users bulk update update-users-bulk.csv
+crashplan users bulk update users_bulk_update.csv
 ```
 
 ## Get CSV Template for bulk commands
@@ -102,9 +102,9 @@ crashplan users bulk generate-template [update|move|add-alias|remove-alias|updat
 
 Once generated, fill out and use each of the CSV templates with their respective bulk commands.
 ```bash
-crashplan users bulk [update|move|deactivate|reactivate] bulk-command.csv
+crashplan users bulk [update|move|deactivate|reactivate] [bulk-command].csv
 ```
 
 A CSV with a `username` column and a single username on each new line is used for the `reactivate` and `deactivate` bulk commands.  These commands are not available as options for `generate-template`.
 
-Learn more about [Managing Users](../commands/users.md).
+Learn more about [Using Bulk Commands](../userguides/bulkcommands.md).
