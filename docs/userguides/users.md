@@ -102,7 +102,7 @@ crashplan users bulk generate-template [update|move|add-alias|remove-alias|updat
 
 Once generated, fill out and use each of the CSV templates with their respective bulk commands.
 ```bash
-crashplan users bulk [update|move|deactivate|reactivate] [bulk-command].csv
+crashplan users bulk [update|move|deactivate|reactivate] bulk-command.csv
 ```
 
 A CSV with a `username` column and a single username on each new line is used for the `reactivate` and `deactivate` bulk commands.  These commands are not available as options for `generate-template`.
